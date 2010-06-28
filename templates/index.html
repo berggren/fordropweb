@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block menu %}
+		<b class="menu">Home</b>
+		<a class="normalLink" href="/investigation">Investigations (0)</a>
+		|
+		<a class="normalLink" href="/files">Files</a>
+		<a class="normalLink" href="/phishing">Phishing</a>
+		<a class="normalLink" href="/hosts">Hosts</a>
+		<a class="normalLink" href="/identities">Identities</a>
+{% endblock %}
+
+{% block content %}
+
+<div id="leftbox">
+	<div class="box_color_green">
+		<h1>Welcome!</h1>
+		<br>
+		fordrop stands for Forensic Dropbox and it is a service that enables you to share
+		and explore forensic data with others.<br><br>
+		Get social interaction with other investigators and maybe start a joint investigation.
+		fordrop enables you to get a quick insight of connections between different investigations and allows you to follow the progress in realtime
+		and be a part of the solution. 
+		<br>
+		<br>
+	</div>
+</div>
+
+<div id="rightbox">
+	<h2>Tags</h2>
+	{% for tag in tagcloud %}
+		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
+	{% endfor %}
+</div>
+<br clear="all">
+
+<h2>Active investigations</h2>
+<hr>
+	<table border=0>
+		<th>Reference</th>
+		<tr class="row1">
+		<td>hej</td></tr>
+		<tr class="row2">
+		<td>hej</td></tr>
+		<tr class="row1">
+		<td>hej</td></tr>
+	</table>
+<br>
+
+	<h2>Stream</h2>
+	<hr>
+	{% for item in stream|dictsortreversed:"time"|slice:":5" %}
+		{% ifequal item.type "comment" %}
+	    <div class="post_container">
+		<div class="post_box">
+	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span><span class="threadText"> Commented on {{ item.object.content_type }}</span>
+			{% ifequal item.object.content_type.name "file" %}
+				<span class="threadText">
+					<i><a href="/files/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
+				</span>
+			{% endifequal %}
+			{% ifequal item.object.content_type.name "phishing" %}
+				<span class="threadText">
+					<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
+				</span>
+			{% endifequal %}
+			{% ifequal item.object.content_type.name "tag" %}
+				<span class="threadText">
+					<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
+				</span>
+			{% endifequal %}
+	    	<br>
+	    	{{ item.object.comment|linebreaksbr|truncatewords_html:15 }}
+	    </div>
+		</div>
+		{% endifequal %}
+	
+		{% ifequal item.type "file" %}
+	    <div class="post_container">
+		<div class="post_box">
+	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+			<span class="threadText">
+				 Uploaded file <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
+			</span>
+			<br>
+			Filetype: {{ item.object.file.filetype }}
+	    </div>
+		</div>
+		{% endifequal %}
+
+		{% ifequal item.type "phishing" %}
+	    <div class="post_container">
+		<div class="post_box">
+	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+			<span class="threadText">
+				 Registered phishing <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
+			</span>
+			<br>
+			Address: {{ item.object.data }}
+	    </div>
+		</div>
+		{% endifequal %}
+	
+	
+	
+	{% endfor %}
+	
+<br>
+{% endblock %}

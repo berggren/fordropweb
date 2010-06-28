@@ -1,0 +1,55 @@
+<html>
+<head>
+	<title>fordrop</title>
+	<link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+	    	{% block extrahead %}
+    	{% endblock %}
+
+</head>
+<body onload="onLoad();" onresize="onResize();">
+
+<div id="header">
+	<div id="header_center">
+	    <div id="login">
+	    	<font color="white">About</font> | <a class="menulink" href="/accounts/logout">Logout</a> | <a class="menulink" href="/user/{{ user.id }}"><b>{{ user.get_full_name }}</b></a>
+	    </div>
+    	<a href="/"><img src="/site_media/img/logo_full_small_white.png"></a>
+	</div>
+</div>
+
+	<div id="menu">
+		<div id="menu_center">
+			<form style="display:inline" method="post" action="/search">{% csrf_token %}
+				<input type="text" name="search" class="searchinput" value="Search"/>
+			</form>
+			<!--
+			<form style="display:inline" action="/search" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+				{% for field in searchform %}
+	    	    	{{ field }}
+	    	    {% endfor %}
+	    	</form>
+	    	-->
+			{% block menu %}
+			{% endblock %}
+		</div>
+	</div>
+
+    <div id="content">
+    	{% if messages %}
+    		{% for message in messages %}
+    			<div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    		{% endfor %}
+    		<br>
+		{% endif %}
+    	{% block content %}
+    	{% endblock %}
+    </div>
+  
+    <div id="footer">
+		Copyright 2010 fordrop
+		{% block footer %}
+    	{% endblock %}
+    </div>
+
+</body>
+</html>

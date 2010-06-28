@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+	<h2>Files uploaded by {{ requser.first_name }} {{ requser.last_name }}</h2>
+	<hr>
+	<table border=0>
+		<th>User</th>
+		<th>Filename</th>
+		<th>Date</th>
+		<th>Reference</th>
+		{% for n in files reversed %}
+			<tr class="{% cycle row1,row2 %}">
+				<td>{{ n.user.first_name }} {{ n.user.last_name }}</td>
+				<td><a href="/files/{{ n.file.id }}/show">{{ n.filename }}</a></td>
+				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
+				{% if n.reference %}
+					<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+				{% else %}
+					<td></td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</table>	
+{% endblock %}

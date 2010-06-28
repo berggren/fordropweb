@@ -1,0 +1,8 @@
+authorization.txt
+database.db
+*.pyc
+.project
+.pydevproject
+storage
+static/js
+settings.py

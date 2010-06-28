@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>fordrop</title>
+	<link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+</head>
+<body>
+
+<div id="container">
+<div id="login_container">
+    <div id="header">
+    	<a href="/"><img src="/site_media/img/logo_crop.png"></img></a>
+    </div>
+     <div id="content">
+		{% if form %}
+		<h2>
+		<font color="red">
+		Sorry, you are not authorized to access the fordrop databases.<br>
+		This service is intended for security-officers in higher education only.<br><br>
+		</font>
+		Please fill out the form below to request access.
+		</h2>
+			<form action="/accounts/register/" method="post">{% csrf_token %}
+    		    Your name:<br>
+		        {{ form.name.errors }}
+        		{{ form.name }}
+        		<br><br>
+		        Your email address:<br>
+        		{{ form.mail.errors }}
+        		{{ form.mail }}
+        		<br>
+				<input type="submit" value="Submit" />
+			</form>
+
+		{% else %}
+			<h2>Thank you for your submission</h2>
+			We will process your request as soon as possible.
+		{% endif %}
+		
+	</div> 
+
+</div>
+</div>
+</body>
+</html>
