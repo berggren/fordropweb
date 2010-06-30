@@ -14,15 +14,3 @@ def activity_stream():
     for phish in phishing:
         stream.append({'type': 'phishing', 'time': phish.timecreated, 'object': phish})
     return stream
-
-def get_related(ref):
-    related = []
-    for r in ref:
-        reference = Tag.objects.get(name=r)
-        files = UserFile.objects.filter(reference=reference).order_by('-timecreated')[:10]
-        phishing = UserPhishing.objects.filter(reference=reference).order_by('-timecreated')[:10]
-        for file in files:
-            related.append({'type': 'file', 'time': file.timecreated, 'object': file})
-        for phish in phishing:
-            related.append({'type': 'phishing', 'time': phish.timecreated, 'object': phish})
-    return related

@@ -5,6 +5,7 @@ from django.template import RequestContext
 from apps.search.forms import *
 from apps.files.models import *
 from apps.phishing.models import *
+from apps.investigation.models import *
 from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
 from tagging.models import *
@@ -27,29 +28,30 @@ def index(request):
 
 @login_required
 def add_tag(request, obj_type, obj_id):
-    ref_obj = None
-    is_reference = False
     if request.method == 'POST':
         form = TagForm(request.POST)
         if form.is_valid():
             _tag = form.cleaned_data['tag']
-            try:
-                if request.POST['ref']:
-                    is_reference = True
-            except: pass
             if obj_type == "file":
                 _object = File.objects.get(id=obj_id)
-                if is_reference:
-                    ref_obj = UserFile.objects.get(user=request.user, file=_object)
             if obj_type == "phishing":
                 _object = Phishing.objects.get(id=obj_id)
-                if is_reference:
-                    ref_obj = UserPhishing.objects.get(user=request.user, phish=_object)
             Tag.objects.add_tag(_object, _tag)
-            if ref_obj:
-                tag_obj = Tag.objects.get(name=_tag)
-                ref_obj.reference = tag_obj
-                ref_obj.save()
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+@login_required
+def add_reference(request, obj_type, obj_id):
+    if request.method == 'POST':
+        form = ReferenceForm(request.POST)
+        if form.is_valid():
+            _ref_name = form.cleaned_data['reference']
+            _ref_object, created = Reference.objects.get_or_create(name=_ref_name)
+            if obj_type == "file":
+                _object = UserFile.objects.get(id=obj_id)
+            if obj_type == "phishing":
+                _object = Phishing.objects.get(id=obj_id)
+            _object.reference = _ref_object
+            _object.save()
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 def timeline(request):

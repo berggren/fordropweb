@@ -56,7 +56,7 @@ def upload(request):
             # Create database entry
             file, created = File.objects.get_or_create(filesize=int(result['filesize']), filetype=result['filetype'], md5=result['md5'], sha1=result['sha1'], sha256=result['sha256'], datefolder=result['datefolder'])
             resultdb, created = UserFile.objects.get_or_create(user=request.user, file=file, filename=result['filename'])
-            if created:
+            if not created:
                 messages.error(request, 'Already reported by you')
             else:
                 messages.success(request, 'Thank you for your submission')
@@ -73,6 +73,7 @@ def file_show(request, file_id):
     file = File.objects.get(id=file_id)
     resultall = UserFile.objects.filter(file=file)
     tagform = TagForm()
+    referenceform = ReferenceForm()
     tags = Tag.objects.get_for_object(file)
     strings = None
     pe_dump = None
@@ -106,10 +107,8 @@ def file_show(request, file_id):
                 refs.append(f.reference)
         if len(refs) > 1:
             multiple_refs = True
-            related = get_related(refs)
         else:
             multiple_refs = False
-            related = False
     else:
         multiple_hits = False
         multiple_refs = False
@@ -130,32 +129,10 @@ def file_show(request, file_id):
                                     'resultall':        resultall, 
                                     'resultme':         resultme, 
                                     'tagform':          tagform, 
+                                    'referenceform':    referenceform, 
                                     'tags':             tags, 
                                     'mhr':              mhr, 
                                     'strings':          strings, 
                                     'is_pefile':        is_pefile, 
                                     'pedump':           pe_dump
                               }, RequestContext(request))
-
-@login_required
-def editref(request, file_id):
-    if request.method == 'POST':
-        form = ReferenceForm(request.POST)
-        if form.is_valid():
-            _reference = form.cleaned_data['reference']
-            try:
-                reference = Reference.objects.get(reference=_reference)
-            except:
-                reference = Reference.objects.create(reference=_reference)
-            reftag = Tag.objects.get_or_create(name=_reference)
-            userfile = UserFile.objects.get(user=request.user, file=file_id)
-            userfile.reference = reference
-            userfile.save()
-            url = "/files/%i/show" % int(file_id)
-            return HttpResponseRedirect(url)
-        else:
-            return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    else:
-        referenceform = ReferenceForm()
-        userfile = UserFile.objects.get(user=request.user, file=file_id)
-        return render_to_response('apps/files/editref.html', {'referenceform': referenceform, 'result': userfile}, RequestContext(request))

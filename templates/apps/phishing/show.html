@@ -23,9 +23,8 @@
 
 {% if resultall %}
 	<hr>
-	<h2>Reported by</h2>
 	<table border=0>
-		<th>User</th>
+		<th>{% if multiple_hits %}<font color="orange">Reported by</font>{% else %}Reported by{% endif %}</th>
 		<th>Name</th>
 		<th>Type</th>
 		<th>Date</th>
@@ -67,7 +66,7 @@
     	<input type="submit" value="Save" />
     </form>
     {% else %}
-    	Your reference for this file: <b>{{ resultme.reference }}</b> [<a href="/files/{{ result.id }}/editref">Edit</a>]
+    	Your reference for this file: <b>{{ resultme.reference }}</b> [<a href="/files/{{ result.id }}/editref">Edit</a>]<br><br>
 	{% endifequal %}
 {% endif %}
 </div>

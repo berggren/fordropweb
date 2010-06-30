@@ -25,20 +25,19 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
 
     # fordrop
-    (r'^$',                         'fordrop.views.index'),
-    (r'^upload$',                   'fordrop.apps.files.views.upload'),
-    (r'^tag/add/(\w+)/(\d+)$',      'fordrop.views.add_tag'),
-    (r'^timeline$',                 'fordrop.views.timeline'),
+    (r'^$',                             'fordrop.views.index'),
+    (r'^upload$',                       'fordrop.apps.files.views.upload'),
+    (r'^tag/add/(\w+)/(\d+)$',          'fordrop.views.add_tag'),
+    (r'^reference/add/(\w+)/(\d+)$',    'fordrop.views.add_reference'),
+    (r'^timeline$',                     'fordrop.views.timeline'),
     
     # Investigation
     (r'^investigation$',             'fordrop.apps.investigation.views.index'),
-    
-    
+        
     # Files
     (r'^files$',                     'fordrop.apps.files.views.index'),
     (r'^files/upload$',              'fordrop.apps.files.views.upload'),
     (r'^files/(\d+)/show$',          'fordrop.apps.files.views.file_show'),
-    (r'^files/(\d+)/editref$',       'fordrop.apps.files.views.editref'),
     (r'^files/(\d+)/malware/mhr$',   'fordrop.apps.malware.views.get_malware_mhr'),
 
     # Phishhing

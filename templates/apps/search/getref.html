@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "apps/search/base.html" %}
 {% load comments %}
 
 {% block content %}
@@ -26,6 +26,7 @@
 <br>
 {% get_comment_count for reference as comment_count %}
 <h2>Comments ({{ comment_count }})</h2>
+<hr>
 	{% get_comment_list for reference as comment_list %}
 	{% for comment in comment_list reversed %}
 	    <div class="post_container">

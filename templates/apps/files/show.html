@@ -13,7 +13,7 @@
 
 {% block content %}
 
-<h2>Info for file {{ result.sha1 }}</h2>
+<h1>Info for file {{ result.sha1 }}</h1>
 <hr>
 <div class="box_color">
 <table border=0>
@@ -56,16 +56,7 @@
 {% if resultall %}
 	<hr>
 	<table border=0>
-		<th>
-	<h2>
-	{% if multiple_hits %}
-		<font color="orange">Reported by: </font>
-	{% else %}
-		Reported by: 
-	{% endif %}
-	</h2>
-		</th>
-		
+		<th>{% if multiple_hits %}<font color="orange">Reported by</font>{% else %}Reported by{% endif %}</th>
 		<th>Filename</th>
 		<th>Date</th>
 		<th>Reference</th>
@@ -107,21 +98,28 @@
 {% if resultme %}
 	{% ifequal resultme.reference None %}
 	<b>Reference:</b>
-	<form action="/tag/add/file/{{ result.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-		{% for field in tagform %}
+	<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+		{% for field in referenceform %}
         	{{ field.errors }}
         	{{ field }}
         {% endfor %}
-    	<input type="hidden" name="ref" value="ref"/>
     	<input type="submit" value="Save" />
     </form>
     {% else %}
-    	<b>Reference:</b> <i>{{ resultme.reference }}</i> [<a href="/files/{{ result.id }}/editref">Edit</a>]<br><br>
+		<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
+			<div id="hidetext" style="display:none;">
+				<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+					{% for field in referenceform %}
+        				{{ field.errors }}
+        				{{ field }}
+        			{% endfor %}
+    				<input type="submit" value="Save" />
+    			</form>
+			</div>	
+			<br>
 	{% endifequal %}
 {% endif %}
 </div>
-
-
 
 {% if strings %}
 	<h2>Printable strings (<a href="/files/{{ result.id }}/show">Close</a>)</h2>
