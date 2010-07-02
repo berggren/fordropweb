@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.http import Http404
 from django.template import RequestContext
-from fordrop.apps.files.models import *
+from fordrop.apps.upload.models import *
 from fordrop.apps.search.forms import *
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required

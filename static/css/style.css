@@ -138,8 +138,17 @@ th {
 }
 
 .post_container {
-	border-bottom: 1px dashed silver;
+	border-bottom: 1px dotted silver;
+	padding: 5px;
 }
+
+.subpost_container {
+	margin-left: 30px;
+	margin-bottom: 3px;
+	background: #f6f6f6;
+	padding: 5px;
+}
+
 
 .post_box {
 	width: 80%;
@@ -218,6 +227,17 @@ a.normalLink:hover, a.menulink:hover {
 	color: #fff;
 }
 
+a.orange {
+	text-decoration: none;
+	color: #EE6100;
+	padding-left: 7px;
+	padding-right: 7px;
+}
+
+a.orange:hover {
+	color: #EE6100;
+}
+
 
 b.menu {
 	padding-left: 7px;
@@ -278,4 +298,20 @@ ul {
 #my-timeline {
 	height: 250px; 
 	border: 1px solid #aaa;
+}
+
+#hidetext {
+	padding-top: 5px;
+}
+
+.icon img {
+	height: 30px;
+	width: 30px;
+	vertical-align: middle;
+}
+
+.menutext {
+	color: #fff;
+	padding-left: 7px;
+	padding-right: 7px;
 }

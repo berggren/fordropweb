@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
 {% block menu %}
-		<b class="menu">Home</b>
+		<span class="menutext">Home</span>
 		<a class="normalLink" href="/investigation">Investigations (0)</a>
 		|
-		<a class="normalLink" href="/files">Files</a>
-		<a class="normalLink" href="/phishing">Phishing</a>
-		<a class="normalLink" href="/hosts">Hosts</a>
-		<a class="normalLink" href="/identities">Identities</a>
+		<a class="normalLink" href="/upload">Upload</a>
+		<a class="normalLink" href="/report">Report</a>
 {% endblock %}
 
 {% block content %}
@@ -23,11 +21,26 @@
 		and be a part of the solution. 
 		<br>
 		<br>
+		<span class="icon">
+			<img src="/site_media/img/search.png">
+		</span>
+		<a class="orange" href="/search">Search</a>
+		<br>
+		<span class="icon">
+			<img src="/site_media/img/upload2.png">
+		</span>
+		<a class="orange" href="/upload">Upload files</a>
+		<br>
+		<span class="icon">
+			<img src="/site_media/img/report.png">
+		</span>
+		<a class="orange" href="/report">Report (ex. phishing, hosts or stolen identities)</a>
+		<br><br>
 	</div>
 </div>
 
 <div id="rightbox">
-	<h2>Tags</h2>
+	<h1>Tags</h1>
 	{% for tag in tagcloud %}
 		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
 	{% endfor %}
@@ -55,12 +68,7 @@
 	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span><span class="threadText"> Commented on {{ item.object.content_type }}</span>
 			{% ifequal item.object.content_type.name "file" %}
 				<span class="threadText">
-					<i><a href="/files/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
-				</span>
-			{% endifequal %}
-			{% ifequal item.object.content_type.name "phishing" %}
-				<span class="threadText">
-					<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
+					<i><a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
 				</span>
 			{% endifequal %}
 			{% ifequal item.object.content_type.name "tag" %}
@@ -87,21 +95,6 @@
 		</div>
 		{% endifequal %}
 
-		{% ifequal item.type "phishing" %}
-	    <div class="post_container">
-		<div class="post_box">
-	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
-			<span class="threadText">
-				 Registered phishing <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
-			</span>
-			<br>
-			Address: {{ item.object.data }}
-	    </div>
-		</div>
-		{% endifequal %}
-	
-	
-	
 	{% endfor %}
 	
 <br>

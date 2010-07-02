@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from apps.search.forms import *
-from apps.files.models import *
-from apps.phishing.models import *
+from apps.upload.models import *
+from apps.report.models import *
 from apps.investigation.models import *
 from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
@@ -21,8 +21,8 @@ def index(request):
     files = UserFile.objects.all().order_by('-timecreated')[:10]
     comments = Comment.objects.all().order_by('-submit_date')[:3]
     files_tags = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
-    phish_tags = Tag.objects.cloud_for_model(Phishing,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
-    tagcloud = files_tags + phish_tags
+    report_tags = Tag.objects.cloud_for_model(Report,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
+    tagcloud = files_tags + report_tags
     stream = activity_stream()
     return render_to_response('index.html', {'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud}, RequestContext(request))
 
@@ -34,8 +34,8 @@ def add_tag(request, obj_type, obj_id):
             _tag = form.cleaned_data['tag']
             if obj_type == "file":
                 _object = File.objects.get(id=obj_id)
-            if obj_type == "phishing":
-                _object = Phishing.objects.get(id=obj_id)
+            if obj_type == "report":
+                _object = Report.objects.get(id=obj_id)
             Tag.objects.add_tag(_object, _tag)
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
@@ -45,11 +45,12 @@ def add_reference(request, obj_type, obj_id):
         form = ReferenceForm(request.POST)
         if form.is_valid():
             _ref_name = form.cleaned_data['reference']
+            print _ref_name
             _ref_object, created = Reference.objects.get_or_create(name=_ref_name)
             if obj_type == "file":
                 _object = UserFile.objects.get(id=obj_id)
-            if obj_type == "phishing":
-                _object = Phishing.objects.get(id=obj_id)
+            if obj_type == "report":
+                _object = UserReport.objects.get(id=obj_id)
             _object.reference = _ref_object
             _object.save()
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
@@ -57,7 +58,7 @@ def add_reference(request, obj_type, obj_id):
 def timeline(request):
     l = []
     for file in UserFile.objects.all():
-        link = "/files/%i/show" % file.file.id
+        link = "/file/%i/show" % file.file.id
         description = "Reported by: %s<br>Filesize: %s<br>Type: %s" % (file.user.get_full_name(), file.file.filesize, file.file.filetype)
         title = "File added: %s" % file.filename
         d = {'start': file.timecreated.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'}

@@ -8,7 +8,7 @@ from tagging.models import *
 from tagging.utils import *
 from django.contrib.comments.models import *
 from fordrop.apps.search.forms import *
-from fordrop.apps.files.models import *
+from fordrop.apps.upload.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 

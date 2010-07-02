@@ -3,11 +3,10 @@ from django.contrib.auth.views import login, logout
 from django.contrib import databrowse
 
 # Databrowse
-from django.contrib import databrowse
-from fordrop.apps.files.models import *
-databrowse.site.register(File)
-databrowse.site.register(UserFile)
-
+#from django.contrib import databrowse
+#from fordrop.apps.upload.models import *
+#databrowse.site.register(File)
+#databrowse.site.register(UserFile)
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -26,24 +25,22 @@ urlpatterns = patterns('',
 
     # fordrop
     (r'^$',                             'fordrop.views.index'),
-    (r'^upload$',                       'fordrop.apps.files.views.upload'),
     (r'^tag/add/(\w+)/(\d+)$',          'fordrop.views.add_tag'),
     (r'^reference/add/(\w+)/(\d+)$',    'fordrop.views.add_reference'),
     (r'^timeline$',                     'fordrop.views.timeline'),
     
     # Investigation
     (r'^investigation$',             'fordrop.apps.investigation.views.index'),
-        
-    # Files
-    (r'^files$',                     'fordrop.apps.files.views.index'),
-    (r'^files/upload$',              'fordrop.apps.files.views.upload'),
-    (r'^files/(\d+)/show$',          'fordrop.apps.files.views.file_show'),
-    (r'^files/(\d+)/malware/mhr$',   'fordrop.apps.malware.views.get_malware_mhr'),
+    
+    # Upload & Files
+    (r'^upload$',                     'fordrop.apps.upload.views.index'),
+    (r'^file/(\d+)/show$',            'fordrop.apps.upload.views.show'),
+    (r'^file/(\d+)/malware/mhr$',     'fordrop.apps.upload.views.get_malware_mhr'),
 
-    # Phishhing
-    (r'^phishing$',                     'fordrop.apps.phishing.views.index'),
-    (r'^phishing/add$',                 'fordrop.apps.phishing.views.add'),
-    (r'^phishing/(\d+)/show$',          'fordrop.apps.phishing.views.show'),
+    # Reports
+    (r'^report$',                     'fordrop.apps.report.views.index'),
+    (r'^report/add$',                 'fordrop.apps.report.views.add'),
+    (r'^report/(\d+)/show$',          'fordrop.apps.report.views.show'),
 
     # User
     (r'^user/(\d+)$',               'fordrop.apps.userprofile.views.index'),
