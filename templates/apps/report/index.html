@@ -1,0 +1,50 @@
+{% extends "apps/report/base.html" %}
+
+{% block content %}
+<div id="leftbox">
+	<div class="box_color_green">
+	<h1>Report</h1>
+		<form action="/report/add" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+			{% for field in genericreportform %}
+	        	{{ field.errors }}
+	        	{{ field }}
+	        {% endfor %}
+	    	<input type="submit" value="Save" />
+	    </form>
+	</div>
+</div>
+
+<div id="rightbox">
+	<h2>Tags</h2>
+	{% for tag in tagcloud %}
+		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
+	{% endfor %}
+</div>
+<br clear="all">
+
+<h2>Latest reports</h2>
+<hr>
+	<table border=0>
+		<th>Reported by</th>
+		<th>Value</th>
+		<th>Type</th>
+		<th>Date</th>
+		<th>Reference</th>
+		{% for n in reports reversed %}
+			<tr class="{% cycle row1,row2 %}">
+				<td><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+				<td><a href="/report/{{ n.report.id }}/show">{{ n.report.value }}</a></td>
+				<td>{{ n.report.type }}</td>
+				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
+				{% if n.reference %}
+					<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+				{% else %}
+					<td></td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</table>
+
+<br>
+
+{% endblock %}
