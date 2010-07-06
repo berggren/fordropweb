@@ -31,6 +31,8 @@ urlpatterns = patterns('',
     
     # Investigation
     (r'^investigation$',             'fordrop.apps.investigation.views.index'),
+    (r'^investigation/(\d+)$',       'fordrop.apps.investigation.views.show'),
+    (r'^investigation/create$',      'fordrop.apps.investigation.views.create'),
     
     # Upload & Files
     (r'^upload$',                     'fordrop.apps.upload.views.index'),

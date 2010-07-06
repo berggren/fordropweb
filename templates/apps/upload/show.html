@@ -82,9 +82,16 @@
 	<ul>
 	<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><li>Start new joint investigation</li></div>
 		<div id="hidetext" style="display:none;">
-			{% for ref in refs %}
-				<input TYPE=CHECKBOX CHECKED NAME="{{ ref }}">{{ ref }}<br>	
-			{% endfor %}
+			<form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+				<b>Title</b> <input type="text" name="title" id="title" />
+				<br><br>
+				Choose references
+				<br>
+				{% for ref in refs %}
+					<input TYPE=CHECKBOX CHECKED NAME="reference_{{ ref }}">{{ ref }}<br>
+				{% endfor %}
+    			<input type="submit" value="Start investigation" />
+		</form>
 		</div>
 	</ul>
 	</div>

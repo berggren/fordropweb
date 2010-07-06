@@ -61,7 +61,7 @@ def index(request):
                                     'files':        files, 
                                     'comments':     comments, 
                                     'tagcloud':     tagcloud
-                                }, RequestContext(request))
+                                  }, RequestContext(request))
 
 @login_required
 def show(request, file_id):

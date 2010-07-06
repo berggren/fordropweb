@@ -49,14 +49,12 @@
 
 <h2>Active investigations</h2>
 <hr>
-	<table border=0>
-		<tr class="row1">
-		<td>hej</td></tr>
-		<tr class="row2">
-		<td>hej</td></tr>
-		<tr class="row1">
-		<td>hej</td></tr>
-	</table>
+	{% for investigation in investigations %}
+		<table border=0>
+			<tr class="{% cycle row1,row2 %}">
+			<td>{{ investigation.title }}</td>
+		</table>
+	{% endfor %}
 <br>
 
 	<h2>Stream</h2>

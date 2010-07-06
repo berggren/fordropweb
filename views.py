@@ -24,7 +24,8 @@ def index(request):
     report_tags = Tag.objects.cloud_for_model(Report,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
     tagcloud = files_tags + report_tags
     stream = activity_stream()
-    return render_to_response('index.html', {'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud}, RequestContext(request))
+    investigations = Investigation.objects.all()
+    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud}, RequestContext(request))
 
 @login_required
 def add_tag(request, obj_type, obj_id):
