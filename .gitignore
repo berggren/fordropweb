@@ -6,3 +6,4 @@ database.db
 storage
 static/js
 settings.py
+static/avatars
