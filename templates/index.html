@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load thumbnail %}
+{% load comments %}
+{% load threadedcomments_tags %}
 
 {% block menu %}
 		<span class="menutext">Home</span>
@@ -11,89 +14,131 @@
 {% block content %}
 
 <div id="leftbox">
-	<div class="box_color_green">
-		<h1>Welcome!</h1>
-		<br>
-		fordrop stands for Forensic Dropbox and it is a service that enables you to share
-		and explore forensic data with others.<br><br>
-		Get social interaction with other investigators and maybe start a joint investigation.
-		fordrop enables you to get a quick insight of connections between different investigations and allows you to follow the progress in realtime
-		and be a part of the solution. 
-		<br>
-		<br>
-		<span class="icon">
-			<img src="/site_media/img/search.png">
+<div class="box_color_white">
+		<div class="avatar"><img src="{% thumbnail user.get_profile.avatar 100x100%}"></div>
+		<h1 class="big">{{ user.get_full_name }}</h1>
+		<span class="threadText">
+			email: jbn@kth.se<br>
+			telephone: 08555555<br>
+			twitter: crapp<br>
+			organisation: kth.se
 		</span>
-		<a class="orange" href="/search">Search</a>
-		<br>
-		<span class="icon">
-			<img src="/site_media/img/upload2.png">
-		</span>
-		<a class="orange" href="/upload">Upload files</a>
-		<br>
-		<span class="icon">
-			<img src="/site_media/img/report.png">
-		</span>
-		<a class="orange" href="/report">Report (ex. phishing, hosts or stolen identities)</a>
-		<br><br>
-	</div>
+<br><br>
+
+<div class="box_color_gray">
+	<h1>Recomendations</h1>
+	Based on your activities there seems to be new objects or reports that could be of interest to you since they have a connection to one or more of your reports, uploads or investigations. 
+	<br>
+	<br>
+{% if files %}
+	<table border=0>
+		{% for n in files %}
+			<tr class="{% cycle row1,row2 %}">
+				<td>{{ n.filename }}</td>
+				<td align="right">{{ n.timecreated|timesince }} ago</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+<br>
+<a class="orange" href="#">See all</a>
 </div>
 
-<div id="rightbox">
-	<h1>Tags</h1>
-	{% for tag in tagcloud %}
-		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
-	{% endfor %}
+<div class="box_color_gray">
+<h1>News</h1>
+<ul>
+<li>Thinking about Cyber Security Awareness Month in October</li>
+<li>DnsMadeEasy under a "quite large and unique" ddos.</li>
+<li>Countdown to Tuesday...</li>
+<li>Adobe Acrobat Font Parsing Integer Overflow Vulnerability</li>
+</ul>
 </div>
+
+
+</div>		
+</div>
+
+<div id="rightbox-stream">
+	<div class="box_color_white_stream">
+	
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li id="active"><a href="#" id="current">Stream</a></li>
+			<li><a href="#">Investigations</a></li>
+			<li><a href="#">Uploads & reports</a></li>
+		</ul>
+	</div>
+
+	<br>
+
+	{% for item in stream|dictsortreversed:"time"|slice:":6" %}
+		<div class="post_container">
+			{% ifequal item.type "comment" %}
+				<div class="avatar"><img src="{% thumbnail item.object.user.get_profile.avatar 30x30 %}"></div>
+				<div class="post_box">
+			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span><span class="threadText"> Commented on {{ item.object.content_type }}</span>
+					{% ifequal item.object.content_type.name "file" %}
+						<span class="threadText">
+							<i><a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
+						</span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "report" %}
+						<span class="threadText">
+							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i> ({{ item.object.submit_date|timesince }} ago)
+						</span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "tag" %}
+						<span class="threadText">
+							<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
+						</span>
+					{% endifequal %} 
+			    	<br>
+			    	{{ item.object.comment|linebreaksbr|truncatewords_html:15 }}
+			    </div>
+			{% endifequal %}
+			{% ifequal item.type "file" %}
+				<div class="avatar"><img src={% thumbnail item.object.user.get_profile.avatar 30x30 %}></div>
+				<div class="post_box">
+			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+					<span class="threadText">
+						 Uploaded file <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
+					</span>
+					<br>
+					Filetype: {{ item.object.file.filetype }}
+				</div>
+			{% endifequal %}
+			{% ifequal item.type "report" %}
+				<div class="avatar"><img src={% thumbnail item.object.user.get_profile.avatar 30x30 %}></div>
+				<div class="post_box">
+			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+					<span class="threadText">
+						 Report (<i>{{ item.object.report.type }}</i>) ({{ item.object.timecreated|timesince }} ago)
+					</span>
+					<br>
+					Value: {{ item.object.report.value }}
+				</div>
+			{% endifequal %}
+		</div>
+	{% endfor %}
+	
+</div>
+</div>
+
 <br clear="all">
 
-<h2>Active investigations</h2>
-<hr>
-	{% for investigation in investigations %}
-		<table border=0>
-			<tr class="{% cycle row1,row2 %}">
-			<td>{{ investigation.title }}</td>
-		</table>
-	{% endfor %}
+<div class="box_color">
+<h1>Talk to {{ user.first_name }}</h1>
 <br>
+	{% get_comment_form for user as form %}
+	<form action="/comments/post/" method="post">{% csrf_token %}
+		<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
+		{% for hidden in form.hidden_fields %}
+        	{{ hidden }}
+    	{% endfor %}
+		{{ form.comment }}
+		<br>
+  		<input type="submit" value="Post">
+	</form>
+</div>
 
-	<h2>Stream</h2>
-	<hr>
-	{% for item in stream|dictsortreversed:"time"|slice:":5" %}
-		{% ifequal item.type "comment" %}
-	    <div class="post_container">
-		<div class="post_box">
-	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span><span class="threadText"> Commented on {{ item.object.content_type }}</span>
-			{% ifequal item.object.content_type.name "file" %}
-				<span class="threadText">
-					<i><a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
-				</span>
-			{% endifequal %}
-			{% ifequal item.object.content_type.name "tag" %}
-				<span class="threadText">
-					<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
-				</span>
-			{% endifequal %}
-	    	<br>
-	    	{{ item.object.comment|linebreaksbr|truncatewords_html:15 }}
-	    </div>
-		</div>
-		{% endifequal %}
-	
-		{% ifequal item.type "file" %}
-	    <div class="post_container">
-		<div class="post_box">
-	    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
-			<span class="threadText">
-				 Uploaded file <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
-			</span>
-			<br>
-			Filetype: {{ item.object.file.filetype }}
-	    </div>
-		</div>
-		{% endifequal %}
-
-	{% endfor %}
-	
-<br>
 {% endblock %}

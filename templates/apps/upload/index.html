@@ -1,9 +1,14 @@
 {% extends "apps/upload/base.html" %}
+{% load thumbnail %}
 
 {% block content %}
-<div id="leftbox">
+<div id="leftbox-upload">
 <div class="box_color_green">
-<h1>Upload your forensic data</h1	>
+<h1>Upload your forensic data</h1>
+<br>
+Upload and share your findings and start collaborating with your collegues.
+You will quicly see if the file have been uploaded by soimeone else and or if
+the file is part of an investigation.<br><br>
 	<form action="/upload" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
 		{% for field in uploadform %}
         	{{ field.errors }}
@@ -14,14 +19,18 @@
 </div>
 </div>
 
-	<div id="rightbox">
-		<h2>Tags</h2>
+	<div id="rightbox-tags">
+	<div class="box_color_white">
+		<h1>Tags</h1>
+		<br>
 		{% for tag in tagcloud %}
 			<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
 		{% endfor %}
 	</div>
+	</div>
 <br clear="all">
-<h2>Latest files</h2>
+<div class="white_box">
+<h1>Latest uploads</h1>
 		<hr>
 	<table border=0>
 		<th>Reported by</th>
@@ -30,7 +39,7 @@
 		<th>Reference</th>
 		{% for n in files %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+				<td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
 				<td><a href="/file/{{ n.file.id }}/show">{{ n.filename }}</a></td>
 				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
 				{% if n.reference %}
@@ -41,7 +50,7 @@
 			</tr>
 		{% endfor %}
 	</table>
-
+</div>
 
 <br>
 

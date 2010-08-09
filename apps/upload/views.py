@@ -50,8 +50,7 @@ def index(request):
     else:
         uploadform = UploadFileForm()
         searchform = SearchForm()
-        files = UserFile.objects.all().order_by('-timecreated')[:10]
-        comments = Comment.objects.all().order_by('-submit_date')[:3]
+        files = UserFile.objects.all().order_by('-timecreated')
         tagcloud = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
         return render_to_response(
                                   'apps/upload/index.html', 
@@ -59,7 +58,6 @@ def index(request):
                                     'uploadform':   uploadform, 
                                     'searchform':   searchform, 
                                     'files':        files, 
-                                    'comments':     comments, 
                                     'tagcloud':     tagcloud
                                   }, RequestContext(request))
 

@@ -1,9 +1,14 @@
 {% extends "apps/report/base.html" %}
+{% load thumbnail %}
 
 {% block content %}
-<div id="leftbox">
+<div id="leftbox-upload">
 	<div class="box_color_green">
-	<h1>Report</h1>
+	<h1>Report incident</h1>
+<br>
+Report and share your findings and start collaborating with your collegues.
+You will quicly see if the file have been uploaded by soimeone else and or if
+the file is part of an investigation.<br><br>
 		<form action="/report/add" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
 			{% for field in genericreportform %}
 	        	{{ field.errors }}
@@ -14,15 +19,18 @@
 	</div>
 </div>
 
-<div id="rightbox">
-	<h2>Tags</h2>
+	<div id="rightbox-tags">
+	<div class="box_color_white">
+	<h1>Tags</h1>
 	{% for tag in tagcloud %}
 		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
 	{% endfor %}
 </div>
+</div>
 <br clear="all">
 
-<h2>Latest reports</h2>
+<div class="white_box">
+<h1>Latest reports</h1>
 <hr>
 	<table border=0>
 		<th>Reported by</th>
@@ -32,7 +40,7 @@
 		<th>Reference</th>
 		{% for n in reports reversed %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+				<td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
 				<td><a href="/report/{{ n.report.id }}/show">{{ n.report.value }}</a></td>
 				<td>{{ n.report.type }}</td>
 				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
@@ -44,7 +52,6 @@
 			</tr>
 		{% endfor %}
 	</table>
-
-<br>
+</div>
 
 {% endblock %}
