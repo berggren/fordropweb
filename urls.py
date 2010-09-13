@@ -62,6 +62,6 @@ urlpatterns = patterns('',
     (r'^accounts/register/$',           'fordrop.apps.fedlogin.views.fedregister'),
 
     # Media
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/mnt/hgfs/workspace/fordrop/static', 'show_indexes': True}),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Users/jbn/Documents/Aptana Studio 3 Workspace/fordrop/static', 'show_indexes': True}),
     (r'^databrowse/(.*)', databrowse.site.root),
 )
