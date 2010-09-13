@@ -17,7 +17,6 @@ class Investigation(models.Model):
     description = models.TextField(null=True, blank=True)
     investigator = models.ManyToManyField(User, null=True, blank=True, related_name="investigator")
     follower = models.ManyToManyField(User, null=True, blank=True)
-    related_link = models.ManyToManyField(News, null=True, blank=True)
     reference = models.ManyToManyField('Reference', null=True, blank=True)
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
