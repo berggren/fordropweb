@@ -4,45 +4,80 @@
 {% load thumbnail %}
 
 {% block menu %}
-		<a class="normalLink" href="/">Home</a>
-		<a class="normalLink" href="/investigation">Investigations (0)</a>
-		|
-		<a class="normalLink" href="/upload">Upload</a>
-		<a class="normalLink" href="/report">Report</a>
+<div id="navcontainer">
+	<ul id="navlist">
+		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+		<li id="active"><a id="current" href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+		<li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+		</ul>
+</div>
 {% endblock %}
+
 
 {% block content %}
 
-<div id="leftbox-upload">
-<div class="box_color_green">
-<h1>Info for file {{ result.sha1 }}</h1>
-<hr>
-<table border=0>
-	<tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
-	<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>
-	<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
-	<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
-	<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
-</table>
-</div>
+<div id="rightbox">
+	<b>Tags:</b> {% for tag in tags %}<i><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></i> {% endfor %}
+	<form action="/tag/add/file/{{ result.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+		{% for field in tagform %}
+        	{{ field.errors }}
+        	{{ field }}
+        {% endfor %}
+    	<input type="submit" value="Add tag" />
+	</form>
+	{% if resultme %}
+		{% ifequal resultme.reference None %}
+			<b>Reference:</b>
+			<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+				{% for field in referenceform %}
+		        	{{ field.errors }}
+		        	{{ field }}
+		        {% endfor %}
+		    	<input type="submit" value="Save" />
+		    </form>
+	    {% else %}
+			<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
+				<div id="hidetext" style="display:none;">
+					<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+						{% for field in referenceform %}
+	        				{{ field.errors }}
+	        				{{ field }}
+	        			{% endfor %}
+	    				<input type="submit" value="Save" />
+	    			</form>
+				</div>	
+				<br>
+		{% endifequal %}
+	{% endif %}
 </div>
 
-<div id="rightbox-tags">
-<div class="box_color_white">
-<h1>Actions</h1>
-<ul class="action-list">
-	{% if not mhr %}
-		<li><a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a></li>
-	{% else %}
-		{% if mhr.donotexist %}
-			<li><font color="green">No match in MHR:s malware repository</font></li>
+<div id="breadcrumbs">	
+	Home -> test -> blaha
+	<hr>
+</div>
+
+
+<div id="middlebox">
+	<h1>Info for file {{ result.sha1 }}</h1>
+	<div class="news_box_grey">
+		<table border=0>
+			<tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
+			<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
+			<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
+			<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
+			<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
+		</table>
+		{% if not mhr %}
+			<a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a>
 		{% else %}
-			<li><font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font></li>
+			{% if mhr.donotexist %}
+				<font color="green">No match in MHR:s malware repository</font>
+			{% else %}
+				<font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font>
+			{% endif %}
 		{% endif %}
-	{% endif %}
-	<!--
-	<li><a href="http://www.malwarehash.com/result.php?hash={{ result.md5 }}">Check with malwarehash.com</a></li>
-	-->
+	</div>
+	
 	{% if not strings %}
 		<li><a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a></li>
 	{% else %}
@@ -56,70 +91,126 @@
 		{% endif %}
 	{% endif %}
 
-</ul>
+	{% if strings %}
+		<br>
+		<div id="strings_box">
+			<h1>Printable strings (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
+			<hr>
+			{{ strings|linebreaksbr }}
+		</div>
+	{% endif %}
 
+	{% if pedump %}
+		<h2>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h2>
+		<div id="strings_box">
+			{{ pedump|linebreaksbr }}
+		</div>
+	{% endif %}
+
+	{% if resultall %}
+		<br>
+		<table border=0>
+			<th>Uploaded by</th>
+			<th>Filename</th>
+			<th>Date</th>
+			<th>Reference</th>
+			{% for n in resultall %}
+				<tr >
+					<td><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 20x20 crop %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+					<td>{{ n.filename }}</td>
+					<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
+					{% if n.reference %}
+						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+					{% else %}
+						<td></td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
 	<br>
-	<b>Tags:</b> {% for tag in tags %}<i><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></i> {% endfor %}
-	<form action="/tag/add/file/{{ result.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-		{% for field in tagform %}
-        	{{ field.errors }}
-        	{{ field }}
-        {% endfor %}
-    	<input type="submit" value="Add tag" />
-</form>
-{% if resultme %}
-	{% ifequal resultme.reference None %}
-	<b>Reference:</b>
-	<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-		{% for field in referenceform %}
-        	{{ field.errors }}
-        	{{ field }}
-        {% endfor %}
-    	<input type="submit" value="Save" />
-    </form>
-    {% else %}
-		<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
-			<div id="hidetext" style="display:none;">
-				<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-					{% for field in referenceform %}
-        				{{ field.errors }}
-        				{{ field }}
-        			{% endfor %}
-    				<input type="submit" value="Save" />
-    			</form>
-			</div>	
+	<br>
+	{% endif %}
+
+	{% get_comment_count for result as comment_count %}
+	{% if comment_count %}
+		<h1>{{ comment_count }} comments</h1>
+		<hr>
+	{% endif %}
+	{% get_comment_list for result as comment_list %}
+	{% for comment in comment_list|fill_tree|annotate_tree %}
+		{% ifchanged comment.parent_id %}{% else %}
+		    </li>
+		{% endifchanged %}
+	
+		{% if not comment.open and not comment.close %}
+		    </li>
+		{% endif %}
+	    
+		{% if comment.open %}
+			{% if not comment.parent_id %}
+		    	<ul class="comment-root">
+		    {% else %}
+		    	<ul class="comment-sub">
+		    {% endif %}
+		{% endif %}
+	
+		<li>
+		
+		<div class="comment-container">
+			<div class="comment">
+				<div class="trunc-box">
+					<div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+					<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
+					<span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
+					{{ comment.comment|linebreaksbr }}
+					{% get_comment_form for result as form with comment.id %}
+					<br><br>
+					<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;">
+						<font color="blue">Reply</font>
+					</div>
+					<div id="hidetext" style="display:none;">
+						<form action="/comments/post/" method="post">{% csrf_token %}
+							<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
+							{% for hidden in form.hidden_fields %}
+			       				{{ hidden }}
+			    			{% endfor %}
+							{{ form.comment }}
+							<br>
+			  				<input type="submit" value="Post">
+						</form>
+					</div>
+				</div>
+			</div>
+	   	</div>
+
+		{% for close in comment.close %}
+		    </li>
+		    </ul>
+		{% endfor %}
+	{% endfor %}
+
+	<div class="box_color">
+	<h1>Write a comment</h1>
+	<br>
+		{% get_comment_form for result as form %}
+		<form action="/comments/post/" method="post">{% csrf_token %}
+			<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
+			{% for hidden in form.hidden_fields %}
+	        	{{ hidden }}
+	    	{% endfor %}
+			{{ form.comment }}
 			<br>
-	{% endifequal %}
+	  		<input type="submit" value="Post">
+		</form>
+	</div>
+</div>
 
 
-</div>
-</div>
-{% endif %}
 
 <br clear="all">
+{% endblock %}
 
-{% if resultall %}
-<div class="white_box">
-	<table border=0>
-		<th>Uploaded by:</th>
-		<th>Filename</th>
-		<th>Date</th>
-		<th>Reference</th>
-		{% for n in resultall %}
-			<tr >
-				<td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-				<td>{{ n.filename }}</td>
-				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
-				{% if n.reference %}
-					<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-				{% else %}
-					<td></td>
-				{% endif %}
-			</tr>
-		{% endfor %}
-	</table>
-</div>
-{% endif %}
+
 
 {% if multiple_hits and multiple_refs and resultme %}
 	<div class="error">
@@ -145,90 +236,6 @@
 {% endif %}
 
 
-{% if strings %}
-	<div id="strings_box">
-		<h1>Printable strings (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
-		<hr>
-		{{ strings|linebreaksbr }}
-	</div>
-{% endif %}
 
-{% if pedump %}
-	<h2>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h2>
-	<div id="strings_box">
-		{{ pedump|linebreaksbr }}
-	</div>
-{% endif %}
 
-{% get_comment_count for result as comment_count %}
-{% if comment_count %}
-	<h1>{{ comment_count }} comments</h1>
-	<hr>
-{% endif %}
-{% get_comment_list for result as comment_list %}
-{% for comment in comment_list|fill_tree|annotate_tree %}
-	{% ifchanged comment.parent_id %}{% else %}
-	    </li>
-	{% endifchanged %}
 
-	{% if not comment.open and not comment.close %}
-	    </li>
-	{% endif %}
-    
-	{% if comment.open %}
-		{% if not comment.parent_id %}
-	    	<ul class="comment-root">
-	    {% else %}
-	    	<ul class="comment-sub">
-	    {% endif %}
-	{% endif %}
-
-	<li>
-
-	<div class="comment-container">
-		<div class="comment">
-			<div class="avatar"><img src={% thumbnail comment.user.get_profile.avatar 32x32 %}></div>
-			<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
-			<span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
-			{{ comment.comment|linebreaksbr }}
-			{% get_comment_form for result as form with comment.id %}
-			<br><br>
-			<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;">
-				<font color="blue">Reply</font>
-			</div>
-			<div id="hidetext" style="display:none;">
-				<form action="/comments/post/" method="post">{% csrf_token %}
-					<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
-					{% for hidden in form.hidden_fields %}
-	       				{{ hidden }}
-	    			{% endfor %}
-					{{ form.comment }}
-					<br>
-	  				<input type="submit" value="Post">
-				</form>
-			</div>
-		</div>
-   	</div>
-
-	{% for close in comment.close %}
-	    </li>
-	    </ul>
-	{% endfor %}
-{% endfor %}
-
-<div class="box_color">
-<h1>Write a comment</h1>
-<br>
-	{% get_comment_form for result as form %}
-	<form action="/comments/post/" method="post">{% csrf_token %}
-		<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
-		{% for hidden in form.hidden_fields %}
-        	{{ hidden }}
-    	{% endfor %}
-		{{ form.comment }}
-		<br>
-  		<input type="submit" value="Post">
-	</form>
-</div>
-
-{% endblock %}

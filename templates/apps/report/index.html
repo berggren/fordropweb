@@ -2,36 +2,35 @@
 {% load thumbnail %}
 
 {% block content %}
-<div id="leftbox-upload">
-	<div class="box_color_green">
-	<h1>Report incident</h1>
-<br>
-Report and share your findings and start collaborating with your collegues.
-You will quicly see if the file have been uploaded by soimeone else and or if
-the file is part of an investigation.<br><br>
+
+<div id="leftbox-menu">
+	<div class="main-menu-box">	
+		<li><a href="/">Home</a><br>
+		<li><a href="/investigation">Investigations</a><br>
+		<li><a href="/news">News</a><br>
+		<li><a href="/upload">Upload</a><br>
+		<li class="selected"><a href="/report">Report</a><br>
+	</div>
+	<li><a href="#">Browse</a><br>
+</div>
+
+<div id="leftbox">
+	<div class="news_box_grey">
+		<div class="trunc-box">
+		<h1>Report incident</h1>
+		Report and share your findings and start collaborating with your collegues.
+		You will quicly see if the file have been uploaded by soimeone else and or if
+		the file is part of an investigation.<br><br>
 		<form action="/report/add" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
 			{% for field in genericreportform %}
-	        	{{ field.errors }}
-	        	{{ field }}
-	        {% endfor %}
-	    	<input type="submit" value="Save" />
-	    </form>
+		       	{{ field.errors }}
+		       	{{ field }}
+		    {% endfor %}
+			<input type="submit" value="Save" />
+		</form>
+		</div>
 	</div>
-</div>
-
-	<div id="rightbox-tags">
-	<div class="box_color_white">
-	<h1>Tags</h1>
-	{% for tag in tagcloud %}
-		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
-	{% endfor %}
-</div>
-</div>
-<br clear="all">
-
-<div class="white_box">
-<h1>Latest reports</h1>
-<hr>
+	<h1>Latest reports</h1>
 	<table border=0>
 		<th>Reported by</th>
 		<th>Value</th>
@@ -54,4 +53,12 @@ the file is part of an investigation.<br><br>
 	</table>
 </div>
 
+<div id="rightbox">
+	<h1>Tags</h1>
+	{% for tag in tagcloud %}
+		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
+	{% endfor %}
+</div>
+
+<br clear="all">
 {% endblock %}

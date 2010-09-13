@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from fordrop.apps.news.models import News
 
-class PollManager(models.Manager):
+class ReferencePollManager(models.Manager):
     def get_count(self, reference):
         from fordrop.apps.upload.models import UserFile
         from fordrop.apps.report.models import UserReport
@@ -13,6 +14,11 @@ class PollManager(models.Manager):
 
 class Investigation(models.Model):
     title = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    investigator = models.ManyToManyField(User, null=True, blank=True, related_name="investigator")
+    follower = models.ManyToManyField(User, null=True, blank=True)
+    related_link = models.ManyToManyField(News, null=True, blank=True)
+    reference = models.ManyToManyField('Reference', null=True, blank=True)
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
@@ -22,8 +28,7 @@ class Investigation(models.Model):
 
 class Reference(models.Model):
     name = models.CharField(max_length=255)
-    investigation = models.ManyToManyField(Investigation)
-    objects = PollManager()
+    objects = ReferencePollManager()
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

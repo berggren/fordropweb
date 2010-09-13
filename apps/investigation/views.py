@@ -11,18 +11,17 @@ from fordrop.apps.search.forms import *
 from fordrop.apps.upload.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from forms import *
 
 
 @login_required
 def index(request):
     searchform = SearchForm()
+    newinvestigationform = NewInvestigationForm()
     startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
-    return render_to_response('apps/investigation/index.html', {'searchform': searchform, 'startdate': startdate}, RequestContext(request))
+    return render_to_response('apps/investigation/index.html', {'searchform': searchform, 'newinvestigationform': newinvestigationform, 'startdate': startdate}, RequestContext(request))
 
 def create(request):
-    """
-    ToDo: Input validation!!
-    """
     if request.method == 'POST':
         references = []
         for key, value in request.POST.iteritems():

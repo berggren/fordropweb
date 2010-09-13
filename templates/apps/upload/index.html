@@ -1,37 +1,83 @@
 {% extends "apps/upload/base.html" %}
 {% load thumbnail %}
 
-{% block content %}
-<div id="leftbox-upload">
-<div class="box_color_green">
-<h1>Upload your forensic data</h1>
-<br>
-Upload and share your findings and start collaborating with your collegues.
-You will quicly see if the file have been uploaded by soimeone else and or if
-the file is part of an investigation.<br><br>
-	<form action="/upload" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-		{% for field in uploadform %}
-        	{{ field.errors }}
-        	{{ field }}
-        {% endfor %}
-    	<input type="submit" value="Upload" />
-    </form>
+{% block menu %}
+<div id="navcontainer">
+	<ul id="navlist">
+		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+		<li id="active"><a id="current" href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+		<li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+	</ul>
 </div>
+{% endblock %}
+
+
+{% block content %}
+
+<div id="rightbox">
+	<h1>Tags</h1>
+	{% for tag in tagcloud %}
+		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
+	{% endfor %}
 </div>
 
-	<div id="rightbox-tags">
-	<div class="box_color_white">
-		<h1>Tags</h1>
-		<br>
-		{% for tag in tagcloud %}
-			<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
-		{% endfor %}
-	</div>
-	</div>
-<br clear="all">
-<div class="white_box">
-<h1>Latest uploads</h1>
+<div id="breadcrumbs">	
+	Home -> test -> blaha
+	<hr>
+</div>
+
+<div id="middlebox">
+
+	<div class="news_box_grey">			
+		<h1>Upload your forensic data</h1>
+		Upload and share your findings and start collaborating with your collegues.
+		You will quicly see if the file have been uploaded by soimeone else and or if
+		the file is part of an investigation.<br><br>
+		<form action="/upload" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+			{% for field in uploadform %}
+		       	{{ field.errors }}
+		       	{{ field }}
+	       	{% endfor %}
+	    	<input type="submit" value="Upload" />
+	    </form>
+
 		<hr>
+
+		<h1>Report incident</h1>
+		Report and share your findings and start collaborating with your collegues.
+		You will quicly see if the file have been uploaded by soimeone else and or if
+		the file is part of an investigation.<br><br>
+		<form action="/report/add" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+			{% for field in genericreportform %}
+		       	{{ field.errors }}
+		       	{{ field }}
+		    {% endfor %}
+			<input type="submit" value="Save" />
+		</form>
+	</div>
+	
+	
+	<br>
+	
+					<div id="news">
+					{% for item in files|slice:":7"  %}
+						<div class="news_box">
+						<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.user.get_profile.avatar 40x40 crop %}></div>
+							<div class="news-title">{{ item.filename }}</div>
+							<span class="threadTextDarker">
+								<i>
+									{{ item.file.filetype }}
+								</i>
+							</span>
+							<br>
+							<span class="threadText">{{ item.user.get_full_name }}</span><span class="threadText"> | {{ item.timecreated|timesince }} ago</span>
+						</div>
+					{% endfor %}
+				</div>
+		</div>
+	
+<!--
+	<h1>Latest uploads</h1>
 	<table border=0>
 		<th>Reported by</th>
 		<th>Filename</th>
@@ -39,7 +85,7 @@ the file is part of an investigation.<br><br>
 		<th>Reference</th>
 		{% for n in files %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+				<td><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 20x20 crop %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
 				<td><a href="/file/{{ n.file.id }}/show">{{ n.filename }}</a></td>
 				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
 				{% if n.reference %}
@@ -51,7 +97,8 @@ the file is part of an investigation.<br><br>
 		{% endfor %}
 	</table>
 </div>
+-->
 
-<br>
+<br clear="all">
 
 {% endblock %}

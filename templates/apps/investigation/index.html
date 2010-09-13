@@ -1,29 +1,67 @@
 {% extends "apps/investigation/base.html" %}
+{% load thumbnail %}
+
+
+{% block menu %}
+<div id="navcontainer">
+	<ul id="navlist">
+		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+		<li id="active"><a id="current" href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+	</ul>
+</div>
+{% endblock %}
+
 
 {% block content %}
-<div id="leftbox-upload">
-	<div class="box_color_green">
-		<h1>Investigations</h1>
+
+<div id="rightbox">
+</div>
+
+<div id="breadcrumbs">	
+	Home -> test -> blaha
+	<hr>
+</div>
+<div id="middlebox">
+
+	<div class="news_box_grey">
+		<h1>Start new investigation</h1>
 		Here you can start, browse or participate in ongoing investigations.<br>
 		It is a place to collaborate and start joint investigations that spans<br>
 		over multiple places.
-
+		<form action="/investigation/new" method="post" enctype="multipart/form-data">{% csrf_token %}
+		<br>
+			{% for field in newinvestigationform %}
+	        	{{ field.errors }}
+	        	{{ field }}
+	        {% endfor %}
+	    	<input type="submit" value="Start" />
+	    </form>
 	</div>
+
+		<div class="news-title">Testus utredning
+		</div>
+		<span class="threadTextDarker">
+			<i>
+				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
+			</i>
+		</span>
+		<br>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+		<div class="news-title">En annan utredning</div>
+		<span class="threadTextDarker">
+			<i>
+				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
+			</i>
+		</span>
+		<br>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
 </div>
+
 <br clear="all">
-<br clear="all">
 
-<div class="white_box">
-	<h1>Start new investigation</h1>
-</div>
-
-<div class="white_box">
-	<h1>Active investigations</h1>
-</div>
-
-<h1>Timeline</h1>
-	<div id="my-timeline"></div>
-	<noscript>
-		This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
-	</noscript>	
 {% endblock %}

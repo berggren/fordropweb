@@ -3,142 +3,194 @@
 {% load comments %}
 {% load threadedcomments_tags %}
 
+
 {% block menu %}
-		<span class="menutext">Home</span>
-		<a class="normalLink" href="/investigation">Investigations (0)</a>
-		|
-		<a class="normalLink" href="/upload">Upload</a>
-		<a class="normalLink" href="/report">Report</a>
+<div id="navcontainer">
+	<ul id="navlist">
+		<li id="active"><a href="/" id="current"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+		<li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+	</ul>
+</div>
 {% endblock %}
 
 {% block content %}
 
-<div id="leftbox">
-<div class="box_color_white">
-		<div class="avatar"><img src="{% thumbnail user.get_profile.avatar 100x100%}"></div>
-		<h1 class="big">{{ user.get_full_name }}</h1>
-		<span class="threadText">
-			email: jbn@kth.se<br>
-			telephone: 08555555<br>
-			twitter: crapp<br>
-			organisation: kth.se
-		</span>
-<br><br>
 
-<div class="box_color_gray">
-	<h1>Recomendations</h1>
-	Based on your activities there seems to be new objects or reports that could be of interest to you since they have a connection to one or more of your reports, uploads or investigations. 
-	<br>
-	<br>
-{% if files %}
-	<table border=0>
-		{% for n in files %}
-			<tr class="{% cycle row1,row2 %}">
-				<td>{{ n.filename }}</td>
-				<td align="right">{{ n.timecreated|timesince }} ago</td>
-			</tr>
-		{% endfor %}
-	</table>
-{% endif %}
-<br>
-<a class="orange" href="#">See all</a>
-</div>
+<div id="rightbox">
 
-<div class="box_color_gray">
-<h1>News</h1>
-<ul>
-<li>Thinking about Cyber Security Awareness Month in October</li>
-<li>DnsMadeEasy under a "quite large and unique" ddos.</li>
-<li>Countdown to Tuesday...</li>
-<li>Adobe Acrobat Font Parsing Integer Overflow Vulnerability</li>
-</ul>
-</div>
-
-
-</div>		
-</div>
-
-<div id="rightbox-stream">
-	<div class="box_color_white_stream">
+	<div class="avatar"><img class="avatar-thumb" src="{% thumbnail user.get_profile.avatar 80x80 crop %}"></div>
+	<span class="threadText">
+		<b class="big">{{ user.get_full_name }}</b><br>
+		email: jbn@kth.se<br>
+		telephone: 08555555<br>
+		twitter: crapp<br>
+		organisation: kth.se
+	</span>
+	<br><br>
 	
-	<div id="navcontainer">
-		<ul id="navlist">
-			<li id="active"><a href="#" id="current">Stream</a></li>
-			<li><a href="#">Investigations</a></li>
-			<li><a href="#">Uploads & reports</a></li>
+
+	
+	
+		<h1>ToDo</h1>
+		<div class="news-title-small">Testus utredning</div>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+		<div class="news-title-small">En annan utredning</div>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+
+		<hr>
+
+		<h1>Readinglist</h1>
+				<div id="news">
+					{% for item in news|slice:":3"  %}
+						<div class="news_box">
+							<div class="news-title-small">{{ item.title|slice:":50" }} ...</div>
+							<span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
+						</div>
+					{% endfor %}
+				</div>
+		
+</div>
+
+               <div id="breadcrumbs"> 
+                    <ul> 
+                        <li class="breadcrumblink"><a href="http://www.kth.se/">		Home</a></li> 
+                        <li><span>Dashboard</span></li> 
+                            
+                          
+                        
+                </ul> 
+				<hr>
+                </div> 
+
+
+
+<div id="middlebox">
+<!--
+	<div id="tabmenu">
+		<ul>
+			<li><a class="inactive" href="#dashboard">Dashboard</a></li>
+			<li><a href="#news">My news</a></li>
+			<li><a class="inactive"href="#readinglist">Readinglist (3)</a></li>
+			<li><a class="inactive"href="#wall">ToDo</a></li>
 		</ul>
 	</div>
+-->
 
-	<br>
+	<!--
+	<div class="news_box_red">
+		<div class="news-title">New object related to you</div>
+		<span class="threadTextDarker">
+			<i>
+				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
+			</i>
+		</span>
+	jbn@nordu.net	<br>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+	</div>
+	-->
+	
+	<h1>My investigations</h1>
+	<div class="news_box_grey">
+		<div class="news-title">Testus utredning</div>
+		<span class="threadTextDarker">
+			<i>
+				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
+			</i>
+		</span>
+		<br>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+		<div class="news-title">En annan utredning</div>
+		<span class="threadTextDarker">
+			<i>
+				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
+			</i>
+		</span>
+		<br>
+		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		<br>
+		<br>
+	</div>
 
-	{% for item in stream|dictsortreversed:"time"|slice:":6" %}
+<br>
+
+	<div id="streambox">
+	<h1>Stream</h1>
+	{% for item in stream|dictsortreversed:"time"|slice:":9" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
-				<div class="avatar"><img src="{% thumbnail item.object.user.get_profile.avatar 30x30 %}"></div>
+				<div class="avatar"><img src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
 				<div class="post_box">
-			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span><span class="threadText"> Commented on {{ item.object.content_type }}</span>
+	  				<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
 					{% ifequal item.object.content_type.name "file" %}
-						<span class="threadText">
-							<i><a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object }}</a></i> ({{ item.object.submit_date|timesince }} ago)
-						</span>
+	    				commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> #{{ item.object.content_object.id }}, </a>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "user" %}
+						to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></span>
 					{% endifequal %}
 					{% ifequal item.object.content_type.name "report" %}
 						<span class="threadText">
-							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i> ({{ item.object.submit_date|timesince }} ago)
+							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
 						</span>
 					{% endifequal %}
 					{% ifequal item.object.content_type.name "tag" %}
 						<span class="threadText">
-							<i>{{ item.object.content_object }}</i> ({{ item.object.submit_date|timesince }} ago)
+							<i>{{ item.object.content_object }}</i>
 						</span>
 					{% endifequal %} 
-			    	<br>
-			    	{{ item.object.comment|linebreaksbr|truncatewords_html:15 }}
-			    </div>
+				    <font color="#222">{{ item.object.comment|linebreaksbr }}</font>
+					<br>
+					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
+				 </div>
 			{% endifequal %}
 			{% ifequal item.type "file" %}
-				<div class="avatar"><img src={% thumbnail item.object.user.get_profile.avatar 30x30 %}></div>
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
 				<div class="post_box">
-			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
-					<span class="threadText">
-						 Uploaded file <i>{{ item.object.filename }}</i> ({{ item.object.timecreated|timesince }} ago)
-					</span>
+					<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+					uploaded file {{ item.object.filename }} with a filetype of {{ item.object.file.filetype }}
 					<br>
-					Filetype: {{ item.object.file.filetype }}
+					<span class="threadText">{{ item.object.timecreated|timesince }}</span>
 				</div>
 			{% endifequal %}
 			{% ifequal item.type "report" %}
-				<div class="avatar"><img src={% thumbnail item.object.user.get_profile.avatar 30x30 %}></div>
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
 				<div class="post_box">
-			    	<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
-					<span class="threadText">
-						 Report (<i>{{ item.object.report.type }}</i>) ({{ item.object.timecreated|timesince }} ago)
-					</span>
-					<br>
-					Value: {{ item.object.report.value }}
+				    <span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span> 
+					reported {{ item.object.report.type }}, {{ item.object.report.value }}
 				</div>
+				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
 			{% endifequal %}
 		</div>
 	{% endfor %}
-	
-</div>
 </div>
 
+<div id="todobox">
+				<h1>News</h1>
+					<div id="news">
+					{% for item in news|slice:":7"  %}
+						<div class="news_box">
+							<div class="news-title">{{ item.title|slice:":50" }} ...</div>
+							<span class="threadTextDarker">
+								<i>
+									{{ item.summary_detail.value|striptags|truncatewords:"30" }}
+								</i>
+							</span>
+							<br>
+							<span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
+						</div>
+					{% endfor %}
+				</div>
+</div>
 <br clear="all">
-
-<div class="box_color">
-<h1>Talk to {{ user.first_name }}</h1>
-<br>
-	{% get_comment_form for user as form %}
-	<form action="/comments/post/" method="post">{% csrf_token %}
-		<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
-		{% for hidden in form.hidden_fields %}
-        	{{ hidden }}
-    	{% endfor %}
-		{{ form.comment }}
-		<br>
-  		<input type="submit" value="Post">
-	</form>
 </div>
+
 
 {% endblock %}

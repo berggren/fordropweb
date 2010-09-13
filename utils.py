@@ -14,3 +14,10 @@ def activity_stream():
     for report in reports:
         stream.append({'type': 'report', 'time': report.timecreated, 'object': report})
     return stream
+
+def get_news():
+    import feedparser
+    f = open("/tmp/test.xml", "r")
+    d = feedparser.parse(f)
+    f.close()
+    return d['entries']

@@ -3,6 +3,7 @@ database.db
 *.pyc
 .project
 .pydevproject
+TODO
 storage
 static/js
 settings.py

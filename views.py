@@ -18,7 +18,7 @@ from utils import *
 @login_required
 def index(request):
     searchform = SearchForm()
-    files = UserFile.objects.all().order_by('-timecreated')[:3]
+    files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
     comments = Comment.objects.all().order_by('-submit_date')[:3]
     files_tags = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
     report_tags = Tag.objects.cloud_for_model(Report,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
@@ -26,7 +26,8 @@ def index(request):
     stream = activity_stream()
     investigations = Investigation.objects.all()
     avatar = User.objects.get(pk=request.user.id).get_profile().avatar
-    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud, 'avatar': avatar}, RequestContext(request))
+    news = get_news()
+    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud, 'avatar': avatar, 'news': news}, RequestContext(request))
 
 @login_required
 def add_tag(request, obj_type, obj_id):
