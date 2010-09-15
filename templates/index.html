@@ -124,7 +124,7 @@
 
 	<div id="streambox">
 	<h1>Stream</h1>
-	{% for item in stream|dictsortreversed:"time"|slice:":9" %}
+	{% for item in stream|dictsortreversed:"time"|slice:"9" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
 				<div class="avatar"><img src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>

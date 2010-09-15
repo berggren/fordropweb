@@ -50,9 +50,9 @@ def add(request):
             url = "/report/%i/show" % report.id
             return HttpResponseRedirect(url)
         else:
-            return HttpResponseRedirect("/report")
+            return HttpResponseRedirect("/upload")
     else:
-        return HttpResponseRedirect("/report")
+        return HttpResponseRedirect("/upload")
     
 @login_required
 def show(request, report_id):

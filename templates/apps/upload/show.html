@@ -51,13 +51,23 @@
 	{% endif %}
 </div>
 
-<div id="breadcrumbs">	
-	Home -> test -> blaha
-	<hr>
-</div>
-
+<div id="breadcrumbs"> 
+  <ul> 
+    <li class="breadcrumblink"><a href="/">Home</a></li> 
+    <li class="breadcrumblink"><a href="/upload">Upload & Report</a></li> 
+    <li><span>{{ result.sha1 }}</span></li>
+  </ul> 
+  <hr>
+</div> 
 
 <div id="middlebox">
+          {% if messages %}
+          {% for message in messages %}
+           <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+          {% endfor %}
+          <br>
+        {% endif %}
+
 	<h1>Info for file {{ result.sha1 }}</h1>
 	<div class="news_box_grey">
 		<table border=0>
@@ -109,18 +119,16 @@
 
 	{% if resultall %}
 		<br>
+		<h1>Reported by</h1>
 		<table border=0>
-			<th>Uploaded by</th>
-			<th>Filename</th>
-			<th>Date</th>
-			<th>Reference</th>
 			{% for n in resultall %}
-				<tr >
-					<td><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 20x20 crop %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+				<tr>
+				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
+				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
+					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
 					<td>{{ n.filename }}</td>
-					<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
 					{% if n.reference %}
-						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+						<td>Reference: <a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
 					{% else %}
 						<td></td>
 					{% endif %}
@@ -159,9 +167,9 @@
 		<div class="comment-container">
 			<div class="comment">
 				<div class="trunc-box">
-					<div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+          <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
 					<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
-					<span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
+          <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
 					{{ comment.comment|linebreaksbr }}
 					{% get_comment_form for result as form with comment.id %}
 					<br><br>

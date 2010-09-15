@@ -19,6 +19,7 @@ from tagging.utils import *
 from fordrop.apps.search.forms import *
 from fordrop.utils import *
 from fordrop.forms import *
+from fordrop.apps.report.forms import *
 
 # fordrop settings
 from fordrop.settings import FD_FILEBASEPATH, FD_AUTHORIZATION_FILE
@@ -50,13 +51,15 @@ def index(request):
     else:
         uploadform = UploadFileForm()
         searchform = SearchForm()
+        genericreportform = GenericReportForm()
         files = UserFile.objects.all().order_by('-timecreated')
         tagcloud = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
         return render_to_response(
                                   'apps/upload/index.html', 
                                   {
                                     'uploadform':   uploadform, 
-                                    'searchform':   searchform, 
+                                    'searchform':   searchform,
+                                    'genericreportform': genericreportform,
                                     'files':        files, 
                                     'tagcloud':     tagcloud
                                   }, RequestContext(request))
