@@ -1,8 +1,9 @@
 import hashlib
-#import magic
+import magic
 import tempfile
 import datetime
 import os
+import sys
 import shutil
 import pefile
 from dns import message, query
@@ -48,10 +49,12 @@ def handle_uploaded_file(f):
     return d
 
 def get_filetype(file):
-    #ms = magic.open(magic.MAGIC_NONE)
-    #ms.load()
-    #type =  ms.file(file)
-    type = "Magic not supported on MacOSX"
+    if sys.platform == "darwin":
+        type = "Magic not supported on MacOSX"
+    else:
+        ms = magic.open(magic.MAGIC_NONE)
+        ms.load()
+        type =  ms.file(file)
     return type
 
 def get_strings(file, sha1, path):

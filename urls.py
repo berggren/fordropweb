@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     (r'^investigation$',             'fordrop.apps.investigation.views.index'),
     (r'^investigation/(\d+)$',       'fordrop.apps.investigation.views.show'),
     (r'^investigation/create$',      'fordrop.apps.investigation.views.create'),
+    (r'^investigation/(\d+)/edit$',  'fordrop.apps.investigation.views.edit'),
     
     # Upload & Files
     (r'^upload$',                     'fordrop.apps.upload.views.index'),
@@ -62,6 +63,6 @@ urlpatterns = patterns('',
     (r'^accounts/register/$',           'fordrop.apps.fedlogin.views.fedregister'),
 
     # Media
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Users/jbn/Documents/Aptana Studio 3 Workspace/fordrop/static', 'show_indexes': True}),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbn/workspace/fordrop/static', 'show_indexes': True}),
     (r'^databrowse/(.*)', databrowse.site.root),
 )

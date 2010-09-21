@@ -13,46 +13,47 @@
 </div>
 {% endblock %}
 
-
 {% block content %}
-
 <div id="rightbox">
+  <br>
+  <h1>Metadata</h1>
 	<b>Tags:</b> {% for tag in tags %}<i><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></i> {% endfor %}
 	<form action="/tag/add/file/{{ result.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
 		{% for field in tagform %}
-        	{{ field.errors }}
-        	{{ field }}
-        {% endfor %}
-    	<input type="submit" value="Add tag" />
+      {{ field.errors }}
+      {{ field }}
+    {% endfor %}
+    <input type="submit" value="Add tag" />
 	</form>
 	{% if resultme %}
-		{% ifequal resultme.reference None %}
+	 {% ifequal resultme.reference None %}
 			<b>Reference:</b>
 			<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
 				{% for field in referenceform %}
-		        	{{ field.errors }}
-		        	{{ field }}
-		        {% endfor %}
-		    	<input type="submit" value="Save" />
-		    </form>
+		      {{ field.errors }}
+		      {{ field }}
+		    {% endfor %}
+		    <input type="submit" value="Save" />
+		  </form>
 	    {% else %}
-			<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
-				<div id="hidetext" style="display:none;">
-					<form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-						{% for field in referenceform %}
-	        				{{ field.errors }}
-	        				{{ field }}
-	        			{% endfor %}
+			 <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
+			   <div id="hidetext" style="display:none;">
+				    <form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+						  {% for field in referenceform %}
+	        		 {{ field.errors }}
+	        		 {{ field }}
+	        		{% endfor %}
 	    				<input type="submit" value="Save" />
 	    			</form>
-				</div>	
-				<br>
-		{% endifequal %}
+				  </div>	
+				  <br>
+	 {% endifequal %}
 	{% endif %}
 </div>
 
 <div id="breadcrumbs"> 
   <ul> 
+    <br>
     <li class="breadcrumblink"><a href="/">Home</a></li> 
     <li class="breadcrumblink"><a href="/upload">Upload & Report</a></li> 
     <li><span>{{ result.sha1 }}</span></li>
@@ -61,45 +62,49 @@
 </div> 
 
 <div id="middlebox">
-          {% if messages %}
-          {% for message in messages %}
-           <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-          {% endfor %}
-          <br>
-        {% endif %}
-
-	<h1>Info for file {{ result.sha1 }}</h1>
+  {% if messages %}
+    {% for message in messages %}
+      <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+    <br>
+  {% endif %}
+  <h1 class="big">Info for file {{ result.sha1 }}</h1>
 	<div class="news_box_grey">
-		<table border=0>
-			<tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
-			<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
-			<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
-			<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
-			<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
+	  <table border=0>
+		  <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
+		  <tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
+		  <tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
+		  <tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
+		  <tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
 		</table>
-		{% if not mhr %}
-			<a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a>
-		{% else %}
-			{% if mhr.donotexist %}
-				<font color="green">No match in MHR:s malware repository</font>
-			{% else %}
-				<font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font>
-			{% endif %}
-		{% endif %}
-	</div>
+    <hr>
+    <h2>Actions</h2>
+	<ul>
+	 {% if not mhr %}
+	   <li><a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a></li>
+	 {% else %}
+	   {% if mhr.donotexist %}
+		  <li><font color="green">No match in MHR:s malware repository</font></li>
+	   {% else %}
+	     <li><font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font></li>
+	   {% endif %}
+    {% endif %}
 	
-	{% if not strings %}
-		<li><a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a></li>
-	{% else %}
-		<li><a href="/file/{{ result.id }}/show">Close printable strings</a></li>
+	 {% if not strings %}
+	   <li><a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a></li>
+	 {% else %}
+	   <li><a href="/file/{{ result.id }}/show">Close printable strings</a></li>
+	 {% endif %}
+
+	 {% if is_pefile %}
+	   {% if not pedump %}
+	     <li><a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a></li>
+	   {% else %}
+	     <li><a href="/file/{{ result.id }}/show">Close content of PE-file</a></li>
+	   {% endif %}
 	{% endif %}
-	{% if is_pefile %}
-		{% if not pedump %}
-			<li><a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a></li>
-		{% else %}
-			<li><a href="/file/{{ result.id }}/show">Close content of PE-file</a></li>
-		{% endif %}
-	{% endif %}
+    <br>
+  </div>
 
 	{% if strings %}
 		<br>
@@ -118,15 +123,39 @@
 	{% endif %}
 
 	{% if resultall %}
-		<br>
+
+<br>
 		<h1>Reported by</h1>
+		<div class="news_box_grey">
+		  {% if multiple_hits and multiple_refs and resultme %}
+  <h1 class="warn-title"><font color="red">Multiple local investigations</font></h1>
+  There are multiple people that have uploaded this file and you are one of them.<br>
+  Further you haveregistered a local invesigation with a reference in fordrop.<br>
+  This enables you to start a joint investigation with this file included.<br><br>
+  <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><font color="blue"><button>Start new joint investigation</button></font></div>
+    <div id="hidetext" style="display:none;">
+      <form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+        <b>Title</b> <input type="text" name="title" id="title" />
+        <br><br>
+        Choose references
+        <br>
+        {% for ref in refs %}
+          <input TYPE=CHECKBOX CHECKED NAME="reference_{{ ref }}">{{ ref }}<br>
+        {% endfor %}
+          <input type="submit" value="Start investigation" />
+    </form>
+  </ul>
+  <br>
+  </div>
+  <br>
+{% endif %}
 		<table border=0>
 			{% for n in resultall %}
 				<tr>
 				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
 				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
 					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
-					<td>{{ n.filename }}</td>
+					<td><b>{{ n.filename }}</b></td>
 					{% if n.reference %}
 						<td>Reference: <a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
 					{% else %}
@@ -135,10 +164,18 @@
 				</tr>
 			{% endfor %}
 		</table>
-	<br>
-	<br>
+<br>
 	{% endif %}
 
+
+</div>
+
+<br>
+
+
+
+
+<br>
 	{% get_comment_count for result as comment_count %}
 	{% if comment_count %}
 		<h1>{{ comment_count }} comments</h1>
@@ -166,7 +203,6 @@
 		
 		<div class="comment-container">
 			<div class="comment">
-				<div class="trunc-box">
           <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
 					<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
           <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
@@ -188,7 +224,6 @@
 						</form>
 					</div>
 				</div>
-			</div>
 	   	</div>
 
 		{% for close in comment.close %}
@@ -197,6 +232,7 @@
 		{% endfor %}
 	{% endfor %}
 
+<br>
 	<div class="box_color">
 	<h1>Write a comment</h1>
 	<br>
@@ -217,33 +253,3 @@
 
 <br clear="all">
 {% endblock %}
-
-
-
-{% if multiple_hits and multiple_refs and resultme %}
-	<div class="error">
-	<h1 class="warn-title"><font color="red">Multiple local investigations</font></h1>
-	There are multiple people that have uploaded this file and you are one of them.<br>
-	Further you haveregistered a local invesigation with a reference in fordrop.<br>
-	This enables you to start a joint investigation with this file included.<br><br>
-	<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><font color="blue">Start new joint investigation</font></div>
-		<div id="hidetext" style="display:none;">
-			<form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-				<b>Title</b> <input type="text" name="title" id="title" />
-				<br><br>
-				Choose references
-				<br>
-				{% for ref in refs %}
-					<input TYPE=CHECKBOX CHECKED NAME="reference_{{ ref }}">{{ ref }}<br>
-				{% endfor %}
-    			<input type="submit" value="Start investigation" />
-		</form>
-		</div>
-	</ul>
-	</div>
-{% endif %}
-
-
-
-
-

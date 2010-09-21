@@ -18,45 +18,30 @@
 
 
 <div id="rightbox">
+  <br>
+  <h1 class="big">{{ user.get_full_name }}</h1>
+  <div class="avatar"><img class="avatar-thumb" src={% thumbnail user.get_profile.avatar 80x80 crop %}></div>
 
-	<div class="avatar"><img class="avatar-thumb" src="{% thumbnail user.get_profile.avatar 80x80 crop %}"></div>
-	<span class="threadText">
-		<b class="big">{{ user.get_full_name }}</b><br>
-		email: jbn@kth.se<br>
-		telephone: 08555555<br>
-		twitter: crapp<br>
-		organisation: kth.se
-	</span>
-	<br><br>
-	
+  <span class="threadText">
+    email: jbn@kth.se<br>
+    telephone: 08555555<br>
+    twitter: crapp<br>
+    organisation: kth.se
+  </span>
+	<br><br><br><br>
 
-	
-	
-		<h1>ToDo</h1>
-		<div class="news-title-small">Testus utredning</div>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
-		<div class="news-title-small">En annan utredning</div>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
+	<hr>
+	<div class="news-title">My investigations</div>
+	<hr>
+	<div class="news-title">Todo</div>
+	<hr>
+	<div class="news-title">Readinglist</div>
+	<hr>
 
-		<hr>
-
-		<h1>Readinglist</h1>
-				<div id="news">
-					{% for item in news|slice:":3"  %}
-						<div class="news_box">
-							<div class="news-title-small">{{ item.title|slice:":50" }} ...</div>
-							<span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
-						</div>
-					{% endfor %}
-				</div>
-		
 </div>
 
                <div id="breadcrumbs"> 
+                  <br>
                     <ul> 
                         <li class="breadcrumblink"><a href="http://www.kth.se/">		Home</a></li> 
                         <li><span>Dashboard</span></li> 
@@ -96,38 +81,37 @@
 	</div>
 	-->
 	
+
+	
 	<h1>My investigations</h1>
 	<div class="news_box_grey">
-		<div class="news-title">Testus utredning</div>
-		<span class="threadTextDarker">
-			<i>
-				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
-			</i>
+  {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
+  <a href="/investigation/{{ investigation.id }}">
+		<div class="news-title">{{ investigation.title }}</div>
+			{% if investigation.description %}
+    <span class="threadTextDarker">
+			 <i>
+        {{ investigation.description|linebreaksbr|truncatewords:"100" }}
+			 </i>
 		</span>
 		<br>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
+		{% endif %}
+		<span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
 		<br>
 		<br>
-		<div class="news-title">En annan utredning</div>
-		<span class="threadTextDarker">
-			<i>
-				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
-			</i>
-		</span>
-		<br>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
-	</div>
+		</a>
+  {% endfor %}
+    </div>
 
-<br>
+<br><br>
 
-	<div id="streambox">
+<div id="streambox">
 	<h1>Stream</h1>
+  
 	{% for item in stream|dictsortreversed:"time"|slice:"9" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
-				<div class="avatar"><img src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
+				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
 				<div class="post_box">
 	  				<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
 					{% ifequal item.object.content_type.name "file" %}
@@ -146,7 +130,7 @@
 							<i>{{ item.object.content_object }}</i>
 						</span>
 					{% endifequal %} 
-				    <font color="#222">{{ item.object.comment|linebreaksbr }}</font>
+				    <font color="#222">{{ item.object.comment|linebreaksbr|truncatewords:"30" }}</font>
 					<br>
 					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
 				 </div>
@@ -172,6 +156,7 @@
 	{% endfor %}
 </div>
 
+
 <div id="todobox">
 				<h1>News</h1>
 					<div id="news">
@@ -189,6 +174,7 @@
 					{% endfor %}
 				</div>
 </div>
+
 <br clear="all">
 </div>
 

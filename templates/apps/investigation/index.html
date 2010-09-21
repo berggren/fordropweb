@@ -20,52 +20,42 @@
 
 <div id="breadcrumbs"> 
   <ul> 
-    <li class="breadcrumblink"><a href="/">Home</a></li> 
-    <li><span>Investigations</span></li>
+    <br>
+    <li class="breadcrumblink"><a href="/investigation">Investigations</a></li> 
+    <li><span>New</span></li>
   </ul> 
   <hr>
 </div>
 
 
 <div id="middlebox">
+  
+    <div class="news_box_grey">
+    <h1>Start new investigation</h1>
+    Here you can start, browse or participate in ongoing investigations.
+    It is a place to collaborate and start joint investigations that spans<br>
+    over multiple places.
+    <form action="/investigation/create" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <br>
+      {% for field in newinvestigationform %}
+            {{ field.errors }}
+            {{ field }}
+          {% endfor %}
+        <input type="submit" value="Start" />
+      </form>
+  </div>
+<br>
 
-	<div class="news_box_grey">
-		<h1>Start new investigation</h1>
-		Here you can start, browse or participate in ongoing investigations.<br>
-		It is a place to collaborate and start joint investigations that spans<br>
-		over multiple places.
-		<form action="/investigation/new" method="post" enctype="multipart/form-data">{% csrf_token %}
-		<br>
-			{% for field in newinvestigationform %}
-	        	{{ field.errors }}
-	        	{{ field }}
-	        {% endfor %}
-	    	<input type="submit" value="Start" />
-	    </form>
-	</div>
-
-		<div class="news-title">Testus utredning
-		</div>
-		<span class="threadTextDarker">
-			<i>
-				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
-			</i>
-		</span>
-		<br>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
-		<div class="news-title">En annan utredning</div>
-		<span class="threadTextDarker">
-			<i>
-				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
-			</i>
-		</span>
-		<br>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
-</div>
+  {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
+    <a href="/investigation/{{ investigation.id }}"><div class="news-title">{{ investigation.title }}</div></a>
+    <span class="threadTextDarker">
+      <i>
+          {{ investigation.description|linebreaksbr|truncatewords:"100" }}<br>
+      </i>
+    </span>
+    <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
+    <br><br>  
+  {% endfor %}
 
 <br clear="all">
 

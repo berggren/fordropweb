@@ -15,6 +15,7 @@
 {% block content %}
 
 <div id="rightbox">
+  <br>
 	<h1>Tags</h1>
 	{% for tag in tagcloud %}
 		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
@@ -22,6 +23,7 @@
 </div>
 
 <div id="breadcrumbs"> 
+  <br>
   <ul> 
     <li class="breadcrumblink"><a href="/">Home</a></li> 
     <li><span>Upload & Report</span></li>
@@ -30,7 +32,6 @@
 </div> 
                 
 <div id="middlebox">
-
 	<div class="news_box_grey">			
 		<h1>Upload your forensic data</h1>
 		Upload and share your findings and start collaborating with your collegues.
@@ -58,12 +59,10 @@
 			<input type="submit" value="Save" />
 		</form>
 	</div>
-	
-	
-	<br>
-	
-					<div id="news">
-					{% for item in files|slice:":7"  %}
+
+          <br><br>
+          <div id="news">
+					{% for item in files|slice:":70"  %}
 						<div class="news_box">
 						<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.user.get_profile.avatar 40x40 crop %}></div>
 							<div class="news-title"><a href="/file/{{ item.file.id }}/show">{{ item.filename }}</a></div>
@@ -77,8 +76,11 @@
 						</div>
 					{% endfor %}
 				</div>
-		</div>
 
+
+
+</div>
 <br clear="all">
+</div>
 
 {% endblock %}
