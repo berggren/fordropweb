@@ -16,6 +16,8 @@
 {% block content %}
 
 <div id="rightbox">
+  <br>
+  <h1>Metadata</h1>
   <b>Tags:</b> {% for tag in tags %}<i><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></i> {% endfor %}
   <form action="/tag/add/report/{{ result.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
     {% for field in tagform %}
@@ -53,9 +55,9 @@
 
 <div id="breadcrumbs"> 
   <ul> 
-    <li class="breadcrumblink"><a href="/">Home</a></li> 
     <li class="breadcrumblink"><a href="/upload">Upload & Report</a></li> 
-    <li><span>{{ result.type }} [{{ result.value }}]</span></li>
+    <li class="breadcrumblink">{{ result.type }}</li>
+    <li>{{ result.value }}</li>
   </ul> 
   <hr>
 </div>
@@ -81,27 +83,31 @@
   <br>
 
 	{% if resultall %}
+    <div class="news_box_grey">
+
+
 		<table border=0>
-			<th>{% if multiple_hits %}<font color="orange">Reported by</font>{% else %}Reported by{% endif %}</th>
+			<th></th>
 			<th>Value</th>
 			<th>Type</th>
-			<th>Date</th>
 			<th>Reference</th>
 			{% for n in resultall %}
-				<tr >
-					<td><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 30x30 crop %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-					<td><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-					<td>{{ n.report.value }}</td>
-					<td>{{ n.report.type }}</td>
-					<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
-					{% if n.reference %}
-						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-					{% else %}
-						<td></td>
-					{% endif %}
-				</tr>
+        <tr>
+          <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
+          <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
+          <span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
+          <td>{{ n.report.value }}</td>
+          <td>{{ n.report.type }}</td>
+          {% if n.reference %}
+            <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+          {% else %}
+            <td></td>
+          {% endif %}
+        </tr>
 			{% endfor %}
 		</table>
+  </div>
+
 	{% endif %}
 
   <br>

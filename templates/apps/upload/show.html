@@ -54,7 +54,6 @@
 <div id="breadcrumbs"> 
   <ul> 
     <br>
-    <li class="breadcrumblink"><a href="/">Home</a></li> 
     <li class="breadcrumblink"><a href="/upload">Upload & Report</a></li> 
     <li><span>{{ result.sha1 }}</span></li>
   </ul> 
@@ -79,28 +78,27 @@
 		</table>
     <hr>
     <h2>Actions</h2>
-	<ul>
 	 {% if not mhr %}
-	   <li><a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a></li>
+	   <a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a><br>
 	 {% else %}
 	   {% if mhr.donotexist %}
-		  <li><font color="green">No match in MHR:s malware repository</font></li>
+		  <font color="green">No match in MHR:s malware repository</font><br>
 	   {% else %}
-	     <li><font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font></li>
+	     <font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font><br>
 	   {% endif %}
     {% endif %}
 	
 	 {% if not strings %}
-	   <li><a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a></li>
+	   <a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a>
 	 {% else %}
-	   <li><a href="/file/{{ result.id }}/show">Close printable strings</a></li>
+	   <a href="/file/{{ result.id }}/show">Close printable strings</a>
 	 {% endif %}
 
 	 {% if is_pefile %}
 	   {% if not pedump %}
-	     <li><a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a></li>
+	     <a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a>
 	   {% else %}
-	     <li><a href="/file/{{ result.id }}/show">Close content of PE-file</a></li>
+	     <a href="/file/{{ result.id }}/show">Close content of PE-file</a>
 	   {% endif %}
 	{% endif %}
     <br>
@@ -126,7 +124,7 @@
 
 <br>
 		<h1>Reported by</h1>
-		<div class="news_box_grey">
+    <div class="news_box_grey">
 		  {% if multiple_hits and multiple_refs and resultme %}
   <h1 class="warn-title"><font color="red">Multiple local investigations</font></h1>
   There are multiple people that have uploaded this file and you are one of them.<br>
@@ -150,21 +148,23 @@
   <br>
 {% endif %}
 		<table border=0>
+      <th></th>
+      <th>filename</th>
+      <th>reference</th>
 			{% for n in resultall %}
 				<tr>
 				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
 				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
 					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
-					<td><b>{{ n.filename }}</b></td>
+					<td>{{ n.filename }}</td>
 					{% if n.reference %}
-						<td>Reference: <a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
 					{% else %}
 						<td></td>
 					{% endif %}
 				</tr>
 			{% endfor %}
 		</table>
-<br>
 	{% endif %}
 
 
@@ -207,7 +207,7 @@
 					<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
           <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
 					{{ comment.comment|linebreaksbr }}
-					{% get_comment_form for result as form with comment.id %}
+          {% get_comment_form for result as form with comment.id %}
 					<br><br>
 					<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;">
 						<font color="blue">Reply</font>

@@ -1,49 +1,39 @@
 {% load thumbnail %}
+
 <html>
-<head>
-	<title>fordrop</title>
-	<link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
-	<link rel='stylesheet' href='/site_media/css/jquery-ui.css' type='text/css'>
-	<script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" language="javascript" src="/site_media/js/jquery-ui-1.8.4.custom.min.js"></script>
-</script>
-
-
-	{% block extrahead %}
-   	{% endblock %}
-</head>
-<body onload="onLoad();" onresize="onResize();">
-
-<div id="header">
-	<div id="header-center">
-			{% block menu %}
-			{% endblock %}
-			<div id="logo">
-	    		<a href="/"><img src="/site_media/img/logo.png"></a>
-			</div>
-
-			<div id="search">
-				<form style="display:inline" method="post" action="/search">{% csrf_token %}
-					<input class="searchinput" type="text" name="search" value="Search"/>
-				</form>
-			</div>
-	</div>
-</div>
-
-	<div id="content">
-		
-
-		
+  <head>
+	 <title>fordrop</title>
+	 <link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+	 <link rel='stylesheet' href='/site_media/css/jquery-ui.css' type='text/css'>
+	 <script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
+	 <script type="text/javascript" language="javascript" src="/site_media/js/jquery-ui-1.8.4.custom.min.js"></script>
+	 {% block extrahead %}
+   {% endblock %}
+  </head>
+  <body onload="onLoad();" onresize="onResize();">
+    <div id="header">
+      <div id="header-center">
+        <div id="logo">
+          <a href="/"><img src="/site_media/img/logo.png"></a>
+        </div>
+        {% block menu %}
+        {% endblock %}
+  			<div id="search">
+	   			<form style="display:inline" method="post" action="/search">{% csrf_token %}
+					   <input class="searchinput" type="text" name="search" value="Search"/>
+				  </form>
+			 </div>
+	   </div>
+    </div>
+  	<div id="content">
     	{% block content %}
     	{% endblock %}
-    	<br>
-    	<br>
-    	<br>
+    	<br><br><br>
     </div>
     <div id="footer">
-    	<br>
-		{% block footer %}
-    	{% endblock %}
+      <br>
+		  {% block footer %}
+      {% endblock %}
     </div>
-</body>
+  </body>
 </html>

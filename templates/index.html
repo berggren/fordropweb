@@ -3,7 +3,6 @@
 {% load comments %}
 {% load threadedcomments_tags %}
 
-
 {% block menu %}
 <div id="navcontainer">
 	<ul id="navlist">
@@ -15,8 +14,6 @@
 {% endblock %}
 
 {% block content %}
-
-
 <div id="rightbox">
   <br>
   <h1 class="big">{{ user.get_full_name }}</h1>
@@ -28,87 +25,58 @@
     twitter: crapp<br>
     organisation: kth.se
   </span>
-	<br><br><br><br>
-
-	<hr>
-	<div class="news-title">My investigations</div>
-	<hr>
-	<div class="news-title">Todo</div>
-	<hr>
-	<div class="news-title">Readinglist</div>
-	<hr>
 
 </div>
 
-               <div id="breadcrumbs"> 
-                  <br>
-                    <ul> 
-                        <li class="breadcrumblink"><a href="http://www.kth.se/">		Home</a></li> 
-                        <li><span>Dashboard</span></li> 
-                            
-                          
-                        
-                </ul> 
-				<hr>
-                </div> 
-
-
-
-<div id="middlebox">
+<div id="breadcrumbs"> 
+  <br>
+  <ul> 
+    <li><span>Home</span></li> 
+  </ul> 
+	<hr>
 <!--
-	<div id="tabmenu">
-		<ul>
-			<li><a class="inactive" href="#dashboard">Dashboard</a></li>
-			<li><a href="#news">My news</a></li>
-			<li><a class="inactive"href="#readinglist">Readinglist (3)</a></li>
-			<li><a class="inactive"href="#wall">ToDo</a></li>
-		</ul>
-	</div>
+<div id="navlist2">
+<ul>
+  <li id="active"><a href="#" id="current">Overview</a></li>
+  <li><a href="#">My investigations</a></li>
+  <li><a href="#">Todo</a></li>
+  <li><a href="#">Browse</a></li>
+  <li><a href="#">Profile</a></li>
+</ul>
+</div>
 -->
 
-	<!--
-	<div class="news_box_red">
-		<div class="news-title">New object related to you</div>
-		<span class="threadTextDarker">
-			<i>
-				Nearly a year ago, topfs2 started working on a remote client for Android phones and was shortly joined by me, not even having my phone yet.
-			</i>
-		</span>
-	jbn@nordu.net	<br>
-		<span class="threadText">Last activity was {{ user.last_login|timesince }} ago</span>
-		<br>
-		<br>
-	</div>
-	-->
-	
+</div>
+ 
 
-	
+<div id="middlebox">
+
+
+  <div id="streambox">
 	<h1>My investigations</h1>
 	<div class="news_box_grey">
-  {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
-  <a href="/investigation/{{ investigation.id }}">
-		<div class="news-title">{{ investigation.title }}</div>
-			{% if investigation.description %}
-    <span class="threadTextDarker">
-			 <i>
-        {{ investigation.description|linebreaksbr|truncatewords:"100" }}
-			 </i>
-		</span>
-		<br>
-		{% endif %}
-		<span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-		<br>
-		<br>
-		</a>
-  {% endfor %}
-    </div>
+    {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"3" %}
+      <a href="/investigation/{{ investigation.id }}">
+		  <div class="news-title">{{ investigation.title }}</div>
+		  {% if investigation.description %}
+        <span class="threadTextDarker">
+			   <i>
+          {{ investigation.description.content|linebreaksbr|truncatewords:"50" }}
+			   </i>
+		    </span>
+		    <br>
+		  {% endif %}
+		  <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
+		  <br>
+		  <br>
+		  </a>
+    {% endfor %}
+  </div>
+   </div>
 
-<br><br>
-
-<div id="streambox">
-	<h1>Stream</h1>
-  
-	{% for item in stream|dictsortreversed:"time"|slice:"9" %}
+  <div id="todobox">
+	 <h1>Stream</h1>
+	 {% for item in stream|dictsortreversed:"time"|slice:"5" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
 				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
@@ -153,11 +121,11 @@
 				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
 			{% endifequal %}
 		</div>
-	{% endfor %}
-</div>
+	 {% endfor %}
+  </div>
 
-
-<div id="todobox">
+  <div id="streambox">
+<br><br>
 				<h1>News</h1>
 					<div id="news">
 					{% for item in news|slice:":7"  %}
@@ -170,13 +138,32 @@
 							</span>
 							<br>
 							<span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
-						</div>
+					 </div>
 					{% endfor %}
-				</div>
+  </div>
 </div>
+
+  <div id="todobox">
+<br>
+        <h1>News</h1>
+          <div id="news">
+          {% for item in news|slice:":7"  %}
+            <div class="news_box">
+              <div class="news-title">{{ item.title|slice:":50" }} ...</div>
+              <span class="threadTextDarker">
+                <i>
+                  {{ item.summary_detail.value|striptags|truncatewords:"30" }}
+                </i>
+              </span>
+              <br>
+              <span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
+           </div>
+          {% endfor %}
+  </div>
+</div>
+
 
 <br clear="all">
 </div>
-
 
 {% endblock %}

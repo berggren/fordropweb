@@ -7,6 +7,7 @@ class NewInvestigationForm(forms.Form):
 class InvestigationForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
 
+        
 class FooInvestigationForm(forms.Form):
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)

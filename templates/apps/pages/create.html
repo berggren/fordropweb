@@ -1,0 +1,27 @@
+{% extends "apps/upload/base.html" %}
+{% load thumbnail %}
+
+{% block menu %}
+<div id="navcontainer">
+  <ul id="navlist">
+    <li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+    <li id="active"><a id="current" href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+    <li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="middlebox">
+  <div class="news_box_grey">
+    <form method="post" id="form" name="form" action="/storm/{{ storm.id }}/write/">{% csrf_token %}
+      <h2>Title</h2> <input type="text" id="title" name="title" style="width:100%;"/><br><br>
+      <textarea id="wiki" class="nomceEditor" name="content"></textarea><br>
+      <input type="hidden" name="action" value="create" />
+      <input type="submit" value="Save" class="submit"/>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

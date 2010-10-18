@@ -21,8 +21,7 @@
 <div id="breadcrumbs"> 
   <ul> 
     <br>
-    <li class="breadcrumblink"><a href="/investigation">Investigations</a></li> 
-    <li><span>New</span></li>
+    <li><span>Investigations</span></li>
   </ul> 
   <hr>
 </div>
@@ -50,7 +49,7 @@
     <a href="/investigation/{{ investigation.id }}"><div class="news-title">{{ investigation.title }}</div></a>
     <span class="threadTextDarker">
       <i>
-          {{ investigation.description|linebreaksbr|truncatewords:"100" }}<br>
+          {{ investigation.description.content|linebreaksbr|truncatewords:"100" }}<br>
       </i>
     </span>
     <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>

@@ -5,6 +5,7 @@ from django.template import RequestContext
 from apps.search.forms import *
 from apps.upload.models import *
 from apps.report.models import *
+from apps.pages.models import *
 from apps.investigation.models import *
 from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
@@ -39,6 +40,10 @@ def add_tag(request, obj_type, obj_id):
                 _object = File.objects.get(id=obj_id)
             if obj_type == "report":
                 _object = Report.objects.get(id=obj_id)
+            if obj_type == "page":
+                _object = Page.objects.get(id=obj_id)
+            if obj_type == "investigation":
+                _object = Investigation.objects.get(id=obj_id)
             Tag.objects.add_tag(_object, _tag)
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 

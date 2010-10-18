@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from fordrop.apps.pages.models import Page
 
 class ReferencePollManager(models.Manager):
     def get_count(self, reference):
@@ -13,12 +14,13 @@ class ReferencePollManager(models.Manager):
 
 class Investigation(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    description = models.ForeignKey(Page, null=True, blank=True, related_name="description")
     status = models.ForeignKey('Status', null=True, blank=True)
     creator = models.ForeignKey(User, null=True, blank=True, related_name="creator")
     investigator = models.ManyToManyField(User, null=True, blank=True, related_name="investigator")
-    follower = models.ManyToManyField(User, null=True, blank=True)
+    watcher = models.ManyToManyField(User, null=True, blank=True)
     reference = models.ManyToManyField('Reference', null=True, blank=True)
+    pages = models.ManyToManyField(Page, null=True, blank=True, related_name="pages")
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

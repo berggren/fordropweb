@@ -30,10 +30,15 @@ urlpatterns = patterns('',
     (r'^timeline$',                     'fordrop.views.timeline'),
     
     # Investigation
-    (r'^investigation$',             'fordrop.apps.investigation.views.index'),
-    (r'^investigation/(\d+)$',       'fordrop.apps.investigation.views.show'),
-    (r'^investigation/create$',      'fordrop.apps.investigation.views.create'),
-    (r'^investigation/(\d+)/edit$',  'fordrop.apps.investigation.views.edit'),
+    (r'^investigation$',                            'fordrop.apps.investigation.views.index'),
+    (r'^investigation/(\d+)$',                      'fordrop.apps.investigation.views.overview'),
+    (r'^investigation/create$',                     'fordrop.apps.investigation.views.create'),
+    (r'^investigation/(\d+)/edit$',                 'fordrop.apps.investigation.views.edit'),
+    (r'^investigation/(\d+)/discussion$',           'fordrop.apps.investigation.views.discussion'),
+    (r'^investigation/(\d+)/timeline$',             'fordrop.apps.investigation.views.timeline'),
+    (r'^investigation/(\d+)/library$',              'fordrop.apps.investigation.views.library'),
+    (r'^investigation/(\d+)/page/(\d+)$',           'fordrop.apps.investigation.views.page'),
+    (r'^investigation/(\d+)/page/create$',          'fordrop.apps.investigation.views.page'),
     
     # Upload & Files
     (r'^upload$',                     'fordrop.apps.upload.views.index'),
@@ -45,6 +50,9 @@ urlpatterns = patterns('',
     (r'^report/add$',                 'fordrop.apps.report.views.add'),
     (r'^report/(\d+)/show$',          'fordrop.apps.report.views.show'),
 
+    # Pages
+    (r'^pages/create$',             'fordrop.apps.pages.views.create'),
+    
     # User
     (r'^user/(\d+)$',               'fordrop.apps.userprofile.views.index'),
     
