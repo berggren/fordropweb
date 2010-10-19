@@ -34,49 +34,35 @@
     <li><span>Home</span></li> 
   </ul> 
 	<hr>
-<!--
-<div id="navlist2">
-<ul>
-  <li id="active"><a href="#" id="current">Overview</a></li>
-  <li><a href="#">My investigations</a></li>
-  <li><a href="#">Todo</a></li>
-  <li><a href="#">Browse</a></li>
-  <li><a href="#">Profile</a></li>
-</ul>
-</div>
--->
 
 </div>
  
 
 <div id="middlebox">
 
-
   <div id="streambox">
-	<h1>My investigations</h1>
-	<div class="news_box_grey">
-    {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"3" %}
-      <a href="/investigation/{{ investigation.id }}">
-		  <div class="news-title">{{ investigation.title }}</div>
-		  {% if investigation.description %}
-        <span class="threadTextDarker">
-			   <i>
-          {{ investigation.description.content|linebreaksbr|truncatewords:"50" }}
-			   </i>
-		    </span>
+	 <h1>My investigations</h1>
+	 <div class="news_box_grey">
+      {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"3" %}
+        <a href="/investigation/{{ investigation.id }}">
+		    <div class="news-title">{{ investigation.title }}</div>
+		    {% if investigation.description %}
+          <span class="threadTextDarker">
+			     <i>{{ investigation.description.content|linebreaksbr|truncatewords:"50" }}</i>
+		      </span>
+		      <br>
+		    {% endif %}
+		    <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
 		    <br>
-		  {% endif %}
-		  <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-		  <br>
-		  <br>
-		  </a>
-    {% endfor %}
+		    <br>
+		    </a>
+      {% endfor %}
+    </div>
   </div>
-   </div>
 
   <div id="todobox">
 	 <h1>Stream</h1>
-	 {% for item in stream|dictsortreversed:"time"|slice:"5" %}
+	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
 				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
@@ -125,41 +111,29 @@
   </div>
 
   <div id="streambox">
-<br><br>
-				<h1>News</h1>
-					<div id="news">
-					{% for item in news|slice:":7"  %}
-						<div class="news_box">
-							<div class="news-title">{{ item.title|slice:":50" }} ...</div>
-							<span class="threadTextDarker">
-								<i>
-									{{ item.summary_detail.value|striptags|truncatewords:"30" }}
-								</i>
-							</span>
-							<br>
-							<span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
-					 </div>
-					{% endfor %}
-  </div>
-</div>
-
-  <div id="todobox">
-<br>
-        <h1>News</h1>
-          <div id="news">
-          {% for item in news|slice:":7"  %}
+    <br>
+    <h1>My library</h1>
+          {% for item in files|slice:":5"  %}
             <div class="news_box">
-              <div class="news-title">{{ item.title|slice:":50" }} ...</div>
-              <span class="threadTextDarker">
-                <i>
-                  {{ item.summary_detail.value|striptags|truncatewords:"30" }}
-                </i>
-              </span>
-              <br>
-              <span class="threadText">Sans Institue </span><span class="threadText"> | {{ user.last_login|timesince }} ago</span>
-           </div>
+              <div class="news-title"><a href="/file/{{ item.file.id }}/show">{{ item.filename }}</a></span><span class="threadText"> <i>{{ item.file.filetype }}</i></span></div>
+              <span class="threadText">{{ item.timecreated|timesince }} ago</span>
+            </div>
+          {% endfor %}
+          {% for item in reports|slice:":5"  %}
+            <div class="news_box">
+              <div class="news-title"><a href="/report/{{ item.report.id }}/show">{{ item.title }}</a></span><span class="threadText"> <i>{{ item.file.type }}</i></span></div>
+              <span class="threadText">{{ item.timecreated|timesince }} ago</span>
+            </div>
+          {% endfor %}
+          {% for item in pages|slice:":5"  %}
+            <div class="news_box">
+              <div class="news-title"><a href="/report/{{ item.report.id }}/show">{{ item.title }}</a></span><span class="threadText"> <i>{{ item.file.type }}</i></span></div>
+              <span class="threadText">{{ item.timecreated|timesince }} ago</span>
+            </div>
           {% endfor %}
   </div>
+
+
 </div>
 
 

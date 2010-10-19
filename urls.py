@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     (r'^$',                             'fordrop.views.index'),
     (r'^tag/add/(\w+)/(\d+)$',          'fordrop.views.add_tag'),
     (r'^reference/add/(\w+)/(\d+)$',    'fordrop.views.add_reference'),
-    (r'^timeline$',                     'fordrop.views.timeline'),
+    (r'^timeline/(\d+)$',                     'fordrop.views.timeline'),
     
     # Investigation
     (r'^investigation$',                            'fordrop.apps.investigation.views.index'),

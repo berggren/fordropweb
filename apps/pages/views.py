@@ -8,12 +8,12 @@ from django.contrib import messages
 from models import *
 from tagging.models import *
 from tagging.utils import *
-from utils import *
+from fordrop.utils import *
 
 # Reversion
 from reversion.models import Version
 from reversion import revision
-from reversion.helpers import generate_patch
+#from reversion.helpers import generate_patch
 
 @login_required
 @revision.create_on_success

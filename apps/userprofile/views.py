@@ -6,7 +6,7 @@ from fordrop.apps.upload.models import *
 from fordrop.apps.search.forms import *
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from forms import *
+from fordrop.forms import *
 
 @login_required
 def index(request, user_id):

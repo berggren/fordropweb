@@ -13,14 +13,14 @@ from fordrop.apps.pages.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from forms import *
-from utils import *
-import datetime
+from fordrop.utils import *
 from fordrop.forms import *
+import datetime
 
 # Reversion
 from reversion.models import Version
 from reversion import revision
-from reversion.helpers import generate_patch
+#from reversion.helpers import generate_patch
 
 @login_required
 def index(request): 
@@ -42,8 +42,8 @@ def create(request):
         investigation.pages.add(description)
         for ref in references:
             reference = Reference.objects.get(name=ref)
-            reference.investigation.add(investigation)
-            reference.save()
+            investigation.reference.add(reference)
+            investigation.save()
         url = "/investigation/%i" % investigation.id
         return HttpResponseRedirect(url)
 
@@ -71,7 +71,15 @@ def overview(request, id):
     startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
     stream = activity_stream()
     tags = Tag.objects.get_for_object(investigation)
-    return render_to_response('apps/investigation/overview.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'startdate': startdate, 'stream': stream, 'tagform': tagform, 'tags': tags}, RequestContext(request))
+    people = []
+    for ref in investigation.reference.all():
+        files = UserFile.objects.filter(reference=ref)
+        for file in files:
+            if file.user == investigation.creator:
+                continue
+            if file.user not in people:
+                people.append(file.user)
+    return render_to_response('apps/investigation/overview.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'startdate': startdate, 'stream': stream, 'tagform': tagform, 'tags': tags, 'people': people}, RequestContext(request))
 
 @login_required
 def discussion(request, id):
@@ -88,7 +96,13 @@ def timeline(request, id):
     tagform = TagForm()
     tags = Tag.objects.get_for_object(investigation)
     startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
-    return render_to_response('apps/investigation/timeline.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate}, RequestContext(request))
+    files = []
+    for ref in investigation.reference.all():
+        files = UserFile.objects.filter(reference=ref)
+        for file in files:
+            if file not in files:
+                files.append(files)
+    return render_to_response('apps/investigation/timeline.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate, 'files': files}, RequestContext(request))
 
 @login_required
 def library(request, id):
@@ -96,7 +110,13 @@ def library(request, id):
     investigation = Investigation.objects.get(pk=id)
     tagform = TagForm()
     tags = Tag.objects.get_for_object(investigation)
-    return render_to_response('apps/investigation/library.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags}, RequestContext(request))
+    files = []
+    for ref in investigation.reference.all():
+        files = UserFile.objects.filter(reference=ref)
+        for file in files:
+            if file not in files:
+                files.append(files)
+    return render_to_response('apps/investigation/library.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'files': files}, RequestContext(request))
 
 @login_required
 @revision.create_on_success

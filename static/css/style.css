@@ -93,6 +93,7 @@ body {
 	float:right;
 	margin-top:50px;
 	font-size: 0.9em;
+  margin-right: -10px;
 }
 
 .avatar {

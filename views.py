@@ -20,15 +20,9 @@ from utils import *
 def index(request):
     searchform = SearchForm()
     files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
-    comments = Comment.objects.all().order_by('-submit_date')[:3]
-    files_tags = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
-    report_tags = Tag.objects.cloud_for_model(Report,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
-    tagcloud = files_tags + report_tags
     stream = activity_stream()
     investigations = Investigation.objects.all()
-    avatar = User.objects.get(pk=request.user.id).get_profile().avatar
-    news = get_news()
-    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'comments': comments, 'tagcloud': tagcloud, 'avatar': avatar, 'news': news}, RequestContext(request))
+    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files}, RequestContext(request))
 
 @login_required
 def add_tag(request, obj_type, obj_id):
@@ -63,20 +57,22 @@ def add_reference(request, obj_type, obj_id):
             _object.save()
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
-def timeline(request):
+def timeline(request, investigation_id):
+    investigation = Investigation.objects.get(pk=investigation_id)
     l = []
-    for file in UserFile.objects.all():
-        link = "/file/%i/show" % file.file.id
-        description = "Reported by: %s<br>Filesize: %s<br>Type: %s" % (file.user.get_full_name(), file.file.filesize, file.file.filetype)
-        title = "File added by %s: %s" % (file.user.get_full_name(), file.filename)
-        d = {'start': file.timecreated.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'}
-        l.append(d)
-
-    for comment in Comment.objects.all():
-        description = comment.comment
-        title = "Comment by: %s" % comment.user.get_full_name()
-        d = {'start': comment.submit_date.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}
-        l.append(d)
+    for ref in investigation.reference.all():
+        files = UserFile.objects.filter(reference=ref)
+        for file in files:
+            link = "/file/%i/show" % file.file.id
+            description = "Reported by: %s<br>Filesize: %s<br>Type: %s" % (file.user.get_full_name(), file.file.filesize, file.file.filetype)
+            title = "File added by %s: %s" % (file.user.get_full_name(), file.filename)
+            d = {'start': file.timecreated.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'}
+            l.append(d)
+    #for comment in Comment.objects.all():
+    #    description = comment.comment
+    #    title = "Comment by: %s" % comment.user.get_full_name()
+    #    d = {'start': comment.submit_date.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}
+    #    l.append(d)
     j = {
             'dateTimeFormat': 'iso8601',
             'events' : l

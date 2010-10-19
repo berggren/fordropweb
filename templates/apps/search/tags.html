@@ -1,8 +1,23 @@
 {% extends "apps/search/base.html" %}
 {% load comments %}
 
+{% block menu %}
+<div id="navcontainer">
+  <ul id="navlist">
+    <li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+    <li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+    <li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+  </ul>
+</div>
+{% endblock %}
+
 {% block content %}
-<h2>Search for tag <i>{{ tag.name }}</i></h2>
+
+<div id="rightbox">
+</div>
+
+<div id="middlebox">
+<h1>Result for tag <i>{{ tag.name }}</i></h1>
 	<hr>
 	<table border=0>
 		<th>User</th>
@@ -54,7 +69,7 @@
 		<br>
   		<input type="submit" value="Post">
 	</form>	
-
+</div>
 
 
 {% endblock %}

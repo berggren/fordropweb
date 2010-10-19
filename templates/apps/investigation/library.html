@@ -85,6 +85,27 @@
       <br>
       </a>
   {% endfor %}
+
+  </div>
+<br>
+  <h1 class="big">Files</h1>
+  <div class="news_box_grey">
+  {% for file in files %}
+      <a href="/file/{{ file.file.id }}/show">
+      <div class="news-title">{{ file.filename }}</div>
+        <span class="threadTextDarker">
+         <i>
+          {{ file.file.filetype }}
+         </i>
+        </span>
+        <br>
+      <span class="threadText">Uploaded {{ file.timecreated|timesince }} ago</span>
+      <br>
+      <br>
+      </a>
+  {% endfor %}
+
+
   </div>
 
 </div>
