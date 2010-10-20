@@ -1,23 +1,31 @@
 <html>
 <head>
-	<title>fordrop</title>
-	<link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+<title>fordrop - Forensic Dropbox</head>
+<link type="text/css" href="/site_media/css/style-login.css" rel="stylesheet" /> 
 </head>
-<body>
+<div id="header">
+        <div id="header-center">
+                <div id="logo">
+                        <a href="/"><img src="/site_media/img/logo.png"></a>
+                </div>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-<div id="container">
-<div id="login_container">
-    <div id="header">
-    	<a href="/"><img src="/site_media/img/logo_crop.png"></img></a>
-    </div>
-     <div id="content">
-		<h2>Welcome!</h2>
-		This is fordrop, forensic dropbox.<br>
-		<br>
-		<a href="https://fordrop.irt.kth.se/accounts/login-federated">Click here to login via your own Identity Provider</a>
-	</div> 
+    <form action="/accounts/login-local/" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <br>
+        Username: <input type="text" name="username" id="username" /><br>
+        Password: <input type="password" name="password" id="password" /><br>
+        <input type="submit" value="Login" />
+      </form>
 
+
+<br>
+<br>
+        </div>
 </div>
-</div>
-</body>
-</html>
+
+
+

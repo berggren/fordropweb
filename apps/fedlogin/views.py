@@ -6,6 +6,7 @@ from forms import *
 from django.http import HttpResponseServerError
 from django.core.mail import send_mail
 from fordrop.settings import FD_MAILTO
+from django.contrib.auth import authenticate, login
 
 def fedregister(request):
     if request.method == 'POST':
@@ -66,3 +67,14 @@ def fedlogin(request):
 def fedlogout(request):
     logout(request)
     return HttpResponseRedirect("/Shibboleth.sso/Logout")
+
+def local_login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return HttpResponseRedirect("/")
+    else:
+            return HttpResponseRedirect("/")

@@ -55,7 +55,8 @@ urlpatterns = patterns('',
     
     # User
     (r'^user/(\d+)$',               'fordrop.apps.userprofile.views.index'),
-    
+    (r'^user/edit$',                'fordrop.apps.userprofile.views.edit'),
+
     # Search
     (r'^search$',                   'fordrop.apps.search.views.search'),
     (r'^search/reference$',         'fordrop.apps.search.views.getref'),
@@ -67,6 +68,7 @@ urlpatterns = patterns('',
     # Login
     (r'^accounts/login/$', login,       {'template_name': "login.html"}),
     (r'^accounts/login-federated/$',    'fordrop.apps.fedlogin.views.fedlogin'),
+    (r'^accounts/login-local/$',        'fordrop.apps.fedlogin.views.local_login'),
     (r'^accounts/logout/$',             'fordrop.apps.fedlogin.views.fedlogout'),
     (r'^accounts/register/$',           'fordrop.apps.fedlogin.views.fedregister'),
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from apps.investigation.models import *
+from fordrop.apps.investigation.models import *
 from tagging.models import *
 
 class File(models.Model):

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block menu %}
+<div id="navcontainer">
+  <ul id="navlist">
+    <li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
+    <li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
+    <li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="rightbox">
+</div>
+
+<div id="middlebox">
+	<h1>Edit profile</h1>
+<form action="/user/edit" method="post">{% csrf_token %}
+  <table border=0>
+    {{ form.as_table }}
+  </table>
+  <input type="submit" value="Save" />
+</form>
+</div>
+{% endblock %}
