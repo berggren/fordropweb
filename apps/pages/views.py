@@ -29,7 +29,6 @@ def create(request):
 @login_required
 @revision.create_on_success
 def edit(request, storm_id, page_id):
-    page = Page.objects.get(pk=page_id)
     if request.method == 'POST':
         content = request.POST['content']
         title = request.POST['title']
@@ -37,4 +36,5 @@ def edit(request, storm_id, page_id):
         page.content = content
         page.save()
         revision.user = request.user
+    page = Page.objects.get(pk=page_id)
     return HttpResponseRedirect(request.META["HTTP_REFERER"])

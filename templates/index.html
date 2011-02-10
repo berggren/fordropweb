@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 {% load comments %}
-{% load threadedcomments_tags %}
 
 {% block menu %}
 <div id="navcontainer">
@@ -61,7 +60,7 @@
 
   <div id="todobox">
 	 <h1>Stream</h1>
-	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
+	 {% for item in stream|dictsortreversed:"time"|slice:"6" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
 				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>

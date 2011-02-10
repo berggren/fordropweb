@@ -1,6 +1,5 @@
 {% extends "apps/upload/base.html" %}
 {% load comments %}
-{% load threadedcomments_tags %}
 {% load thumbnail %}
 
 {% block menu %}
@@ -93,7 +92,9 @@
 	 {% else %}
 	   <a href="/file/{{ result.id }}/show">Close printable strings</a>
 	 {% endif %}
-
+	 
+	 <br>
+	 
 	 {% if is_pefile %}
 	   {% if not pedump %}
 	     <a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a>
@@ -105,7 +106,7 @@
   </div>
 
 	{% if strings %}
-		<br>
+    <br>
 		<div id="strings_box">
 			<h1>Printable strings (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
 			<hr>
@@ -114,8 +115,10 @@
 	{% endif %}
 
 	{% if pedump %}
-		<h2>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h2>
-		<div id="strings_box">
+    <br>
+    <div id="strings_box">
+		<h1>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
+    <hr>
 			{{ pedump|linebreaksbr }}
 		</div>
 	{% endif %}
@@ -172,83 +175,40 @@
 
 <br>
 
+{% get_comment_count for result as comment_count %}
 
+{% if comment_count %}
+  <h2>{{ comment_count }} comments</h2>
+{% endif %}
 
-
-<br>
-	{% get_comment_count for result as comment_count %}
-	{% if comment_count %}
-		<h1>{{ comment_count }} comments</h1>
-		<hr>
-	{% endif %}
-	{% get_comment_list for result as comment_list %}
-	{% for comment in comment_list|fill_tree|annotate_tree %}
-		{% ifchanged comment.parent_id %}{% else %}
-		    </li>
-		{% endifchanged %}
-	
-		{% if not comment.open and not comment.close %}
-		    </li>
-		{% endif %}
-	    
-		{% if comment.open %}
-			{% if not comment.parent_id %}
-		    	<ul class="comment-root">
-		    {% else %}
-		    	<ul class="comment-sub">
-		    {% endif %}
-		{% endif %}
-	
-		<li>
-		
-		<div class="comment-container">
-			<div class="comment">
+{% get_comment_list for result as comments %}
+{% for comment in comments %}
+    <div class="comment-container">
+      <div class="comment">
           <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
-					<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
+          <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
           <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
-					{{ comment.comment|linebreaksbr }}
-          {% get_comment_form for result as form with comment.id %}
-					<br><br>
-					<div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;">
-						<font color="blue">Reply</font>
-					</div>
-					<div id="hidetext" style="display:none;">
-						<form action="/comments/post/" method="post">{% csrf_token %}
-							<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
-							{% for hidden in form.hidden_fields %}
-			       				{{ hidden }}
-			    			{% endfor %}
-							{{ form.comment }}
-							<br>
-			  				<input type="submit" value="Post">
-						</form>
-					</div>
-				</div>
-	   	</div>
-
-		{% for close in comment.close %}
-		    </li>
-		    </ul>
-		{% endfor %}
-	{% endfor %}
+          {{ comment.comment|linebreaksbr }}
+      </div>        
+    </div>        
+{% endfor %}
 
 <br>
-	<div class="box_color">
-	<h1>Write a comment</h1>
-	<br>
-		{% get_comment_form for result as form %}
-		<form action="/comments/post/" method="post">{% csrf_token %}
-			<input type="hidden" name="next" value="/file/{{ result.id }}/show" />
-			{% for hidden in form.hidden_fields %}
-	        	{{ hidden }}
-	    	{% endfor %}
-			{{ form.comment }}
-			<br>
-	  		<input type="submit" value="Post">
-		</form>
-	</div>
-</div>
 
+<div class="box_color">
+  <h1>Write a comment</h1>
+  <br>
+  {% get_comment_form for result as form %}
+  <form action="/comments/post/" method="post">{% csrf_token %}
+      <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+      {{ form.comment }}
+      <br>
+      <input type="submit" value="Post">
+  </form>
+</div>
 
 
 <br clear="all">

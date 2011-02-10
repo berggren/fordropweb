@@ -73,6 +73,6 @@ urlpatterns = patterns('',
     (r'^accounts/register/$',           'fordrop.apps.fedlogin.views.fedregister'),
 
     # Media
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbn/workspace/fordrop/static', 'show_indexes': True}),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbn/work/code/fordrop/static', 'show_indexes': True}),
     (r'^databrowse/(.*)', databrowse.site.root),
 )

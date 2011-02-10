@@ -68,11 +68,11 @@ def timeline(request, investigation_id):
             title = "File added by %s: %s" % (file.user.get_full_name(), file.filename)
             d = {'start': file.timecreated.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'}
             l.append(d)
-    #for comment in Comment.objects.all():
-    #    description = comment.comment
-    #    title = "Comment by: %s" % comment.user.get_full_name()
-    #    d = {'start': comment.submit_date.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}
-    #    l.append(d)
+    for comment in Comment.objects.all():
+        description = comment.comment
+        title = "Comment by: %s" % comment.user.get_full_name()
+        d = {'start': comment.submit_date.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}
+        l.append(d)
     j = {
             'dateTimeFormat': 'iso8601',
             'events' : l
