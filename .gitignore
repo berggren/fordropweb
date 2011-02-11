@@ -3,8 +3,8 @@ database.db
 *.pyc
 .project
 .pydevproject
-TODO
-storage
-static/js
-settings.py
-static/avatars
+web/TODO
+web/storage
+web/static/js
+web/settings.py
+web/static/avatars
