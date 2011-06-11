@@ -1,5 +1,4 @@
-from fordrop.apps.upload.models import *
-from fordrop.apps.report.models import *
+from apps.report.models import *
 from django.contrib.comments.models import *
 
 def activity_stream():

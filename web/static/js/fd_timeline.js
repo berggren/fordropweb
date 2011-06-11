@@ -21,7 +21,7 @@
    ];
    bandInfos[1].syncWith = 0;
    bandInfos[1].highlight = true;
-   tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+   tl = Timeline.create(document.getElementById("timeline"), bandInfos);
    Timeline.loadJSON(jsonurl, function(data, url) { eventSource.loadJSON(data, url); });
  }
 

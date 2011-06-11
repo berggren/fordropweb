@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from apps.search.forms import *
-from apps.upload.models import *
 from apps.report.models import *
+from apps.report.forms import *
+from apps.report.forms import *
 from apps.pages.models import *
 from apps.investigation.models import *
 from django.contrib.comments.models import *
@@ -15,6 +16,7 @@ from forms import *
 import simplejson
 import datetime
 from utils import *
+from django.contrib.contenttypes.models import ContentType
 
 @login_required
 def index(request):
@@ -22,7 +24,7 @@ def index(request):
     files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
     stream = activity_stream()
     investigations = Investigation.objects.all()
-    return render_to_response('index.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files}, RequestContext(request))
+    return render_to_response('apps/userprofile/dashboard.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'uploadform': UploadFileForm(), 'genericreportform': GenericReportForm()}, RequestContext(request))
 
 @login_required
 def add_tag(request, obj_type, obj_id):
@@ -59,6 +61,7 @@ def add_reference(request, obj_type, obj_id):
 
 def timeline(request, investigation_id):
     investigation = Investigation.objects.get(pk=investigation_id)
+    investigation_type = ContentType.objects.get(model="investigation")
     l = []
     for ref in investigation.reference.all():
         files = UserFile.objects.filter(reference=ref)
@@ -68,7 +71,7 @@ def timeline(request, investigation_id):
             title = "File added by %s: %s" % (file.user.get_full_name(), file.filename)
             d = {'start': file.timecreated.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'}
             l.append(d)
-    for comment in Comment.objects.all():
+    for comment in Comment.objects.filter(content_type=investigation_type, object_pk=investigation.id):
         description = comment.comment
         title = "Comment by: %s" % comment.user.get_full_name()
         d = {'start': comment.submit_date.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}

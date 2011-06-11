@@ -9,12 +9,12 @@ import pefile
 from dns import message, query
 from dns.exception import DNSException
 from datetime import datetime
-from fordrop.settings import FD_FILEBASEPATH
+from settings import FD_FILEBASEPATH
 
 def handle_uploaded_file(f):
     # Check filesize, if >20MB return
-    if f.size > 20971520:
-        return None
+    #if f.size > 20971520:
+    #    return None
     # Setup dstdir
     dt = datetime.now().strftime("%Y%m")
     path = FD_FILEBASEPATH+"/"+dt

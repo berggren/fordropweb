@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from fordrop.apps.pages.models import Page
+from apps.pages.models import Page
 
 class ReferencePollManager(models.Manager):
     def get_count(self, reference):
-        from fordrop.apps.upload.models import UserFile
-        from fordrop.apps.report.models import UserReport
+        from apps.report.models import UserReport, UserFile
         reference_object = Reference.objects.get(name=reference)
         self.files = UserFile.objects.filter(reference=reference_object).count()
         self.reports = UserReport.objects.filter(reference=reference_object).count()

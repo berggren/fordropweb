@@ -13,3 +13,7 @@ class FooInvestigationForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
     status = forms.ModelChoiceField(queryset=Status.objects.all())
     reference = forms.ModelChoiceField(queryset=Reference.objects.all())
+
+class TagForm(forms.Form):
+    tag = forms.CharField()
+

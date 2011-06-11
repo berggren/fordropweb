@@ -1,61 +1,34 @@
-{% extends "apps/investigation/base.html" %}
+{% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
 
-
-{% block menu %}
-<div id="navcontainer">
-	<ul id="navlist">
-		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-		<li id="active"><a id="current" href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-	</ul>
-</div>
+{% block investigation_submenu %}
+    <li><a href="#" title=""><span class="add">New investigation</span></a></li>
+    <li><a href="#" title="">Browse</a></li>
 {% endblock %}
 
-
-{% block content %}
-
-<div id="rightbox">
-</div>
-
-<div id="breadcrumbs"> 
-  <ul> 
-    <br>
-    <li><span>Investigations</span></li>
-  </ul> 
-  <hr>
-</div>
-
-
-<div id="middlebox">
-  
+{% block investigation_content %}
     <div class="news_box_grey">
-    <h1>Start new investigation</h1>
-    Here you can start, browse or participate in ongoing investigations.
-    It is a place to collaborate and start joint investigations that spans<br>
-    over multiple places.
+    <h2>Start new investigation</h2>
     <form action="/investigation/create" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <br>
       {% for field in newinvestigationform %}
             {{ field.errors }}
             {{ field }}
           {% endfor %}
         <input type="submit" value="Start" />
       </form>
-  </div>
-<br>
+    </div>
+    <br>
 
+        <h2>Recent investigations</h2>
   {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
-    <a href="/investigation/{{ investigation.id }}"><div class="news-title">{{ investigation.title }}</div></a>
+    <a href="/investigation/{{ investigation.id }}"><h3>{{ investigation.title }}</h3></a>
     <span class="threadTextDarker">
       <i>
           {{ investigation.description.content|linebreaksbr|truncatewords:"100" }}<br>
       </i>
     </span>
     <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-    <br><br>  
+    <br><br>
+      <hr>
   {% endfor %}
-
-<br clear="all">
-
 {% endblock %}

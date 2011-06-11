@@ -1,6 +1,6 @@
 from django.contrib import admin
-from fordrop.apps.report.models import *
+from models import *
 
-admin.site.register(Report)
-admin.site.register(UserReport)
-admin.site.register(TypeReport)
+admin.site.register(File)
+admin.site.register(UserFile)
+admin.site.register(MalwareMhr)

@@ -1,0 +1,18 @@
+{% extends "apps/userprofile/userprofile_base.html" %}
+{% load thumbnail %}
+{% load comments %}
+
+{% block userprofile_submenu %}
+    <li><a href="{% url apps.userprofile.views.dashboard %}" title="">Dashboard</a></li>
+    <li><a href="{% url apps.userprofile.views.my_investigations %}" title="">My investigations</a></li>
+    <li><a href="{% url apps.userprofile.views.inventory %}" title="">Inventory</a></li>
+    <li><a href="{% url apps.userprofile.views.reading_list %}" title="" class="current">Reading list</a></li>
+    <li><a href="{% url apps.userprofile.views.suggestions %}" title="">Suggestions</a></li>
+{% endblock %}
+
+{% block userprofile_content %}
+    <h2>Reading list</h2>
+{% endblock %}
+
+{% block userprofile_sidebar %}
+{% endblock %}

@@ -8,7 +8,7 @@ from django.contrib import messages
 from models import *
 from tagging.models import *
 from tagging.utils import *
-from fordrop.utils import *
+from utils import *
 
 # Reversion
 from reversion.models import Version

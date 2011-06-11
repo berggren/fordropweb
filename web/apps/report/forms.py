@@ -1,6 +1,14 @@
 from django import forms
-from models import *
+
+class UploadFileForm(forms.Form):
+    file  = forms.FileField(required=True)
 
 class GenericReportForm(forms.Form):
-    type = forms.ModelChoiceField(queryset=TypeReport.objects.all())
     value = forms.CharField()
+
+class TagForm(forms.Form):
+    tag = forms.CharField()
+
+class ReferenceForm(forms.Form):
+    reference  = forms.CharField()
+

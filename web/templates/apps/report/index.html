@@ -1,64 +1,45 @@
-{% extends "apps/report/base.html" %}
+{% extends "apps/report/report_base.html" %}
 {% load thumbnail %}
 
-{% block content %}
+{% block report_content %}
+            <div class="news_box_grey" style="height:130px;">
+            <h2>Upload your forensic data</h2>
+            Upload and share your findings and start collaborating with your collegues.
+            You will quicly see if the file have been uploaded by soimeone else and or if
+            the file is part of an investigation.
+            <br><br>
+            <form action="/report/add/file" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+               {% for field in uploadform %}
+                       {{ field.errors }}
+                       {{ field }}
+                   {% endfor %}
+                <input type="submit" value="Upload" />
+            </form>
+            </div>
+    
 
-<div id="leftbox-menu">
-	<div class="main-menu-box">	
-		<li><a href="/">Home</a><br>
-		<li><a href="/investigation">Investigations</a><br>
-		<li><a href="/news">News</a><br>
-		<li><a href="/upload">Upload</a><br>
-		<li class="selected"><a href="/report">Report</a><br>
-	</div>
-	<li><a href="#">Browse</a><br>
-</div>
 
-<div id="leftbox">
-	<div class="news_box_grey">
-		<div class="trunc-box">
-		<h1>Report incident</h1>
-		Report and share your findings and start collaborating with your collegues.
-		You will quicly see if the file have been uploaded by soimeone else and or if
-		the file is part of an investigation.<br><br>
-		<form action="/report/add" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-			{% for field in genericreportform %}
-		       	{{ field.errors }}
-		       	{{ field }}
-		    {% endfor %}
-			<input type="submit" value="Save" />
-		</form>
-		</div>
-	</div>
-	<h1>Latest reports</h1>
-	<table border=0>
-		<th>Reported by</th>
-		<th>Value</th>
-		<th>Type</th>
-		<th>Date</th>
-		<th>Reference</th>
-		{% for n in reports reversed %}
-			<tr class="{% cycle row1,row2 %}">
-				<td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-				<td><a href="/report/{{ n.report.id }}/show">{{ n.report.value }}</a></td>
-				<td>{{ n.report.type }}</td>
-				<td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
-				{% if n.reference %}
-					<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-				{% else %}
-					<td></td>
-				{% endif %}
-			</tr>
-		{% endfor %}
-	</table>
-</div>
+        <hr class="space">
+        <h2>Latest reports</h2>
+        <table border=0>
+            <th>Reported by</th>
+            <th>Value</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Reference</th>
+            {% for n in files reversed %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+                    <td><a href="/report/{{ n.report.id }}/show">{{ n.report.value }}</a></td>
+                    <td>{{ n.report.type }}</td>
+                    <td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
+                    {% if n.reference %}
+                        <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
 
-<div id="rightbox">
-	<h1>Tags</h1>
-	{% for tag in tagcloud %}
-		<font size="{{ tag.font_size }}"><a href="/search/tag?t={{ tag.id }}">{{ tag }}</a></font>
-	{% endfor %}
-</div>
-
-<br clear="all">
 {% endblock %}

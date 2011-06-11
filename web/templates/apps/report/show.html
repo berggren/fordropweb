@@ -1,19 +1,14 @@
-{% extends "apps/report/base.html" %}
+{% extends "apps/report/report_base.html" %}
 {% load comments %}
 {% load threadedcomments_tags %}
 {% load thumbnail %}
 
-{% block menu %}
-<div id="navcontainer">
-  <ul id="navlist">
-    <li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-    <li id="active"><a id="current" href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-    <li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-    </ul>
-</div>
+{% block report_submenu %}
+    <li><a href="#" title="" class="current">Overview</a></li>
+    <li><a href="#" title="">Upload file</a></li>
+    <li><a href="#" title="">Report</a></li>
+    <li><a href="#" title="">Browse</a></li>
 {% endblock %}
-
-{% block content %}
 
 <div id="rightbox">
   <br>

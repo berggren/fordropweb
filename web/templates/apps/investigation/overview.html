@@ -1,4 +1,4 @@
-{% extends "apps/investigation/base.html" %}
+{% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
 {% load comments %}
 
@@ -20,79 +20,20 @@
   <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block menu %}
-<div id="navcontainer">
-	<ul id="navlist">
-		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-		<li id="active"><a id="current" href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-	</ul>
-</div>
+{% block investigation_submenu %}
+    <li><a href="/investigation/{{ investigation.id }}" title="" class="current">Overview</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline" title="">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library" title="">Library</a></li>
 {% endblock %}
 
+{% block investigation_content %}
 
-{% block content %}
-
-<div id="rightbox">
-
-<br>
-<h1>People</h1>
-<img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-<br><br>
-<hr>
-
-<h1>Tags</h1>
-{% for tag in tags %}<a href="/search/tag?t={{ tag.id }}">{{ tag }}</a> {% endfor %}
-
-      <form action="/tag/add/investigation/{{ investigation.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-        {% for field in tagform %}
-          {{ field.errors }}
-          {{ field }}
-        {% endfor %}
-        <input type="submit" value="Add tag" />
-      </form>
-<br>
-
-<h1>Pages</h1>
-  <ul>
-    {% for page in investigation.pages.all %}
-      <li><a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">{{ page.title }}</a></li>
-    {% endfor %}
-  </ul>
-  <br>
-  <span class="add-page"><a href="/investigation/{{ investigation.id }}/page/create">Create new page</a></span>
-
-</div>
-
-<div id="breadcrumbs"> 
-  <ul> 
-    <br>
-    <li class="breadcrumblink"><a href="/investigation">Investigations</a></li> 
-    <li><span>{{ investigation.title }}</span></li>
-  <hr>
-  </ul> 
-
-<br>
-
-<div id="navlist2">
-<ul>
-  <li id="active"><a href="#" id="current">Overview</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-</ul>
-</div>
-
-  <br>
-  <h1 class="big">{{ investigation.title }}</h1>
-</div>
-
-<div id="middlebox">
-  <div class="news_box_grey">
-    <h1>{{ investigation.description.title }}</h1>
+  <h2>{{ investigation.title }}</h2>
     {% if investigation.description %}
       {{ investigation.description.content|linebreaksbr }}
-      <br<br><hr>
+      <hr class="space">
+      <hr>
       <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="add">Edit</span></div>
     {% else %}
       <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="add">Add description</span></div>
@@ -100,37 +41,28 @@
          <div id="hidetext" style="display:none;">
           <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
             <br>
-            Title: <input type="text" name="title" value={{ investigation.description.title }} /> <br><br>
            <textarea id="id_description" rows="10" cols="40" name="description">
 {{ investigation.description.content|linebreaks|striptags }}
-            </textarea> 
+            </textarea>
             <input type="submit" value="Save" /> 
-          </form> 
-    </div>  
-<div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
-</div>
-<br>
+          </form>
+    </div>
+        <div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
 
+    <hr class="space">
   <div class="news_box_grey">
-  <h1>References</h1>
-{% for reference in investigation.reference.all %}
-  <li>{{ reference }}</li>
-{% endfor %}
-</div>
-<br>
-<div class="news_box_grey">
-  <h1>People with objects in this investigation</h1>
-  {% for person in people %} 
-    <img class="avatar-shadow" src={% thumbnail person.get_profile.avatar 40x40 crop %}>
-  {% endfor %}
-</div>
+    <h3>Information</h3>
+    <strong>References:</strong> {% for ref in investigation.reference.all %}{{ ref.name }} {% endfor %}
+  <br>
+    <strong>Files:</strong> {{ files|length }}
+  </div>
 
- 
+{% endblock %}
 
-
-</div>
-
-
-<br clear="all">
-
+{% block investigation_sidebar %}
+    <h3>People</h3>
+    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
+    {% for user in people %}
+    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
+    {% endfor %}
 {% endblock %}

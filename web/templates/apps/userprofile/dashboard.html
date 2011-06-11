@@ -1,0 +1,103 @@
+{% extends "apps/userprofile/userprofile_base.html" %}
+{% load thumbnail %}
+{% load comments %}
+
+{% block userprofile_submenu %}
+    <li><a href="{% url apps.userprofile.views.dashboard %}" title="" class="current">Dashboard</a></li>
+    <li><a href="{% url apps.userprofile.views.my_investigations %}" title="">My investigations</a></li>
+    <li><a href="{% url apps.userprofile.views.inventory %}" title="">Inventory</a></li>
+    <li><a href="{% url apps.userprofile.views.reading_list %}" title="">Reading list</a></li>
+    <li><a href="{% url apps.userprofile.views.suggestions %}" title="">Suggestions</a></li>
+{% endblock %}
+
+{% block userprofile_content %}
+	 <h2>Activity</h2>
+	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
+		<div class="post_container">
+			{% ifequal item.type "comment" %}
+				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
+				<div class="post_box">
+	  				<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					{% ifequal item.object.content_type.name "file" %}
+	    				commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
+					{% endifequal %}
+                    {% ifequal item.object.content_type.name "investigation" %}
+                        commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}/discussion"> {{ item.object.content_object.title }}</a>
+                    {% endifequal %}
+					{% ifequal item.object.content_type.name "user" %}
+						to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "report" %}
+						<span class="threadText">
+							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
+						</span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "tag" %}
+						<span class="threadText">
+							<i>{{ item.object.content_object }}</i>
+						</span>
+					{% endifequal %}
+                    <br>
+				    <font color="#222">{{ item.object.comment|linebreaksbr|truncatewords:"30" }}</font>
+					<br>
+					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
+				 </div>
+			{% endifequal %}
+			{% ifequal item.type "file" %}
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+				<div class="post_box">
+					<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
+					<br>
+					<span class="threadText">{{ item.object.timecreated|timesince }}</span>
+				</div>
+			{% endifequal %}
+
+			{% ifequal item.type "report" %}
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+				<div class="post_box">
+				    <span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					reported {{ item.object.report.type }}, {{ item.object.report.value }}
+				</div>
+				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
+			{% endifequal %}
+            <hr>
+		</div>
+	 {% endfor %}
+{% endblock %}
+
+{% block userprofile_sidebar %}
+	            <h3>Your investigations</h3>
+                {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"3" %}
+                    <a href="/investigation/{{ investigation.id }}">
+		            <div class="news-title">{{ investigation.title }}</div>
+		            </a>
+                    {% if investigation.description %}
+                        <span class="threadTextDarker">
+			                <i>{{ investigation.description.content|linebreaksbr|truncatewords:"10" }}</i>
+		                </span>
+		                <br>
+		            {% endif %}
+		            <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
+		            <br>
+		            <br>
+                {% endfor %}
+
+        <hr class="space">
+
+                <h3>Suggestions</h3>
+                {% for file in files|dictsortreversed:"lastupdated"|slice:"3" %}
+                    <a href="/file/{{ file.id }}/show">
+                    <div class="news-title">{{ file.filename }}</div>
+                    </a>
+                    {% if file.title %}
+                        <span class="threadTextDarker">
+                            <i>{{ file.filename|linebreaksbr|truncatewords:"10" }}</i>
+                        </span>
+                        <br>
+                    {% endif %}
+                    <span class="threadText">Last activity was {{ file.lastupdated|timesince }} ago</span>
+                    <br>
+
+                {% endfor %}
+{% endblock %}

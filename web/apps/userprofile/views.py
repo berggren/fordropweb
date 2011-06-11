@@ -1,23 +1,77 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.http import Http404
 from django.template import RequestContext
-from fordrop.apps.upload.models import *
-from fordrop.apps.search.forms import *
-from django.contrib.auth.models import User
+from apps.report.models import *
+from apps.search.forms import *
 from django.contrib.auth.decorators import login_required
 from forms import *
 from models import *
+from utils import *
+from web.apps.investigation.models import Investigation
+from web.apps.search.forms import SearchForm
 
 @login_required
-def index(request, user_id):
+def dashboard(request):
+    searchform = SearchForm()
+    files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
+    stream = activity_stream()
+    investigations = Investigation.objects.filter(creator=request.user)
+    return render_to_response('apps/userprofile/dashboard.html',
+                            {
+                                'investigations': investigations,
+                                'stream': stream,
+                                'searchform': searchform,
+                                'files': files
+                            }, RequestContext(request))
+
+@login_required
+def my_investigations(request):
+    searchform = SearchForm()
+    investigations = Investigation.objects.filter(creator=request.user)
+    return render_to_response('apps/userprofile/my_investigations.html',
+                            {
+                                'investigations': investigations,
+                                'searchform': searchform,
+                            }, RequestContext(request))
+
+@login_required
+def inventory(request):
+    searchform = SearchForm()
+    return render_to_response('apps/userprofile/inventory.html',
+                            {
+                                'searchform': searchform,
+                            }, RequestContext(request))
+
+@login_required
+def reading_list(request):
+    searchform = SearchForm()
+    return render_to_response('apps/userprofile/reading_list.html',
+                            {
+                                'searchform': searchform,
+                            }, RequestContext(request))
+
+@login_required
+def suggestions(request):
+    searchform = SearchForm()
+    return render_to_response('apps/userprofile/suggestions.html',
+                            {
+                                'searchform': searchform,
+                            }, RequestContext(request))
+
+@login_required
+def profile(request, user_id):
     searchform = SearchForm()
     user = User.objects.get(id=user_id)
     files = UserFile.objects.filter(user=user)
-    return render_to_response('apps/userprofile/index.html', {'searchform': searchform, 'files': files, 'requser': user}, RequestContext(request))
+    return render_to_response('apps/userprofile/dashboard.html',
+                              {
+                                  'searchform': searchform,
+                                  'files': files,
+                                  'requser': user
+                              }, RequestContext(request))
 
 @login_required
-def edit(request):
+def edit_profile(request):
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)
     if request.method == 'POST':
@@ -32,5 +86,13 @@ def edit(request):
             user.save()
             return HttpResponseRedirect('/')
     else:
-        form = ProfileForm({'firstname': request.user.first_name, 'lastname': request.user.last_name, 'email': request.user.email, 'avatar':None})
-    return render_to_response('apps/userprofile/edit.html', {'form': form}, RequestContext(request))
+        form = ProfileForm({
+            'firstname': request.user.first_name,
+            'lastname': request.user.last_name,
+            'email': request.user.email,
+            'avatar':None
+        })
+    return render_to_response('apps/userprofile/edit.html',
+                              {
+                                  'form': form
+                              }, RequestContext(request))

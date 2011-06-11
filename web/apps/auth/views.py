@@ -5,7 +5,7 @@ from django.template import RequestContext
 from forms import *
 from django.http import HttpResponseServerError
 from django.core.mail import send_mail
-from fordrop.settings import FD_MAILTO
+from settings import FD_MAILTO
 from django.contrib.auth import authenticate, login
 
 def fedregister(request):

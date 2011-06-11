@@ -1,4 +1,4 @@
-{% extends "apps/investigation/base.html" %}
+{% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
 {% load comments %}
 
@@ -20,85 +20,22 @@
   <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block menu %}
-<div id="navcontainer">
-	<ul id="navlist">
-		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-		<li id="active"><a id="current" href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-	</ul>
-</div>
+{% block investigation_submenu %}
+    <li><a href="/investigation/{{ investigation.id }}" title="">Overview</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline" title="" class="current" >Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library" title="">Library</a></li>
 {% endblock %}
 
+{% block investigation_content %}
+  <h2>Timeline</h2>
+  <div id="timeline"></div>
+{% endblock %}
 
-{% block content %}
-
-<div id="rightbox">
-<br>
-<h1>People</h1>
-<img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-<br><br>
-<hr>
-
-<h1>Tags</h1>
-{% for tag in tags %}<a href="/search/tag?t={{ tag.id }}">{{ tag }}</a> {% endfor %}
-
-      <form action="/tag/add/investigation/{{ investigation.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-        {% for field in tagform %}
-          {{ field.errors }}
-          {{ field }}
-        {% endfor %}
-        <input type="submit" value="Add tag" />
-      </form>
-<br>
-
-<h1>Pages</h1>
-<ul>
-  {% for page in investigation.pages.all %}
-   <li><a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">{{ page.title }}</a></li>
-  {% endfor %}
-</ul>
-<br>
-<span class="add-page">Create new page</span>
-
-</div>
-
-<div id="breadcrumbs"> 
-  <ul> 
-    <br>
-    <li class="breadcrumblink"><a href="/investigation">Investigations</a></li> 
-    <li class="breadcrumblink"><a href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a></li> 
-    <li><span>Timeline</span></li>
-  <hr>
-  </ul> 
-
-<br>
-
-<div id="navlist2">
-<ul>
-  <li><a href="/investigation/{{ investigation.id }}">Overview</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
-  <li id="active"><a href="/investigation/{{ investigation.id }}/timeline" id="current">Timeline</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-</ul>
-</div>
-
-<br>
-  <h1 class="big">Timeline</h1>
-  
-</div>
-<div id="middlebox">
-  <div id="my-timeline"></div>
-  <br>
-  <h1>Flow</h1>
-  {% for file in files %}
-      <span class="threadText">{{ file.timecreated }}</span><br>
-      {{ file.user.get_full_name }} uploaded file <a href="/file/{{ file.file.id }}/show">{{ file.filename }}</a>
-      <br><br>
-  {% endfor %}
-</div>
-
-
-<br clear="all">
-
+{% block investigation_sidebar %}
+    <h3>People</h3>
+    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
+    {% for user in people %}
+    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
+    {% endfor %}
 {% endblock %}

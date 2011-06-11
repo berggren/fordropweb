@@ -1,75 +1,16 @@
-{% extends "apps/investigation/base.html" %}
+{% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
 {% load comments %}
 
-
-{% block menu %}
-<div id="navcontainer">
-	<ul id="navlist">
-		<li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-		<li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-		<li id="active"><a id="current" href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-	</ul>
-</div>
+{% block investigation_submenu %}
+    <li><a href="/investigation/{{ investigation.id }}" title="">Overview</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline" title="">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library" title="" class="current">Library</a></li>
 {% endblock %}
 
-
-{% block content %}
-
-<div id="rightbox">
-<br>
-<h1>People</h1>
-<img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-<br><br>
-<hr>
-
-<h1>Tags</h1>
-{% for tag in tags %}<a href="/search/tag?t={{ tag.id }}">{{ tag }}</a> {% endfor %}
-
-      <form action="/tag/add/investigation/{{ investigation.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-        {% for field in tagform %}
-          {{ field.errors }}
-          {{ field }}
-        {% endfor %}
-        <input type="submit" value="Add tag" />
-      </form>
-<br>
-
-<h1>Pages</h1>
-<ul>
-  {% for page in investigation.pages.all %}
-   <li><a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">{{ page.title }}</a></li>
-  {% endfor %}
-</ul>
-<br>
-<span class="add-page">Create new page</span>
-
-</div>
-
-<div id="breadcrumbs"> 
-  <ul> 
-    <br>
-    <li class="breadcrumblink"><a href="/investigation">Investigations</a></li> 
-    <li class="breadcrumblink"><a href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a></li> 
-    <li><span>Library</span></li>
-  <hr>
-  </ul> 
-
-<br>
-
-<div id="navlist2">
-<ul>
-  <li><a href="/investigation/{{ investigation.id }}">Overview</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
-  <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
-  <li id="active"><a href="/investigation/{{ investigation.id }}/library" id="current">Library</a></li>
-</ul>
-</div>
-</div>
-
-<div id="middlebox">
-
-  <h1 class="big">Pages</h1>
+{% block investigation_content %}
+  <h2>Pages</h2>
   <div class="news_box_grey">
   {% for page in investigation.pages.all %}
       <a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">
@@ -85,10 +26,10 @@
       <br>
       </a>
   {% endfor %}
-
   </div>
 <br>
-  <h1 class="big">Files</h1>
+
+  <h2>Files</h2>
   <div class="news_box_grey">
   {% for file in files %}
       <a href="/file/{{ file.file.id }}/show">
@@ -99,16 +40,18 @@
          </i>
         </span>
         <br>
-      <span class="threadText">Uploaded {{ file.timecreated|timesince }} ago</span>
+      <span class="threadText">Uploaded {{ file.timecreated|timesince }} ago by {{ file.user.get_full_name }}</span>
       <br>
       <br>
       </a>
   {% endfor %}
+    </div>
+{% endblock %}
 
-
-  </div>
-
-</div>
-<br clear="all">
-
+{% block investigation_sidebar %}
+    <h3>People</h3>
+    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
+    {% for user in people %}
+    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
+    {% endfor %}
 {% endblock %}
