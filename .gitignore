@@ -8,3 +8,4 @@ web/storage
 web/static/js
 web/settings.py
 web/static/avatars
+.idea
