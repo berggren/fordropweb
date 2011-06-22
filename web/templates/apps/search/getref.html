@@ -1,24 +1,9 @@
-{% extends "apps/search/base.html" %}
+{% extends "apps/search/search_base.html" %}
 {% load comments %}
 
-{% block menu %}
-<div id="navcontainer">
-  <ul id="navlist">
-    <li><a href="/"><h1 class="menu"><br>Home</h1><p class="menu">My place</p></a></li>
-    <li><a href="/upload"><h1 class="menu"><br>Upload & Report</h1><p class="menu">Share</p></a></li>
-    <li><a href="/investigation"><h1 class="menu"><br>Investigations</h1><p class="menu">Collaborate</p></a></li>
-  </ul>
-</div>
-{% endblock %}
-
 {% block content %}
-
-<div id="rightbox">
-</div>
-
-<div id="middlebox">
-
-<h1>Result for reference <i>{{ reference }}</i></h1>
+<hr class="space">
+<h2>Result for reference <i>{{ reference }}</i></h2>
 	<table border=0>
 		<th>User</th>
 		<th>Filename</th>
@@ -36,38 +21,6 @@
 				{% endif %}
 			</tr>
 		{% endfor %}
-	</table>	
-
+	</table>
 <br>
-{% get_comment_count for reference as comment_count %}
-<h2>Comments ({{ comment_count }})</h2>
-<hr>
-	{% get_comment_list for reference as comment_list %}
-	{% for comment in comment_list reversed %}
-	    <div class="post_container">
-	    <div class="post_box">
-	    	<span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span> 
-			<br>
-			<span class="threadText">{{ comment.submit_date|timesince }} ago</span> 
-	    	<br><br>
-	    	{{ comment.comment|linebreaksbr }}
-	    </div>
-	    </div>
-	{% endfor %}
-
-	
-<h3>Write a comment</h3>
-	{% get_comment_form for reference as form %}
-	<form action="{% comment_form_target %}" method="post">{% csrf_token %}
-		<input type="hidden" name="next" value="/search/reference?r={{ reference.id }}" /> 
-		{% for hidden in form.hidden_fields %}
-        	{{ hidden }}
-    	{% endfor %}
-		{{ form.comment }}
-		<br>
-  		<input type="submit" value="Post">
-	</form>	
-
-</div>
-
 {% endblock %}

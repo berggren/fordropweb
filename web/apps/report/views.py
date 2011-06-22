@@ -28,6 +28,7 @@ from settings import FD_FILEBASEPATH, FD_AUTHORIZATION_FILE
 import os
 import re
 import hashlib
+from web.apps.search.forms import SearchForm
 
 @login_required
 def report(request):
@@ -84,7 +85,11 @@ def file(request):
             if not created:
                 messages.error(request, 'Already reported by you')
             else:
+                file_node = add_node_to_graph(file, "file")
+                user_node = add_node_to_graph(request.user.get_profile(), "person")
+                rel = add_relationship_to_graph(user_node, file_node, "reported")
                 messages.success(request, 'Thank you for your submission')
+                print file_node, user_node, rel
             url = "/file/%i/show" % file.id
             return HttpResponseRedirect(url)
         else:

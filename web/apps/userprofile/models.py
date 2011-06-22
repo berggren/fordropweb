@@ -5,6 +5,7 @@ from easy_thumbnails.fields import ThumbnailerImageField
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     avatar = ThumbnailerImageField(upload_to='avatars')
+    graphid = models.IntegerField(null=True)
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

@@ -10,6 +10,7 @@ class File(models.Model):
     md5 = models.CharField(max_length=255)
     sha1 = models.CharField(max_length=255)
     sha256 = models.CharField(max_length=255)
+    graphid = models.IntegerField(null=True)
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

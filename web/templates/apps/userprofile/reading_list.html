@@ -3,12 +3,13 @@
 {% load comments %}
 
 {% block userprofile_submenu %}
-    <li><a href="{% url apps.userprofile.views.dashboard %}" title="">Dashboard</a></li>
-    <li><a href="{% url apps.userprofile.views.my_investigations %}" title="">My investigations</a></li>
-    <li><a href="{% url apps.userprofile.views.inventory %}" title="">Inventory</a></li>
-    <li><a href="{% url apps.userprofile.views.reading_list %}" title="" class="current">Reading list</a></li>
-    <li><a href="{% url apps.userprofile.views.suggestions %}" title="">Suggestions</a></li>
+    <li><a href="/home" title=""">Dashboard</a></li>
+    <li><a href="/home/investigations" title="">My investigations</a></li>
+    <li><a href="/home/inventory" title=""">Inventory</a></li>
+    <li><a href="/home/readinglist" title="" class="current">Reading list</a></li>
+    <li><a href="/home/suggestions" title="">Suggestions</a></li>
 {% endblock %}
+
 
 {% block userprofile_content %}
     <h2>Reading list</h2>

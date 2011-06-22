@@ -3,20 +3,21 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from apps.search.forms import *
-from apps.report.models import *
-from apps.report.forms import *
+#from apps.report.models import *
+#from apps.report.forms import *
 from apps.report.forms import *
 from apps.pages.models import *
 from apps.investigation.models import *
-from django.contrib.comments.models import *
+#from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
-from tagging.models import *
-from tagging.utils import *
+#from tagging.models import *
+#from tagging.utils import *
 from forms import *
 import simplejson
-import datetime
+#import datetime
 from utils import *
 from django.contrib.contenttypes.models import ContentType
+from apps.investigation.models import *
 
 @login_required
 def index(request):
@@ -49,7 +50,6 @@ def add_reference(request, obj_type, obj_id):
         form = ReferenceForm(request.POST)
         if form.is_valid():
             _ref_name = form.cleaned_data['reference']
-            print _ref_name
             _ref_object, created = Reference.objects.get_or_create(name=_ref_name)
             if obj_type == "file":
                 _object = UserFile.objects.get(id=obj_id)
@@ -57,6 +57,12 @@ def add_reference(request, obj_type, obj_id):
                 _object = UserReport.objects.get(id=obj_id)
             _object.reference = _ref_object
             _object.save()
+
+            # = add_node_to_graph(file, "file")
+            #user_node = add_node_to_graph(request.user.get_profile(), "person")
+            #rel = add_relationship_to_graph(user_node, file_node, "reported")
+            #add_ref_to_graph(_object, _ref_object)
+
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 def timeline(request, investigation_id):

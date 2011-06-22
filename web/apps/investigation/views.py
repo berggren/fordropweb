@@ -147,3 +147,11 @@ def page(request, investigation_id, page_id=None):
         url = "/investigation/%i/page/%i" % (investigation.id, page.id)
         return HttpResponseRedirect(url)
     return render_to_response('apps/investigation/page.html', {'searchform': searchform, 'investigation': investigation, 'page': page, 'tagform': tagform, 'tags': tags}, RequestContext(request))
+
+def browse(request):
+    searchform = SearchForm()
+    investigations = Investigation.objects.all()
+    return render_to_response('apps/investigation/browse.html', {
+                                                                'searchform': searchform,
+                                                                'investigations': investigations,
+                                                                }, RequestContext(request))

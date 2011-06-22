@@ -96,3 +96,36 @@ def query_mhr(hash):
     except DNSException:
         return None, None
 
+def add_node_to_graph(obj, type):
+    from neo4jrestclient import GraphDatabase, client
+    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    if not obj.graphid:
+        if type == 'file':
+            node = graphdb.nodes.create(name=obj.sha256, type='report')
+        if type == 'person':
+            node = graphdb.nodes.create(name=obj.user.get_full_name(), type='person')
+        if type == 'investigation':
+            node = graphdb.nodes.create(name=obj.title, type='investigation')
+        if type == 'reference':
+            node = graphdb.nodes.create(name=obj.name, type='reference')
+        obj.graphid = node.id
+        obj.save()
+    else:
+        node = graphdb.nodes.get(obj.graphid)
+    return node
+
+def add_relationship_to_graph(node1, node2, type):
+    from neo4jrestclient import GraphDatabase, client
+    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    try:
+        graphdb.relationships.create(node1, type, node2)
+    except: return False
+    return True
+
+def add_to_graph(hash, reporter):
+    from neo4jrestclient import GraphDatabase, client
+    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    file_node = graphdb.nodes.create(name=hash, type='report')
+    reporter_node = graphdb.nodes.create(name=reporter, type="reporter")
+    graphdb.relationships.create(reporter_node, "reported", file_node)
+    return file_node.id

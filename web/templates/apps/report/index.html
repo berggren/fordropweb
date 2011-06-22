@@ -22,17 +22,15 @@
         <hr class="space">
         <h2>Latest reports</h2>
         <table border=0>
-            <th>Reported by</th>
-            <th>Value</th>
-            <th>Type</th>
-            <th>Date</th>
+            <th>Reporter</th>
+            <th></th>
+            <th></th>
             <th>Reference</th>
             {% for n in files reversed %}
                 <tr class="{% cycle row1,row2 %}">
                     <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-                    <td><a href="/report/{{ n.report.id }}/show">{{ n.report.value }}</a></td>
-                    <td>{{ n.report.type }}</td>
-                    <td>{{ n.timecreated|date:"Y-m-d h:i:s" }} ({{ n.timecreated|timesince }} ago)</td>
+                    <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+                    <td>{{ n.timecreated|timesince }} ago</td>
                     {% if n.reference %}
                         <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
                     {% else %}

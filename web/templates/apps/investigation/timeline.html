@@ -30,6 +30,24 @@
 {% block investigation_content %}
   <h2>Timeline</h2>
   <div id="timeline"></div>
+
+    <hr class="pace">
+
+    <table border=0>
+        <th>Time</th>
+        <th>Reporter</th>
+        <th></th>
+        {% for n in files %}
+            <tr class="{% cycle row1,row2 %}">
+                <td>{{ n.timecreated|timesince }} ago</td>
+                <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+                <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
 {% endblock %}
 
 {% block investigation_sidebar %}

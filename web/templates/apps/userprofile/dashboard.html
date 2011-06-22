@@ -3,11 +3,11 @@
 {% load comments %}
 
 {% block userprofile_submenu %}
-    <li><a href="{% url apps.userprofile.views.dashboard %}" title="" class="current">Dashboard</a></li>
-    <li><a href="{% url apps.userprofile.views.my_investigations %}" title="">My investigations</a></li>
-    <li><a href="{% url apps.userprofile.views.inventory %}" title="">Inventory</a></li>
-    <li><a href="{% url apps.userprofile.views.reading_list %}" title="">Reading list</a></li>
-    <li><a href="{% url apps.userprofile.views.suggestions %}" title="">Suggestions</a></li>
+    <li><a href="/home" title="" class="current">Dashboard</a></li>
+    <li><a href="/home/investigations" title="">My investigations</a></li>
+    <li><a href="/home/inventory" title="">Inventory</a></li>
+    <li><a href="/home/readinglist" title="">Reading list</a></li>
+    <li><a href="/home/suggestions" title="">Suggestions</a></li>
 {% endblock %}
 
 {% block userprofile_content %}
@@ -61,6 +61,16 @@
 				</div>
 				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
 			{% endifequal %}
+
+            {% ifequal item.type "investigation" %}
+                <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.creator.get_profile.avatar 40x40 crop %}></div>
+                <div class="post_box">
+                    <span class="threadTitle"><a href="/user/{{ item.object.creator.id }}">{{ item.object.creator.first_name }} {{ item.object.creator.last_name }}</a></span>
+                    started a {{ item.type }}, <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a>
+                </div>
+                <span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
+            {% endifequal %}
+
             <hr>
 		</div>
 	 {% endfor %}

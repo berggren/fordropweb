@@ -28,10 +28,16 @@ body {
 
 #logo {
 	float:left;
-	margin-top: 20px;
-    padding-right: 40px;
+	margin-top: 10px;
+    padding-right: 10px;
 }
-	
+
+#search {
+	float:left;
+	margin-top: 5px;
+    padding-right: 20px;
+}
+
 #navlist
 {
 margin: 0;
@@ -54,7 +60,7 @@ list-style-type: none;
 float: left;
 margin-right: 1px;
 padding: 10px;
-padding-top: 20px;
+padding-top: 10px;
 text-decoration: none;
 color: #fff;
 
@@ -68,7 +74,7 @@ color: #fff;
     #-webkit-border-radius: 0px 0px 8px 8px;
 	border:0;
     #-webkit-box-shadow: 8px 8px 10px #111;
-    height:40px;
+    height:50px;
 
 }
 
@@ -117,26 +123,20 @@ p.menu {
 }
 
 .login_box2 {
-	width:240px;
+    width:100px;
 	height:20px;
-	float:right;	
-	text-align: right;
+	float:right;
 }
 
 .searchinput {
-	#border:1px solid silver;
-    background: #555;
+    background:#555;
 	height:30px;
-	width:233px;
+	width:200px;
 	font-weight:normal;
 	padding:5px;
 	color:#777;
-	float:left;
-    margin-left:10px;
 	-webkit-border-radius: 6px;
-    float:right;
 }
-
 
 .news-title {
 	font-weight: bold;

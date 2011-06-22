@@ -19,6 +19,11 @@
           		<div id="logo">
           			<a href="/"><img src="/site_media/img/logo3.png"></a>
 				</div>
+                    <div id="search">
+                    <form style="display:inline" method="post" action="/search">{% csrf_token %}
+                        <input class="searchinput" type="text" name="search" value="Search"/>
+                    </form>
+                </div>
 
 	<ul id="navlist">
         {% block menu %}{% endblock %}
@@ -26,9 +31,9 @@
 
 
 				<div class="login_box2">
-					<div class="avatar-mini"><img src={% thumbnail user.get_profile.avatar 25x25 crop %}></div>
+					<div class="avatar-mini" style="margin-right:10px;"><img src={% thumbnail user.get_profile.avatar 25x25 crop %}></div>
 					<div style="margin-top:10px;">
-					<b>{{ user.first_name }}</b> | Federation | Settings | Logout
+					{{ user.first_name }}
 					</div>
 				</div>
 			</div>
@@ -36,11 +41,13 @@
 
 		<div id="subheader">
 			<div class="container">
+<!--
                 <div class="search_box">
                     <form style="display:inline" method="post" action="/search">{% csrf_token %}
                         <input class="searchinput" type="text" name="search" value="Search"/>
                     </form>
                 </div>
+-->
                 {% block submenu %}{% endblock %}
 		</div>
 

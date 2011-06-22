@@ -102,8 +102,7 @@
 		  {% if multiple_hits and multiple_refs and resultme %}
   <h3 class="warn-title"><font color="red">Multiple local investigations</font></h3>
   There are multiple people that have uploaded this file and you are one of them.<br>
-  Further you haveregistered a local invesigation with a reference in fordrop.<br>
-  This enables you to start a joint investigation with this file included.<br><br>
+    <br>
   <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><font color="blue"><button>Start new joint investigation</button></font></div>
     <div id="hidetext" style="display:none;">
       <form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}

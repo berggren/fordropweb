@@ -36,7 +36,7 @@ class Reference(models.Model):
         return '%s' % (self.name)
     class Admin:
         pass
-    
+
 class Status(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
