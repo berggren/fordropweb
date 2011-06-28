@@ -15,7 +15,7 @@ def dashboard(request):
     searchform = SearchForm()
     files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
     stream = activity_stream()
-    investigations = Investigation.objects.filter(creator=request.user)
+    investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
     return render_to_response('apps/userprofile/dashboard.html',
                             {
                                 'investigations': investigations,

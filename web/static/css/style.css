@@ -105,9 +105,9 @@ p.menu {
 
 .news_box_grey {
 	background: #fbfbfb;
-	border: 1px solid silver;
+	#border: 1px solid silver;
   	-webkit-border-radius: 5px;
-	-webkit-box-shadow: 2px 2px 2px #e8e8e8;
+	-webkit-box-shadow: 2px 2px 5px #999;
 	padding:10px;
 }
 
@@ -330,4 +330,16 @@ textarea {
     border-color:silver;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+}
+
+.foo {
+    padding:5px;
+}
+
+.foo:hover {
+    background:#ececec;
+}
+
+.foo a {
+    text-decoration:none;
 }

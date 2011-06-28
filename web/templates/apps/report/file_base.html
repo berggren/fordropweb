@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block menu %}
+    <li><a href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
+    <li id="active"><a id="current" href="/report"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
+    <li><a href="/investigation"><h3 class="menu">Investigations</h3><p class="menu">Collaborate</p></a></li>
+    <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
+{% endblock %}
+
+{% block submenu %}
+<ul id="saturday">
+    {% block report_submenu %}{% endblock %}
+</ul>
+{% endblock %}
+
+{% block content %}
+    <div class="span-24 leftcol">
+        <hr class="space">
+        {% block report_content %}{% endblock %}
+    </div>
+
+{% endblock %}

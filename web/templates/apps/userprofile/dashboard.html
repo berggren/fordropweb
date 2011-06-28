@@ -78,10 +78,11 @@
 
 {% block userprofile_sidebar %}
 	            <h3>Your investigations</h3>
-                {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"3" %}
+
+                {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
+                    <div class="foo">
                     <a href="/investigation/{{ investigation.id }}">
 		            <div class="news-title">{{ investigation.title }}</div>
-		            </a>
                     {% if investigation.description %}
                         <span class="threadTextDarker">
 			                <i>{{ investigation.description.content|linebreaksbr|truncatewords:"10" }}</i>
@@ -89,12 +90,15 @@
 		                <br>
 		            {% endif %}
 		            <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-		            <br>
-		            <br>
+                    </a>
+
+                    </div>
+
                 {% endfor %}
 
         <hr class="space">
 
+ <!--
                 <h3>Suggestions</h3>
                 {% for file in files|dictsortreversed:"lastupdated"|slice:"3" %}
                     <a href="/file/{{ file.id }}/show">
@@ -110,4 +114,5 @@
                     <br>
 
                 {% endfor %}
+-->
 {% endblock %}
