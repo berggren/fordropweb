@@ -1,25 +1,34 @@
 {% extends "base.html" %}
 
 {% block menu %}
+    <!--
+
     <li id="active"><a id="current" href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
     <li><a href="{% url apps.report.views.report %}"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
-    <li><a href="{% url apps.investigation.views.index %}"><h3 class="menu">Investigations</h3><p class="menu">Collaborate</p></a></li>
     <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
+-->
+
 {% endblock %}
 
 {% block submenu %}
 <ul id="saturday">
     {% block userprofile_submenu %}{% endblock %}
+    <li style="float:right;"><a href="#">Settings</a></li>
 </ul>
 {% endblock %}
 
 {% block content %}
     <hr class="space">
-    <div class="span-17 leftcol">
-        {% block userprofile_content %}{% endblock %}
+	<div class="span-5 leftcol">
+        <a class="add icon16"  href="/investigation">New Investigation</a>
+        <hr style="margin:7px;">
+        <a class="upload icon16" href="/report">Upload malware</a>
+        <hr style="margin:7px;">
+        <hr class="space">
+        {% block userprofile_sidebar %}{% endblock %}
     </div>
     <div class="span-1">&nbsp;</div>
-	<div class="span-6 rightcol last">
-        {% block userprofile_sidebar %}{% endblock %}
+    <div class="span-15 rightcol">
+        {% block userprofile_content %}{% endblock %}
     </div>
 {% endblock %}

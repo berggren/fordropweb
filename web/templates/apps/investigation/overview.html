@@ -29,14 +29,80 @@
 
 {% block investigation_content %}
 
-  <h2>{{ investigation.title }}</h2>
+	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
+		<div class="post_container">
+			{% ifequal item.type "comment" %}
+				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
+				<div class="post_box">
+	  				<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					{% ifequal item.object.content_type.name "file" %}
+	    				commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
+					{% endifequal %}
+                    {% ifequal item.object.content_type.name "investigation" %}
+                        commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}/discussion"> {{ item.object.content_object.title }}</a>
+                    {% endifequal %}
+					{% ifequal item.object.content_type.name "user" %}
+						to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "report" %}
+						<span class="threadText">
+							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
+						</span>
+					{% endifequal %}
+					{% ifequal item.object.content_type.name "tag" %}
+						<span class="threadText">
+							<i>{{ item.object.content_object }}</i>
+						</span>
+					{% endifequal %}
+                    <br>
+				    <font color="#222">{{ item.object.comment|linebreaksbr|truncatewords:"30" }}</font>
+					<br>
+					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
+				 </div>
+			{% endifequal %}
+			{% ifequal item.type "file" %}
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+				<div class="post_box">
+					<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
+					<br>
+					<span class="threadText">{{ item.object.timecreated|timesince }}</span>
+				</div>
+			{% endifequal %}
+
+			{% ifequal item.type "report" %}
+				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+				<div class="post_box">
+				    <span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
+					reported {{ item.object.report.type }}, {{ item.object.report.value }}
+				</div>
+				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
+			{% endifequal %}
+
+            {% ifequal item.type "investigation" %}
+                <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.creator.get_profile.avatar 40x40 crop %}></div>
+                <div class="post_box">
+                    <span class="threadTitle"><a href="/user/{{ item.object.creator.id }}">{{ item.object.creator.first_name }} {{ item.object.creator.last_name }}</a></span>
+                    started a {{ item.type }}, <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a>
+                </div>
+                <span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
+            {% endifequal %}
+
+            <hr>
+		</div>
+	 {% endfor %}
+
+    <!--
+    <div class="news_box_grey">
+
+
     {% if investigation.description %}
       {{ investigation.description.content|linebreaksbr }}
       <hr class="space">
       <hr>
-      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="add">Edit</span></div>
+      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Edit</span></div>
     {% else %}
-      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="add">Add description</span></div>
+      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Add description</span></div>
     {% endif %}
          <div id="hidetext" style="display:none;">
           <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
@@ -48,21 +114,17 @@
           </form>
     </div>
         <div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
+    </div>
 
-    <hr class="space">
-  <div class="news_box_grey">
-    <h3>Information</h3>
-    <strong>References:</strong> {% for ref in investigation.reference.all %}{{ ref.name }} {% endfor %}
-  <br>
-    <strong>Files:</strong> {{ files|length }}
-  </div>
+-->
 
 {% endblock %}
 
 {% block investigation_sidebar %}
-    <h3>People</h3>
-    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-    {% for user in people %}
-    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
-    {% endfor %}
+
+
+
+
+
+
 {% endblock %}

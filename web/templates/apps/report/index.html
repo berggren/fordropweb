@@ -8,6 +8,7 @@
             You will quicly see if the file have been uploaded by soimeone else and or if
             the file is part of an investigation.
             <br><br>
+
             <form action="/report/add/file" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
                {% for field in uploadform %}
                        {{ field.errors }}
@@ -16,7 +17,7 @@
                 <input type="submit" value="Upload" />
             </form>
             </div>
-    
+
 
 
         <hr class="space">

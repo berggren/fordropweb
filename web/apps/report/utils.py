@@ -97,8 +97,8 @@ def query_mhr(hash):
         return None, None
 
 def add_node_to_graph(obj, type):
-    from neo4jrestclient import GraphDatabase, client
-    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    import neo4jrestclient.client as neo4j
+    graphdb = neo4j.GraphDatabase("http://127.0.0.1:7474/db/data/")
     if not obj.graphid:
         if type == 'file':
             node = graphdb.nodes.create(name=obj.sha256, type='report')
@@ -115,16 +115,16 @@ def add_node_to_graph(obj, type):
     return node
 
 def add_relationship_to_graph(node1, node2, type):
-    from neo4jrestclient import GraphDatabase, client
-    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    import neo4jrestclient.client as neo4j
+    graphdb = neo4j.GraphDatabase("http://127.0.0.1:7474/db/data/")
     try:
         graphdb.relationships.create(node1, type, node2)
     except: return False
     return True
 
 def add_to_graph(hash, reporter):
-    from neo4jrestclient import GraphDatabase, client
-    graphdb = GraphDatabase("http://127.0.0.1:7474/db/data/")
+    import neo4jrestclient.client as neo4j
+    graphdb = neo4j.GraphDatabase("http://127.0.0.1:7474/db/data/")
     file_node = graphdb.nodes.create(name=hash, type='report')
     reporter_node = graphdb.nodes.create(name=reporter, type="reporter")
     graphdb.relationships.create(reporter_node, "reported", file_node)

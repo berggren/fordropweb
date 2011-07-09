@@ -1,10 +1,6 @@
 {% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
 
-{% block investigation_submenu %}
-    <li><a href="#" title="">Browse</a></li>
-{% endblock %}
-
 {% block investigation_content %}
     <div class="news_box_grey">
     <h2>Start new investigation</h2>
@@ -18,16 +14,18 @@
     </div>
     <br>
 
+<!--
         <h2>Recent investigations</h2>
   {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
     <a href="/investigation/{{ investigation.id }}"><h3>{{ investigation.title }}</h3></a>
     <span class="threadTextDarker">
       <i>
-          {{ investigation.description.content|linebreaksbr|truncatewords:"100" }}<br>
+          {{ investigation.description.content|linebreaksbr|truncatewords:"50" }}<br>
       </i>
     </span>
     <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
     <br><br>
       <hr>
   {% endfor %}
+-->
 {% endblock %}

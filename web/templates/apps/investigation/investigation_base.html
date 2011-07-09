@@ -2,10 +2,11 @@
 {% load thumbnail %}
 
 {% block menu %}
+    <!--
     <li><a href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
     <li><a href="/report"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
-    <li id="active"><a id="current" href="/investigation"><h3 class="menu">Investigations</h3><p class="menu">Collaborate</p></a></li>
     <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
+    -->
 {% endblock %}
 
 {% block submenu %}
@@ -15,13 +16,46 @@
 {% endblock %}
 
 {% block content %}
-    <div class="span-17 leftcol">
+    <hr class="space">
+	<div class="span-5 leftcol">
+
+        <a class="upload icon16" href="/report">Upload new evidence</a>
+        <hr style="margin:7px;">
+        <a class="add icon16"  href="#">Add annotation</a>
+        <hr style="margin:7px;">
+
         <hr class="space">
-        {% block investigation_content %}{% endblock %}
-    </div>
-    <div class="span-1">&nbsp;</div>
-	<div class="span-6 rightcol last">
+
+
+        <a class="icon16" style="text-indent:10px;" href="#">Discussion</a>
+        <hr style="margin:7px;">
+
+
+        <a class="icon16" style="text-indent:10px;" href="#">Timeline</a>
+        <hr style="margin:7px;">
+
+        <a class="icon16" style="text-indent:10px;" href="#">Library</a>
+        <hr style="margin:7px;">
+
+        <a class="icon16" style="text-indent:10px;" href="#">Report</a>
+        <hr style="margin:7px;">
+
+
         <hr class="space">
+
+       <img src={% thumbnail investigation.creator.get_profile.avatar 35x36 crop %}>
+    {% for user in people %}
+    <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
+    {% endfor %}
+    <br>There are {{ people|length }} people involved
+    <hr class="space">
         {% block investigation_sidebar %}{% endblock %}
     </div>
+    <div class="span-1">&nbsp;</div>
+    <div class="span-15 rightcol">
+        <h2>{{ investigation.title }}</h2>
+        <hr>
+        {% block investigation_content %}{% endblock %}
+    </div>
+
 {% endblock %}

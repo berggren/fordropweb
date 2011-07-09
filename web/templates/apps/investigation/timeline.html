@@ -1,4 +1,4 @@
-{% extends "apps/investigation/investigation_base.html" %}
+{% extends "apps/investigation/investigation_base_wide.html" %}
 {% load thumbnail %}
 {% load comments %}
 
@@ -28,7 +28,8 @@
 {% endblock %}
 
 {% block investigation_content %}
-  <h2>Timeline</h2>
+ <div class="news_box_grey">
+  <h3>Timeline</h3>
   <div id="timeline"></div>
 
     <hr class="pace">
@@ -45,15 +46,7 @@
             </tr>
         {% endfor %}
     </table>
+</div>
 
 
-
-{% endblock %}
-
-{% block investigation_sidebar %}
-    <h3>People</h3>
-    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-    {% for user in people %}
-    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
-    {% endfor %}
 {% endblock %}

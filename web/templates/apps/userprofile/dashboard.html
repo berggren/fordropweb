@@ -11,7 +11,9 @@
 {% endblock %}
 
 {% block userprofile_content %}
-	 <h2>Activity</h2>
+
+    <h2>Activity</h2>
+
 	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
@@ -77,42 +79,14 @@
 {% endblock %}
 
 {% block userprofile_sidebar %}
-	            <h3>Your investigations</h3>
 
-                {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
-                    <div class="foo">
-                    <a href="/investigation/{{ investigation.id }}">
-		            <div class="news-title">{{ investigation.title }}</div>
-                    {% if investigation.description %}
-                        <span class="threadTextDarker">
-			                <i>{{ investigation.description.content|linebreaksbr|truncatewords:"10" }}</i>
-		                </span>
-		                <br>
-		            {% endif %}
-		            <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-                    </a>
-
-                    </div>
-
-                {% endfor %}
-
-        <hr class="space">
-
- <!--
-                <h3>Suggestions</h3>
-                {% for file in files|dictsortreversed:"lastupdated"|slice:"3" %}
-                    <a href="/file/{{ file.id }}/show">
-                    <div class="news-title">{{ file.filename }}</div>
-                    </a>
-                    {% if file.title %}
-                        <span class="threadTextDarker">
-                            <i>{{ file.filename|linebreaksbr|truncatewords:"10" }}</i>
-                        </span>
-                        <br>
-                    {% endif %}
-                    <span class="threadText">Last activity was {{ file.lastupdated|timesince }} ago</span>
-                    <br>
-
-                {% endfor %}
--->
+<!-- <div class="news_box_grey"> -->
+                <hr class="space">
+               <h3>Your investigations</h3>
+               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
+                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
+                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
+                    <hr style="margin:7px;">
+               {% endfor %}
+<!--   </div> -->
 {% endblock %}

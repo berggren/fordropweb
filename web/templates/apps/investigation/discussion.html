@@ -10,15 +10,26 @@
 {% endblock %}
 
 {% block investigation_content %}
-<h2>Discussion</h2>
-  
 
-<div id="middlebox">
+    <div class="news_box_grey">
+      {% get_comment_form for investigation as form %}
+      <form action="/comments/post/" method="post">{% csrf_token %}
+          <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+          {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+          {{ form.comment }}
+          <br>
+          <input type="submit" value="Post">
+      </form>
+    </div>
 
-<hr class="space">
+    <hr class="space">
 
 {% get_comment_list for investigation as comments %}
-{% for comment in comments %}
+{% if comments %}
+<div class="news_box_grey">
+    {% for comment in comments reversed %}
     <div class="comment-container">
       <div class="comment">
           <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
@@ -30,30 +41,22 @@
       </div>        
     </div>        
 {% endfor %}
-
-<br>
-
-<div class="box_color">
-  <h3>Write</h3>
-  {% get_comment_form for investigation as form %}
-  <form action="/comments/post/" method="post">{% csrf_token %}
-      <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
-      {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-      {% endfor %}
-      {{ form.comment }}
-      <br>
-      <input type="submit" value="Post">
-  </form>
 </div>
-</div>
+{% else %}
+    <h3>No discussion in this investigation..</h3>
+{% endif %}
+
+
 
 {% endblock %}
 
 {% block investigation_sidebar %}
+    <div class="news_box_grey">
     <h3>People</h3>
+    <hr>
     <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
     {% for user in people %}
     <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
     {% endfor %}
+    </div>
 {% endblock %}

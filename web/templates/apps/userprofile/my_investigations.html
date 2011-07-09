@@ -12,11 +12,12 @@
 
 {% block userprofile_content %}
     <h2>My investigations</h2>
+    <br>
     {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
        <a href="/investigation/{{ investigation.id }}"><div class="news-title">{{ investigation.title }}</div></a>
        <span class="threadTextDarker">
          <i>
-             {{ investigation.description.content|linebreaksbr|truncatewords:"100" }}<br>
+             {{ investigation.description.content|linebreaksbr|truncatewords:"10" }}<br>
          </i>
        </span>
        <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
@@ -26,4 +27,5 @@
 {% endblock %}
 
 {% block userprofile_sidebar %}
+
 {% endblock %}

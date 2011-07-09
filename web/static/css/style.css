@@ -1,13 +1,13 @@
 body {
     line-height:19px;
-
+    background: #fff;
 }
 
 #header {
 	background: #555 url("/site_media/img/bg.png");
     background-repeat: no-repeat;
     background-repeat: repeat-x;
-	height:70px;
+	height:60px;
   	color:#fff;
 }
 
@@ -22,7 +22,6 @@ body {
 	height:40px;
 	margin-bottom:20px;
 	border-bottom: 1px solid silver;
-	#-webkit-box-shadow: 0 0 15px #999;
 
 }
 
@@ -30,6 +29,10 @@ body {
 	float:left;
 	margin-top: 10px;
     padding-right: 10px;
+}
+
+.text-box {
+    width:30em;
 }
 
 #search {
@@ -74,7 +77,7 @@ color: #fff;
     #-webkit-border-radius: 0px 0px 8px 8px;
 	border:0;
     #-webkit-box-shadow: 8px 8px 10px #111;
-    height:50px;
+    height:40px;
 
 }
 
@@ -131,11 +134,11 @@ p.menu {
 .searchinput {
     background:#555;
 	height:30px;
-	width:200px;
-	font-weight:normal;
+	width:300px;
+	font-weight:bold;
 	padding:5px;
 	color:#777;
-	-webkit-border-radius: 6px;
+    border:1px solid red;
 }
 
 .news-title {
@@ -173,8 +176,8 @@ a:hover {
 .avatar {
   margin-right: 10px;
   float:left;
-  -webkit-box-shadow: 2px 2px 5px #444;
-  border: 1px solid #fff;
+  -webkit-box-shadow: 2px 2px 3px #444;
+  #border: 1px solid #fff;
 }
 
 .avatar-mini {
@@ -289,7 +292,7 @@ display: inline;
 }
 
 
-ul#saturday{margin:0;padding:0;list-style-type:none;width:640;
+ul#saturday{margin:0;padding:0;list-style-type:none;
 position:relative;display:block;height:39px;
 font-size:12px;font-weight:bold;
 font-family:Helvetica,Arial,Verdana,sans-serif;
@@ -313,9 +316,39 @@ ul#saturday li a.current,ul#saturday li a.current:hover{color:#333;border-bottom
   text-indent:20px;
 }
 
+.icon16 {
+    display:block;
+    text-decoration:none;
+    text-indent:30px;
+    line-height: 22px;
+    font-size: 1.2em;
+}
+
+.upload {
+    background:url(/site_media/img/boxupload16.png) no-repeat 0px 2px;
+}
+
+.add {
+    background:url(/site_media/img/plus16.png) no-repeat 0px 2px;
+}
+
+.settings {
+    background:url(/site_media/img/gear16.png) no-repeat 0px 2px;
+}
+
+.noicon {
+    background:none;
+    text-indent:0;
+}
+.edit {
+    text-indent:20px;
+    background:url(/site_media/img/paperedit16.png) no-repeat 0px 2px;
+}
+
+
 textarea {
 	width: 100%;
-	height: 250px;
+	height: 100px;
 	border: 1px solid silver ;
 	padding: 0.5em;
 	background: #fff;
@@ -342,4 +375,9 @@ textarea {
 
 .foo a {
     text-decoration:none;
+}
+
+.avatar-shadow {
+  -webkit-box-shadow: 2px 2px 5px #444;
+margin-right: 5px;
 }

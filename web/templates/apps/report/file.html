@@ -9,7 +9,7 @@
     {% endfor %}
     <br>
   {% endif %}
-  <h2>Info for file {{ result.sha1 }}</h2>
+  <h2>{{ result.sha1 }}</h2>
 	<div class="news_box_grey">
 	  <table border=0>
 		  <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
@@ -61,8 +61,6 @@
       <br>
   {% endifequal %}
     {%  endif %}
-
-
 
 	 {% if is_pefile %}
 	   {% if not pedump %}
@@ -182,6 +180,4 @@
   </form>
 </div>
 
-
-<br clear="all">
 {% endblock %}

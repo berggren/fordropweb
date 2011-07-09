@@ -10,8 +10,9 @@
 {% endblock %}
 
 {% block investigation_content %}
-  <h2>Pages</h2>
-  <div class="news_box_grey">
+    <div class="news_box_grey">
+  <h3>Pages</h3>
+    <hr>
   {% for page in investigation.pages.all %}
       <a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">
       <div class="news-title">{{ page.title }}</div>
@@ -26,11 +27,13 @@
       <br>
       </a>
   {% endfor %}
-  </div>
-<br>
+</div>
 
-  <h2>Files</h2>
-  <div class="news_box_grey">
+    <hr class="space">
+
+    <div class="news_box_grey">
+  <h3>Files</h3>
+    <hr>
   {% for file in files %}
       <a href="/file/{{ file.file.id }}/show">
       <div class="news-title">{{ file.filename }}</div>
@@ -47,11 +50,17 @@
   {% endfor %}
     </div>
 {% endblock %}
+</div>
+
+
 
 {% block investigation_sidebar %}
+     <div class="news_box_grey">
     <h3>People</h3>
+    <hr>
     <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
     {% for user in people %}
     <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
     {% endfor %}
+    </div>
 {% endblock %}
