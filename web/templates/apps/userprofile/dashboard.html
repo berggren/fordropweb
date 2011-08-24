@@ -1,19 +1,21 @@
-{% extends "apps/userprofile/userprofile_base.html" %}
+{% extends "apps/userprofile/userprofile_base_3col.html" %}
 {% load thumbnail %}
 {% load comments %}
 
+
 {% block userprofile_submenu %}
+<!--
     <li><a href="/home" title="" class="current">Dashboard</a></li>
-    <li><a href="/home/investigations" title="">My investigations</a></li>
     <li><a href="/home/inventory" title="">Inventory</a></li>
     <li><a href="/home/readinglist" title="">Reading list</a></li>
     <li><a href="/home/suggestions" title="">Suggestions</a></li>
+-->
 {% endblock %}
 
 {% block userprofile_content %}
 
     <h2>Activity</h2>
-
+    <hr class="space">
 	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
 		<div class="post_container">
 			{% ifequal item.type "comment" %}
@@ -44,6 +46,7 @@
 					<br>
 					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
 				 </div>
+
 			{% endifequal %}
 			{% ifequal item.type "file" %}
 				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
@@ -74,14 +77,19 @@
             {% endifequal %}
 
             <hr>
-		</div>
+
+        </div>
+
 	 {% endfor %}
 {% endblock %}
 
 {% block userprofile_sidebar %}
 
-<!-- <div class="news_box_grey"> -->
-                <hr class="space">
+        <a class="upload icon16" href="/report" style="color:green;">Upload malware</a>
+        <hr style="margin:7px;">
+        <a class="add icon16"  href="/investigation" style="color:green;">New Investigation</a>
+        <hr style="margin:7px;">
+        <hr class="space">
                <h3>Your investigations</h3>
                {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
                     <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
@@ -89,4 +97,25 @@
                     <hr style="margin:7px;">
                {% endfor %}
 <!--   </div> -->
+{% endblock %}
+
+{% block userprofile_rightbar %}
+<!--
+               <h3>Suggestions</h3>
+               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
+                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
+                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
+                    <hr style="margin:7px;">
+               {% endfor %}
+
+            <hr class="space">
+
+               <h3>Readinglist</h3>
+               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
+                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
+                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
+                    <hr style="margin:7px;">
+               {% endfor %}
+
+-->
 {% endblock %}

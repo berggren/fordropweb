@@ -10,57 +10,35 @@
 {% endblock %}
 
 {% block investigation_content %}
-    <div class="news_box_grey">
-  <h3>Pages</h3>
-    <hr>
-  {% for page in investigation.pages.all %}
-      <a href="/investigation/{{ investigation.id }}/page/{{ page.id }}">
-      <div class="news-title">{{ page.title }}</div>
-        <span class="threadTextDarker">
-         <i>
-          {{ page.content|linebreaksbr|truncatewords:"50" }}
-         </i>
-        </span>
-        <br>
-      <span class="threadText">Last activity was {{ page.lastupdated|timesince }} ago</span>
-      <br>
-      <br>
-      </a>
-  {% endfor %}
-</div>
-
-    <hr class="space">
-
-    <div class="news_box_grey">
-  <h3>Files</h3>
-    <hr>
-  {% for file in files %}
-      <a href="/file/{{ file.file.id }}/show">
-      <div class="news-title">{{ file.filename }}</div>
-        <span class="threadTextDarker">
-         <i>
-          {{ file.file.filetype }}
-         </i>
-        </span>
-        <br>
-      <span class="threadText">Uploaded {{ file.timecreated|timesince }} ago by {{ file.user.get_full_name }}</span>
-      <br>
-      <br>
-      </a>
-  {% endfor %}
-    </div>
-{% endblock %}
-</div>
-
-
-
-{% block investigation_sidebar %}
-     <div class="news_box_grey">
-    <h3>People</h3>
-    <hr>
-    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-    {% for user in people %}
-    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
+<h3>Pages</h3>
+<table>
+    {% for n in investigation.pages.all %}
+        <tr class="{% cycle row1,row2 %}">
+            <td>{{ n.title }}</td>
+        </tr>
     {% endfor %}
-    </div>
+</table>
+
+<hr class="space">
+
+        <table border=0>
+            <th>Reporter</th>
+            <th></th>
+            <th></th>
+            <th>Reference</th>
+            {% for n in files|slice:"10" reversed %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+                    <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+                    <td>{{ n.timecreated|timesince }} ago</td>
+                    {% if n.reference %}
+                        <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+
 {% endblock %}

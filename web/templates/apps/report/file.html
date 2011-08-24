@@ -1,16 +1,19 @@
-{% extends "apps/report/file_base.html" %}
+{% extends "apps/report/file_base2.html" %}
 {% load comments %}
 {% load thumbnail %}
 
-{% block report_content %}
+{% block report_leftside %}
   {% if messages %}
     {% for message in messages %}
       <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
     {% endfor %}
     <br>
   {% endif %}
-  <h2>{{ result.sha1 }}</h2>
-	<div class="news_box_grey">
+
+  <a href="javascript: history.go(-1)" style="margin-right:6px;" class="btn left">Back</a><h3 class="inline">{{ result.sha1 }}</h3><button class="btn primary right">Graph</button>
+    
+    <div class="well">
+<!--	<div class="news_box_grey"> -->
 	  <table border=0>
 		  <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
 		  <tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
@@ -18,7 +21,48 @@
 		  <tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
 		  <tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
 		</table>
-    <h3>Actions</h3>
+    </div>
+
+	{% if resultall %}
+    <div class="well">
+	<table border=0>
+             <th>{{ resultall|length }} reporter{{ resultall|pluralize:"s"  }}</th>
+      <th>filename</th>
+      <th>reference</th>
+			{% for n in resultall %}
+				<tr>
+				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
+				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
+					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
+					<td>{{ n.filename }}</td>
+					{% if n.reference %}
+						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+					{% else %}
+                        {% if resultme %}
+						    <td><button class="btn">Add</button></td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+
+
+</div>
+
+<br>
+
+    <ul class="tabs">
+      <li class="active"><a href="#">Description</a></li>
+      <li><a href="#">Actions</a></li>
+      <li><a href="#">Related</a></li>
+      <li><a href="#">Printable strings</a></li>
+      <li><a href="#">PE-file</a></li>
+
+    </ul>
+    
 	 {% if not mhr %}
 	   <a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a><br>
 	 {% else %}
@@ -34,7 +78,7 @@
 	 {% else %}
 	   <a href="/file/{{ result.id }}/show">Close printable strings</a>
 	 {% endif %}
-	 
+
 	 <br>
 
         {% if resultme %}
@@ -70,7 +114,7 @@
 	   {% endif %}
 	{% endif %}
     <br>
-  </div>
+  <!-- </div> -->
 
 	{% if strings %}
     <br>
@@ -92,64 +136,13 @@
 
     <hr class="space">
 
-	{% if resultall %}
+{% endblock %}
 
-
-		<h2>Reported by</h2>
-    <div class="news_box_grey">
-		  {% if multiple_hits and multiple_refs and resultme %}
-  <h3 class="warn-title"><font color="red">Multiple local investigations</font></h3>
-  There are multiple people that have uploaded this file and you are one of them.<br>
-    <br>
-  <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><font color="blue"><button>Start new joint investigation</button></font></div>
-    <div id="hidetext" style="display:none;">
-      <form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-        <b>Title</b> <input type="text" name="title" id="title" />
-        <br><br>
-        Choose references
-        <br>
-        {% for ref in refs %}
-          <input TYPE=CHECKBOX CHECKED NAME="reference_{{ ref }}">{{ ref }}<br>
-        {% endfor %}
-          <input type="submit" value="Start investigation" />
-    </form>
-  </ul>
-  <br>
-  </div>
-  <br>
-{% endif %}
-		<table border=0>
-      <th></th>
-      <th>filename</th>
-      <th>reference</th>
-			{% for n in resultall %}
-				<tr>
-				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
-				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
-					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
-					<td>{{ n.filename }}</td>
-					{% if n.reference %}
-						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-					{% else %}
-						<td></td>
-					{% endif %}
-				</tr>
-			{% endfor %}
-		</table>
-	{% endif %}
-
-
-</div>
-
-<br>
-
-{% get_comment_count for result as comment_count %}
-
-{% if comment_count %}
-  <h2>{{ comment_count }} comments</h2>
-{% endif %}
-
+{% block report_rightside %}
 {% get_comment_list for result as comments %}
+
+ <h3>Comments</h3>
+ <br>
 {% for comment in comments %}
     <div class="comment-container">
       <div class="comment">
@@ -159,15 +152,10 @@
           {{ comment.comment|linebreaksbr }}
       </div>
     </div>
-    <hr class="space">
-    <hr>
+    <br>
 {% endfor %}
 
-<br>
-
 <div class="box_color">
-  <h2>Write</h2>
-  <br>
   {% get_comment_form for result as form %}
   <form action="/comments/post/" method="post">{% csrf_token %}
       <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
@@ -176,7 +164,7 @@
       {% endfor %}
       {{ form.comment }}
       <br>
-      <input type="submit" value="Post">
+      <input type="submit" class="btn" value="Post">
   </form>
 </div>
 

@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^home$',                         'apps.userprofile.views.dashboard'),
     (r'^home/investigations$',               'apps.userprofile.views.my_investigations'),
     (r'^home/inventory$',               'apps.userprofile.views.inventory'),
+    #(r'^home/inventory/json$',               'apps.userprofile.views.inventory_json'),
     (r'^home/readinglist$',               'apps.userprofile.views.reading_list'),
     (r'^home/suggestions$',               'apps.userprofile.views.suggestions'),
 

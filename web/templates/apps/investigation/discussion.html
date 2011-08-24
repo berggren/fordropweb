@@ -26,9 +26,10 @@
 
     <hr class="space">
 
+    <hr class="space">
+
 {% get_comment_list for investigation as comments %}
 {% if comments %}
-<div class="news_box_grey">
     {% for comment in comments reversed %}
     <div class="comment-container">
       <div class="comment">
@@ -41,7 +42,6 @@
       </div>        
     </div>        
 {% endfor %}
-</div>
 {% else %}
     <h3>No discussion in this investigation..</h3>
 {% endif %}
@@ -50,13 +50,3 @@
 
 {% endblock %}
 
-{% block investigation_sidebar %}
-    <div class="news_box_grey">
-    <h3>People</h3>
-    <hr>
-    <img class="avatar-shadow" src={% thumbnail investigation.creator.get_profile.avatar 50x50 crop %}>
-    {% for user in people %}
-    <img class="avatar-shadow" src={% thumbnail user.get_profile.avatar 50x50 crop %}>
-    {% endfor %}
-    </div>
-{% endblock %}

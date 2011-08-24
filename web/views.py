@@ -6,6 +6,7 @@ from apps.search.forms import *
 #from apps.report.models import *
 #from apps.report.forms import *
 from apps.report.forms import *
+from apps.report.utils import *
 from apps.pages.models import *
 from apps.investigation.models import *
 #from django.contrib.comments.models import *
@@ -57,11 +58,9 @@ def add_reference(request, obj_type, obj_id):
                 _object = UserReport.objects.get(id=obj_id)
             _object.reference = _ref_object
             _object.save()
-
-            # = add_node_to_graph(file, "file")
-            #user_node = add_node_to_graph(request.user.get_profile(), "person")
-            #rel = add_relationship_to_graph(user_node, file_node, "reported")
-            #add_ref_to_graph(_object, _ref_object)
+            #ref_node = add_node_to_graph(_ref_object, "reference")
+            #file_node = add_node_to_graph(_object, "file")
+            #rel = add_relationship_to_graph(ref_node, file_node, "part of")
 
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 

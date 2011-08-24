@@ -24,7 +24,7 @@ from reversion import revision
 #from reversion.helpers import generate_patch
 
 def get_people(investigation):
-    people = []
+    people = [investigation.creator]
     for ref in investigation.reference.all():
         ref_files = UserFile.objects.filter(reference=ref)
         for file in ref_files:
@@ -86,7 +86,7 @@ def overview(request, id):
         for file in ref_files:
             if file not in files:
                 files.append(files)
-    return render_to_response('apps/investigation/overview.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'startdate': startdate, 'stream': stream, 'tagform': tagform, 'tags': tags, 'people': people, 'files':files}, RequestContext(request))
+    return render_to_response('apps/investigation/overview2.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'startdate': startdate, 'stream': stream, 'tagform': tagform, 'tags': tags, 'people': people, 'files':files}, RequestContext(request))
 
 @login_required
 def discussion(request, id):
@@ -111,7 +111,7 @@ def timeline(request, id):
                 files.append(files)
     people = get_people(investigation)
     startdate = investigation.timecreated.strftime('%Y %m %d %H:%M:%S')
-    return render_to_response('apps/investigation/timeline.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate, 'files': files, 'people': people}, RequestContext(request))
+    return render_to_response('apps/investigation/timeline2.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate, 'files': files, 'people': people}, RequestContext(request))
 
 @login_required
 def library(request, id):
