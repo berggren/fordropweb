@@ -1,0 +1,46 @@
+body {
+	color:#222;
+}
+
+.topbar {
+	position: static;
+}
+
+.avatar {
+  margin-right: 10px;
+  float:left;
+}
+
+
+.post_box {
+	color: #000;
+	margin-bottom: 20px;
+    margin-left: 50px;
+}
+
+.inline {
+    display: inline;
+}
+
+.right {
+    float:right;
+}
+
+.left {
+    float:left;
+}
+
+#id_comment {
+    width: 100%;
+    height:70px;
+}
+
+#timeline {
+	height: 250px;
+    border: 1px solid silver;
+}
+
+.quiet {
+    color: #999;
+    font-size:0.9em;
+}

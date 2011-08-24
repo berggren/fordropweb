@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <title>fordrop</title>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.0.0.min.css">
+    <link rel='stylesheet' href='/site_media/css/style2.css' type='text/css'>
+	<script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
+	{% block extrahead %}{% endblock %}
+</head>
+
+<body onload="onLoad();" onresize="onResize();">
+<div class="topbar-wrapper" style="z-index: 5;">
+  <div class="topbar">
+    <div class="fill">
+      <div class="container">
+        <h3><a href="/">fordrop</a></h3>
+        <form action="">
+          <input type="text" placeholder="Search" />
+        </form>
+        <ul class="secondary-nav">
+          <li>
+            <a href="#" class="menu">Settings</a>
+          </li>
+          <li>
+            <a href="#" class="menu">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div> <!-- /fill -->
+  </div> <!-- /topbar -->
+</div> <!-- topbar-wrapper -->
+
+<br>
+
+{% block content %}{% endblock %}
+</body>
+</html>

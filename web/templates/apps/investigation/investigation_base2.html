@@ -1,0 +1,23 @@
+{% extends "base2.html" %}
+{% load thumbnail %}
+
+{% block content %}
+    <div class="container">
+    	<div class="row">
+            <div class="span10 columns">
+                <h2 class="inline">{{ investigation.title }}</h2>{% block extratitle %}{% endblock %}
+                <br><br>
+                {% block investigation_leftside %}{% endblock %}
+            </div>
+
+            <div class="span5 columns offset1">
+                {% for user in people %}
+                <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
+                {% endfor %}
+                <br>There are {{ people|length }} people involved
+                <br>
+                {% block investigation_rightside %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

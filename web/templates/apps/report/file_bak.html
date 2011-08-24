@@ -1,0 +1,187 @@
+{% extends "apps/report/file_base2.html" %}
+{% load comments %}
+{% load thumbnail %}
+
+{% block report_leftside %}
+  {% if messages %}
+    {% for message in messages %}
+      <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+    <br>
+  {% endif %}
+
+  <h3 class="inline">{{ result.sha1 }}</h3><button class="btn primary right">Graph</button>
+ <div class="well">
+<!--	<div class="news_box_grey"> -->
+	  <table border=0>
+		  <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
+		  <tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
+		  <tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
+		  <tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
+		  <tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
+		</table>
+    </div>
+
+
+	{% if resultall %}
+<h3>Reported by</h3>
+    <div class="well">
+		  {% if multiple_hits and multiple_refs and resultme %}
+  <h3 class="warn-title"><font color="red">Multiple local investigations</font></h3>
+  There are multiple people that have uploaded this file and you are one of them.<br>
+    <br>
+  <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><font color="blue"><button>Start new joint investigation</button></font></div>
+    <div id="hidetext" style="display:none;">
+      <form action="/investigation/create" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+        <b>Title</b> <input type="text" name="title" id="title" />
+        <br><br>
+        Choose references
+        <br>
+        {% for ref in refs %}
+          <input TYPE=CHECKBOX CHECKED NAME="reference_{{ ref }}">{{ ref }}<br>
+        {% endfor %}
+          <input type="submit" value="Start investigation" />
+    </form>
+  </ul>
+  <br>
+  </div>
+  <br>
+{% endif %}
+		<table border=0>
+      <th></th>
+      <th>filename</th>
+      <th>reference</th>
+			{% for n in resultall %}
+				<tr>
+				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
+				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
+					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
+					<td>{{ n.filename }}</td>
+					{% if n.reference %}
+						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+					{% else %}
+						<td></td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+
+
+</div>
+
+<br>
+
+    <ul class="tabs">
+      <li class="active"><a href="#">Actions</a></li>
+      <li><a href="#">Related</a></li>
+      <li><a href="#">Reading list</a></li>
+      <li><a href="#">Suggestions</a></li>
+    </ul>
+    
+	 {% if not mhr %}
+	   <a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a><br>
+	 {% else %}
+	   {% if mhr.donotexist %}
+		  <font color="green">No match in MHR:s malware repository</font><br>
+	   {% else %}
+	     <font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font><br>
+	   {% endif %}
+    {% endif %}
+
+	 {% if not strings %}
+	   <a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a>
+	 {% else %}
+	   <a href="/file/{{ result.id }}/show">Close printable strings</a>
+	 {% endif %}
+
+	 <br>
+
+        {% if resultme %}
+  {% ifequal resultme.reference None %}
+  <b>Reference:</b>
+  <form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+    {% for field in referenceform %}
+          {{ field.errors }}
+          {{ field }}
+        {% endfor %}
+      <input type="submit" value="Save" />
+    </form>
+    {% else %}
+    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
+      <div id="hidetext" style="display:none;">
+        <form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+          {% for field in referenceform %}
+                {{ field.errors }}
+                {{ field }}
+              {% endfor %}
+            <input type="submit" value="Save" />
+          </form>
+      </div>
+      <br>
+  {% endifequal %}
+    {%  endif %}
+
+	 {% if is_pefile %}
+	   {% if not pedump %}
+	     <a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a>
+	   {% else %}
+	     <a href="/file/{{ result.id }}/show">Close content of PE-file</a>
+	   {% endif %}
+	{% endif %}
+    <br>
+  <!-- </div> -->
+
+	{% if strings %}
+    <br>
+		<div id="strings_box">
+			<h2>Printable strings (<a href="/file/{{ result.id }}/show">Close</a>)</h2>
+			<hr>
+			{{ strings|linebreaksbr }}
+		</div>
+	{% endif %}
+
+	{% if pedump %}
+    <br>
+    <div id="strings_box">
+		<h1>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
+    <hr>
+			{{ pedump|linebreaksbr }}
+		</div>
+	{% endif %}
+
+    <hr class="space">
+
+{% endblock %}
+
+{% block report_rightside %}
+{% get_comment_list for result as comments %}
+
+ <h3>Comments</h3>
+ <br>
+{% for comment in comments %}
+    <div class="comment-container">
+      <div class="comment">
+          <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+          <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
+          <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
+          {{ comment.comment|linebreaksbr }}
+      </div>
+    </div>
+    <br>
+{% endfor %}
+
+<div class="box_color">
+  {% get_comment_form for result as form %}
+  <form action="/comments/post/" method="post">{% csrf_token %}
+      <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+      {{ form.comment }}
+      <br>
+      <input type="submit" class="btn" value="Post">
+  </form>
+</div>
+
+{% endblock %}

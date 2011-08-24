@@ -1,0 +1,59 @@
+{% extends "apps/investigation/investigation_base2.html" %}
+{% load comments %}
+
+{% block extrahead %}
+  <script>
+      Timeline_ajax_url="/site_media/js/timeline_2.3.0/timeline_ajax/simile-ajax-api.js";
+      Timeline_urlPrefix="/site_media/js/timeline_2.3.0/timeline_js/";       
+      Timeline_parameters='bundle=true';
+  </script>
+  <script src="/site_media/js/timeline_2.3.0/timeline_js/timeline-api.js"    
+      type="text/javascript">
+  </script> 
+  <script src="/site_media/js/timeline_2.3.0/timeline_js/timeline-api.js?bundle=true" type="text/javascript"></script>
+  <script src="/site_media/js/timeline_2.3.0/timeline_ajax/simile-ajax-api.js" type="text/javascript"></script>
+  <script>
+    var jsonurl = '/timeline';
+    var date = '{{ startdate }}';
+  </script>
+  <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block extratitle %}<button class="btn right">Follow</button>{% endblock %}
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li class="active"><a href="#">Description</a></li>
+    <li><a href="#">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id}}/timeline">Timeline</a></li>
+    <li><a href="#">Library</a></li>
+    <li><a href="#">Reports</a></li>
+</ul>
+
+    {% if investigation.description %}
+      {{ investigation.description.content|linebreaksbr }}
+      <hr class="space">
+      <hr>
+      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Edit</span></div>
+    {% else %}
+      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Add description</span></div>
+    {% endif %}
+         <div id="hidetext" style="display:none;">
+          <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <br>
+           <textarea id="id_description" rows="10" cols="40" name="description">
+{{ investigation.description.content|linebreaks|striptags }}
+            </textarea>
+            <input type="submit" value="Save" /> 
+          </form>
+    </div>
+        <div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
+{% endblock %}
+
+{% block investigation_rightside %}
+
+
+
+
+
+
+{% endblock %}

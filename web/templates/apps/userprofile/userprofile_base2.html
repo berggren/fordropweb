@@ -1,0 +1,15 @@
+{% extends "base2.html" %}
+
+{% block content %}
+    <div class="container">
+    	<div class="row">
+            <div class="span10 columns">
+                {% block userprofile_content %}{% endblock %}
+            </div>
+
+            <div class="span5 columns offset1">
+                {% block userprofile_sidebar %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
