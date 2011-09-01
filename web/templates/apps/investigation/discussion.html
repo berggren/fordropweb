@@ -2,51 +2,43 @@
 {% load thumbnail %}
 {% load comments %}
 
-{% block investigation_submenu %}
-    <li><a href="/investigation/{{ investigation.id }}" title="">Overview</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/discussion" title="" class="current">Discussion</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/timeline" title="">Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library" title="">Library</a></li>
-{% endblock %}
+{% block investigation_leftside %}
 
-{% block investigation_content %}
+<ul class="tabs">
+    <li><a href="/investigation/{{ investigation.id }}">Description</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+</ul>
 
-    <div class="news_box_grey">
-      {% get_comment_form for investigation as form %}
-      <form action="/comments/post/" method="post">{% csrf_token %}
-          <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
-          {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-          {% endfor %}
-          {{ form.comment }}
-          <br>
-          <input type="submit" value="Post">
-      </form>
-    </div>
-
-    <hr class="space">
-
-    <hr class="space">
-
+{% get_comment_form for investigation as form %}
+<form action="/comments/post/" method="post">{% csrf_token %}
+    <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    {{ form.comment }}
+    <br><br>
+    <input class="btn" type="submit" value="Post">
+</form>
 {% get_comment_list for investigation as comments %}
 {% if comments %}
     {% for comment in comments reversed %}
-    <div class="comment-container">
-      <div class="comment">
-          <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
-          <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
-          <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
-          {{ comment.comment|linebreaksbr }}
-          <hr class="space">
-          <hr>
-      </div>        
-    </div>        
-{% endfor %}
+        <div class="comment-container">
+            <div class="comment">
+                <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+                <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
+                <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
+                {{ comment.comment|linebreaksbr }}
+                <br><br><hr>
+            </div>
+        </div>
+    {% endfor %}
 {% else %}
-    <h3>No discussion in this investigation..</h3>
+    <h6>No discussion in this investigation..</h6>
 {% endif %}
-
-
 
 {% endblock %}
 

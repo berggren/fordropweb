@@ -1,33 +1,12 @@
 {% extends "apps/userprofile/userprofile_base.html" %}
 {% load thumbnail %}
-{% load comments %}
 
-{% block extrahead %}
-    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/jquery-1.6.2.min.js"></script>
-    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/arbor.js" ></script>
-    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/graphics.js" ></script>
-    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/renderer.js" ></script>
-{%  endblock %}
-
-{% block userprofile_submenu %}
-    <li><a href="/home" title="">Dashboard</a></li>
-    <li><a href="/home/investigations" title="">My investigations</a></li>
-    <li><a href="/home/inventory" title="" class="current">Inventory</a></li>
-    <li><a href="/home/readinglist" title="">Reading list</a></li>
-    <li><a href="/home/suggestions" title="">Suggestions</a></li>
-{% endblock %}
-
-{% block userprofile_content %}
+{% block userprofile_leftside %}
+    <ul class="tabs">
+      <li><a href="/home">Activity</a></li>
+      <li class="active"><a href="/home/inventory">Inventory</a></li>
+      <li><a href="/home/readinglist">Reading list</a></li>
+      <li><a href="/home/suggestions">Suggestions</a></li>
+    </ul>
     <h2>Inventory</h2>
-    <canvas id="viewport" width="960" height="600"></canvas>
-    <script language="javascript" type="text/javascript">
-      var sys = arbor.ParticleSystem({repulsion:200, stiffness:512, friction:0.2, gravity: false, dt:0.1});
-      sys.screenPadding(50);
-      sys.renderer = Renderer("#viewport");
-      var data = {"nodes": {"virus-2.exe": {"color": "grey", "label": "virus-2.exe"}, "Kajsa": {"color": "grey", "label": "Kajsa"}, "DDOS against Foo": {"color": "orange", "label": "DDOS against Foo"}, "virus-5.exe": {"color": "grey", "label": "virus-5.exe"}, "virus-1.exe": {"color": "grey", "label": "virus-1.exe"}, "virus-3.exe": {"color": "grey", "label": "virus-3.exe"}, "Very important investigation": {"color": "orange", "label": "Very important investigation"}, "Kalle": {"color": "grey", "label": "Kalle"}, "important_document.pdf": {"color": "grey", "label": "important_document.pdf"}, "virus-4.exe": {"color": "grey", "label": "virus-4.exe"}, "evil_malware_file.exe": {"color": "black", "label": "evil_malware_file.exe"}, "Virus outbrake": {"color": "orange", "label": "Virus outbrake"}, "Johan": {"color": "grey", "label": "Johan"}}, "edges": {"virus-2.exe": {"Virus outbrake": {"directed": true, "label": "part of"}}, "Kajsa": {"evil_malware_file.exe": {"directed": true, "label": "reported"}}, "DDOS against Foo": {"DDOS against Foo": {"directed": true, "label": "part of"}}, "virus-5.exe": {"Very important investigation": {"directed": true, "label": "part of"}}, "virus-1.exe": {"Virus outbrake": {"directed": true, "label": "part of"}}, "virus-3.exe": {"Very important investigation": {"directed": true, "label": "part of"}, "Virus outbrake": {"directed": true, "label": "part of"}}, "Very important investigation": {"Very important investigation": {"directed": true, "label": "part of"}}, "important_document.pdf": {"DDOS against Foo": {"directed": true, "label": "part of"}, "Virus outbrake": {"directed": true, "label": "part of"}, "important_document.pdf": {"directed": true, "label": "reported"}}, "virus-4.exe": {"Very important investigation": {"directed": true, "label": "part of"}}, "Kalle": {"evil_malware_file.exe": {"directed": true, "label": "reported"}, "DDOS against Foo": {"directed": true, "label": "involved"}, "important_document.pdf": {"directed": true, "label": "reported"}}, "Virus outbrake": {"Virus outbrake": {"directed": true, "label": "part of"}}, "Johan": {"Virus outbrake": {"directed": true, "label": "involved"}, "important_document.pdf": {"directed": true, "label": "reported"}}}}
-      sys.graft(data);
-    </script>
-{% endblock %}
-
-{% block userprofile_sidebar %}
 {% endblock %}

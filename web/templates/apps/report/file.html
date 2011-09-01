@@ -1,171 +1,120 @@
-{% extends "apps/report/file_base2.html" %}
+{% extends "apps/report/report_base.html" %}
 {% load comments %}
 {% load thumbnail %}
 
 {% block report_leftside %}
-  {% if messages %}
+
+{% if messages %}
     {% for message in messages %}
-      <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+        <div class="alert-message warning">
+            <a class="close" href="#">×</a>
+            <p>
+                <strong>{{ message }}</strong>
+            </p>
+        </div>
     {% endfor %}
-    <br>
-  {% endif %}
+{% endif %}
 
-  <a href="javascript: history.go(-1)" style="margin-right:6px;" class="btn left">Back</a><h3 class="inline">{{ result.sha1 }}</h3><button class="btn primary right">Graph</button>
-    
-    <div class="well">
-<!--	<div class="news_box_grey"> -->
-	  <table border=0>
-		  <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
-		  <tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>	
-		  <tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
-		  <tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
-		  <tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
-		</table>
-    </div>
+<!--<a href="javascript: history.go(-1)" style="margin-right:10px;" class="btn left">&laquo; Back</a><h3 class="inline">{{ result.sha1 }}</h3>-->
+<h3>{{ result.sha1 }}</h3>
+<br>
+<ul class="tabs">
+    <li class="active"><a href="#">Description</a></li>
+    <li><a href="#">Related</a></li>
+    <li><a href="/file/{{ result.id }}/graph"">Graph</a></li>
+    <li><a href="#">Printable strings</a></li>
+    <li><a href="#">PEdump</a></li>
+</ul>
 
-	{% if resultall %}
-    <div class="well">
-	<table border=0>
-             <th>{{ resultall|length }} reporter{{ resultall|pluralize:"s"  }}</th>
-      <th>filename</th>
-      <th>reference</th>
-			{% for n in resultall %}
-				<tr>
-				  <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
-				  <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
-					<span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
-					<td>{{ n.filename }}</td>
-					{% if n.reference %}
-						<td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-					{% else %}
-                        {% if resultme %}
-						    <td><button class="btn">Add</button></td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-					{% endif %}
-				</tr>
-			{% endfor %}
-		</table>
-	{% endif %}
+{% if investigations %}
+<div class="alert-message block-message info">
+    <!-- <a class="close" href="#">&times;</a> -->
+    <h3>Appears in the following investigations</h3>
+    {% for investigation in investigations %}
+        <a href="/investigation/{{ investigation.id }}" class="btn">{{  investigation.title }}</a>
+    {% endfor %}
+</div>
+{% endif %}
 
-
+<div class="well">
+    <table border=0>
+	    <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
+		<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>
+		<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
+		<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
+		<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
+        <tr><td><b>MHR</b></td>
+        <td>
+            {% if not mhr %}
+	            <a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a><br>
+	        {% else %}
+	            {% if mhr.donotexist %}
+		            <font color="green">No match in MHR:s malware repository</font><br>
+	            {% else %}
+	                <font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font><br>
+	            {% endif %}
+            {% endif %}
+        </td></tr>
+    </table>
 </div>
 
-<br>
-
-    <ul class="tabs">
-      <li class="active"><a href="#">Description</a></li>
-      <li><a href="#">Actions</a></li>
-      <li><a href="#">Related</a></li>
-      <li><a href="#">Printable strings</a></li>
-      <li><a href="#">PE-file</a></li>
-
-    </ul>
-    
-	 {% if not mhr %}
-	   <a href="/file/{{ result.id }}/malware/mhr?hash={{ result.sha1 }}">Check with MHR (Malware Hash Repository)</a><br>
-	 {% else %}
-	   {% if mhr.donotexist %}
-		  <font color="green">No match in MHR:s malware repository</font><br>
-	   {% else %}
-	     <font color="red">{{ mhr.percent }}% chance this file is malware according to MHR</font><br>
-	   {% endif %}
-    {% endif %}
-
-	 {% if not strings %}
-	   <a href="/file/{{ result.id }}/show?strings=True">Display printable strings</a>
-	 {% else %}
-	   <a href="/file/{{ result.id }}/show">Close printable strings</a>
-	 {% endif %}
-
-	 <br>
-
-        {% if resultme %}
-  {% ifequal resultme.reference None %}
-  <b>Reference:</b>
-  <form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-    {% for field in referenceform %}
-          {{ field.errors }}
-          {{ field }}
-        {% endfor %}
-      <input type="submit" value="Save" />
-    </form>
-    {% else %}
-    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><b>Reference:</b> <i>{{ resultme.reference }}</i> [Edit]</div>
-      <div id="hidetext" style="display:none;">
-        <form action="/reference/add/file/{{ resultme.id }}" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
-          {% for field in referenceform %}
-                {{ field.errors }}
-                {{ field }}
-              {% endfor %}
-            <input type="submit" value="Save" />
-          </form>
-      </div>
-      <br>
-  {% endifequal %}
-    {%  endif %}
-
-	 {% if is_pefile %}
-	   {% if not pedump %}
-	     <a href="/file/{{ result.id }}/show?pedump=True">Display content of PE-file</a>
-	   {% else %}
-	     <a href="/file/{{ result.id }}/show">Close content of PE-file</a>
-	   {% endif %}
-	{% endif %}
-    <br>
-  <!-- </div> -->
-
-	{% if strings %}
-    <br>
-		<div id="strings_box">
-			<h2>Printable strings (<a href="/file/{{ result.id }}/show">Close</a>)</h2>
-			<hr>
-			{{ strings|linebreaksbr }}
-		</div>
-	{% endif %}
-
-	{% if pedump %}
-    <br>
-    <div id="strings_box">
-		<h1>Content of PE-file (<a href="/file/{{ result.id }}/show">Close</a>)</h1>
-    <hr>
-			{{ pedump|linebreaksbr }}
-		</div>
-	{% endif %}
-
-    <hr class="space">
-
+{% if resultall %}
+    <div class="well">
+        <table border=0>
+            <th>{{ resultall|length }} reporter{{ resultall|pluralize:"s"  }}</th>
+            <th>filename</th>
+            <th>reference</th>
+            {% for n in resultall %}
+                <tr>
+                    <td width="200px"><div class="avatar"><img class="avatar-thumb" src={% thumbnail n.user.get_profile.avatar 32x32 crop %}></div>
+                        <span class="threadTitle"><a href="/user/{{ n.user.id }}">{{ n.user.get_full_name }}</a></span><br>
+                        <span class="threadText">{{ n.timecreated|timesince }} ago</span><br><br>
+                        <td>{{ n.filename }}</td>
+                        {% if n.reference %}
+                            <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+                        {% else %}
+                            {% if resultme %}
+                                <td><button class="btn">Add</button></td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+{% endif %}
+</div>
 {% endblock %}
 
 {% block report_rightside %}
+<!-- Comments -->
 {% get_comment_list for result as comments %}
-
- <h3>Comments</h3>
- <br>
-{% for comment in comments %}
-    <div class="comment-container">
-      <div class="comment">
-          <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
-          <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
-          <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
-          {{ comment.comment|linebreaksbr }}
-      </div>
-    </div>
+{% get_comment_form for result as form %}
+{% if comments %}
+    <h3>Comments</h3>
     <br>
-{% endfor %}
-
-<div class="box_color">
-  {% get_comment_form for result as form %}
-  <form action="/comments/post/" method="post">{% csrf_token %}
-      <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
-      {% for hidden in form.hidden_fields %}
+    {% for comment in comments %}
+        <div class="comment-container">
+            <div class="comment">
+                <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+                <a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a><br>
+                <span class="quiet">{{ comment.submit_date|timesince }} ago</span><br>
+                {{ comment.comment|linebreaksbr }}
+                <br><br><hr>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h6>No comments</h6>
+{% endif %}
+<form action="/comments/post/" method="post">{% csrf_token %}
+    <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+    {% for hidden in form.hidden_fields %}
         {{ hidden }}
-      {% endfor %}
-      {{ form.comment }}
-      <br>
-      <input type="submit" class="btn" value="Post">
-  </form>
-</div>
-
+    {% endfor %}
+    {{ form.comment }}
+    <br><br>
+    <input type="submit" class="btn" value="Post">
+</form>
+<!-- END comments -->
 {% endblock %}

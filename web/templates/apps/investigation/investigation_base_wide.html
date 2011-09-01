@@ -1,22 +1,14 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 
-{% block menu %}
-    <li><a href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
-    <li><a href="/report"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
-    <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
-{% endblock %}
-
-{% block submenu %}
-<ul id="saturday">
-    {% block investigation_submenu %}{% endblock %}
-</ul>
-{% endblock %}
-
 {% block content %}
-    <div class="span-24 leftcol">
-        <hr class="space">
-        <h2>{{ investigation.title }}</h2>
-        {% block investigation_content %}{% endblock %}
+<div class="container">
+    <div class="row">
+        <div class="span16 columns">
+            <h2 class="inline">{{ investigation.title }}</h2>{% block extratitle %}{% endblock %}
+            <br><br>
+            {% block investigation_leftside %}{% endblock %}
+        </div>
     </div>
+</div>
 {% endblock %}

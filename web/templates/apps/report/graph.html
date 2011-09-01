@@ -1,0 +1,42 @@
+{% extends "apps/report/report_base.html" %}
+
+{% block extrahead %}
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/jquery-1.6.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/arbor.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/graphics.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/renderer.js" ></script>
+{%  endblock %}
+
+{% block report_leftside %}
+<div class="span16">
+<!--<a href="javascript: history.go(-1)" style="margin-right:10px;" class="btn left">&laquo; Back</a><h3 class="inline">{{ file.sha1 }}</h3>-->
+<h3 class="inline">{{ file.sha1 }}</h3>
+<br><br>
+<ul class="tabs">
+    <li><a href="/file/{{ file.id }}/show">Description</a></li>
+    <li><a href="#">Related</a></li>
+    <li class="active"><a href="/file/{{ file.id }}/graph">Graph</a></li>
+    <li><a href="#">Printable strings</a></li>
+    <li><a href="#">PEdump</a></li>
+</ul>
+
+    {{  file.graphid }}
+
+<canvas id="viewport" width="960" height="600"></canvas>
+<script language="javascript" type="text/javascript">
+$(document).ready(function() {
+    $('body').bind('foobar', function(event, node) {
+        $.getJSON("/arbor?n="+node.data.id, function(data) {
+            sys.graft(data);
+        });
+    });
+    var sys = arbor.ParticleSystem({repulsion:200, stiffness:512, friction:0.2, gravity: false, dt:0.1});
+    sys.screenPadding(50);
+    sys.renderer = Renderer("#viewport");
+    var data = $.getJSON("/arbor?n={{ file.graphid }}", function(data) {
+        sys.graft(data);
+    });
+});
+</script>
+</div>
+{% endblock %}

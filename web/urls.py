@@ -21,10 +21,10 @@ urlpatterns = patterns('',
     (r'^tag/add/(\w+)/(\d+)$',          'views.add_tag'),
     (r'^reference/add/(\w+)/(\d+)$',    'views.add_reference'),
     (r'^timeline/(\d+)$',               'views.timeline'),
+    (r'^arbor$',                        'views.arbor'),
 
     # Home
     (r'^home$',                         'apps.userprofile.views.dashboard'),
-    (r'^home/investigations$',               'apps.userprofile.views.my_investigations'),
     (r'^home/inventory$',               'apps.userprofile.views.inventory'),
     #(r'^home/inventory/json$',               'apps.userprofile.views.inventory_json'),
     (r'^home/readinglist$',               'apps.userprofile.views.reading_list'),
@@ -32,6 +32,8 @@ urlpatterns = patterns('',
 
     # Upload & Report
     (r'^file/(\d+)/show$',            'apps.report.views.show_file'),
+    (r'^file/(\d+)/graph$',            'apps.report.views.graph'),
+
     (r'^file/(\d+)/malware/mhr$',     'apps.report.views.get_malware_mhr'),
     (r'^report$',                     'apps.report.views.report'),
     (r'^report/add$',                 'apps.report.views.add_report'),
@@ -46,6 +48,7 @@ urlpatterns = patterns('',
     (r'^investigation/(\d+)/discussion$',           'apps.investigation.views.discussion'),
     (r'^investigation/(\d+)/timeline$',             'apps.investigation.views.timeline'),
     (r'^investigation/(\d+)/library$',              'apps.investigation.views.library'),
+    (r'^investigation/(\d+)/graph$',                'apps.investigation.views.graph'),
     (r'^investigation/(\d+)/page/(\d+)$',           'apps.investigation.views.page'),
     (r'^investigation/(\d+)/page/create$',          'apps.investigation.views.page'),
 

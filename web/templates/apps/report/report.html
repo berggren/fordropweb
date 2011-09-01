@@ -1,0 +1,37 @@
+{% extends "apps/report/report_base.html" %}
+{% load thumbnail %}
+
+{% block report_leftside %}
+<div class="span16 well">
+    <h2>Upload your forensic data</h2>
+    <br>
+    <form action="/report/add/file" method="post" enctype="multipart/form-data" width="450px">{% csrf_token %}
+        {% for field in uploadform %}
+            {{ field.errors }}
+            {{ field }}
+        {% endfor %}
+        <input type="submit" value="Upload" />
+    </form>
+</div>
+
+<div class="span16">
+    <table border=0>
+        <th>Reporter</th>
+        <th></th>
+        <th></th>
+        <th>Reference</th>
+        {% for n in files|slice:"10" reversed %}
+            <tr class="{% cycle row1,row2 %}">
+                <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+                <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+                <td>{{ n.timecreated|timesince }} ago</td>
+                {% if n.reference %}
+                    <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

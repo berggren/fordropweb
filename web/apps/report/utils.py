@@ -112,7 +112,6 @@ def add_node_to_graph(obj, type):
         obj.save()
     else:
         node = graphdb.nodes.get(obj.graphid)
-    print node
     return node
 
 def add_relationship_to_graph(node1, node2, type):

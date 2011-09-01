@@ -1,121 +1,88 @@
-{% extends "apps/userprofile/userprofile_base_3col.html" %}
+{% extends "apps/userprofile/userprofile_base.html" %}
 {% load thumbnail %}
 {% load comments %}
 
+{% block userprofile_leftside %}
+<ul class="tabs">
+    <li class="active"><a href="/home">Activity</a></li>
+    <li><a href="/home/inventory">Inventory</a></li>
+    <li><a href="/home/readinglist">Reading list</a></li>
+    <li><a href="/home/suggestions">Suggestions</a></li>
+</ul>
+<br>
 
-{% block userprofile_submenu %}
-<!--
-    <li><a href="/home" title="" class="current">Dashboard</a></li>
-    <li><a href="/home/inventory" title="">Inventory</a></li>
-    <li><a href="/home/readinglist" title="">Reading list</a></li>
-    <li><a href="/home/suggestions" title="">Suggestions</a></li>
--->
-{% endblock %}
+<!-- Stream -->
+{% for item in stream|dictsortreversed:"time"|slice:"10" %}
+    <div class="post_container">
+        {% ifequal item.type "comment" %}
+            <div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
+            <div class="post_box">
+                <span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
 
-{% block userprofile_content %}
+                {% ifequal item.object.content_type.name "file" %}
+                    commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
+                {% endifequal %}
 
-    <h2>Activity</h2>
-    <hr class="space">
-	 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
-		<div class="post_container">
-			{% ifequal item.type "comment" %}
-				<div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
-				<div class="post_box">
-	  				<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
-					{% ifequal item.object.content_type.name "file" %}
-	    				commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
-					{% endifequal %}
-                    {% ifequal item.object.content_type.name "investigation" %}
-                        commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}/discussion"> {{ item.object.content_object.title }}</a>
-                    {% endifequal %}
-					{% ifequal item.object.content_type.name "user" %}
-						to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></span>
-					{% endifequal %}
-					{% ifequal item.object.content_type.name "report" %}
-						<span class="threadText">
-							<i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
-						</span>
-					{% endifequal %}
-					{% ifequal item.object.content_type.name "tag" %}
-						<span class="threadText">
-							<i>{{ item.object.content_object }}</i>
-						</span>
-					{% endifequal %}
-                    <br>
-				    <font color="#222">{{ item.object.comment|linebreaksbr|truncatewords:"30" }}</font>
-					<br>
-					<span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
-				 </div>
+                {% ifequal item.object.content_type.name "investigation" %}
+                    commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}/discussion"> {{ item.object.content_object.title }}</a>
+                {% endifequal %}
 
-			{% endifequal %}
-			{% ifequal item.type "file" %}
-				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
-				<div class="post_box">
-					<span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
-					uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
-					<br>
-					<span class="threadText">{{ item.object.timecreated|timesince }}</span>
-				</div>
-			{% endifequal %}
+                {% ifequal item.object.content_type.name "user" %}
+                    to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></span>
+                {% endifequal %}
 
-			{% ifequal item.type "report" %}
-				<div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
-				<div class="post_box">
-				    <span class="threadTitle"><a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a></span>
-					reported {{ item.object.report.type }}, {{ item.object.report.value }}
-				</div>
-				<span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
-			{% endifequal %}
+                {% ifequal item.object.content_type.name "report" %}
+                    <span class="threadText">
+                        <i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
+                    </span>
+                {% endifequal %}
 
-            {% ifequal item.type "investigation" %}
-                <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.creator.get_profile.avatar 40x40 crop %}></div>
-                <div class="post_box">
-                    <span class="threadTitle"><a href="/user/{{ item.object.creator.id }}">{{ item.object.creator.first_name }} {{ item.object.creator.last_name }}</a></span>
-                    started a {{ item.type }}, <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a>
-                </div>
+                {% ifequal item.object.content_type.name "tag" %}
+                    <span class="threadText">
+                        <i>{{ item.object.content_object }}</i>
+                    </span>
+                {% endifequal %}
+
+                <br>
+
+                <font color="#222">{{ item.object.comment|linebreaksbr|slice:"140" }} ...</font>
+                <br>
+                <span class="threadText">{{ item.object.submit_date|timesince }} ago</span>
+            </div>
+        {% endifequal %}
+
+        {% ifequal item.type "file" %}
+            <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a>
+                uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
+                <br>
+                <span class="threadText">{{ item.object.timecreated|timesince }}</span>
+            </div>
+        {% endifequal %}
+
+        {% ifequal item.type "report" %}
+            <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}">{{ item.object.user.first_name }} {{ item.object.user.last_name }}</a>
+                reported {{ item.object.report.type }}, {{ item.object.report.value }}
+                <br>
                 <span class="threadText">{{ item.object.timecreated|timesince }} ago</span>
-            {% endifequal %}
+            </div>
+        {% endifequal %}
 
-            <hr>
+        {% ifequal item.type "investigation" %}
+            <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.creator.get_profile.avatar 40x40 crop %}></div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.creator.id }}">{{ item.object.creator.first_name }} {{ item.object.creator.last_name }}</a>
+                started a {{ item.type }} <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a>
+                <br>
+                <span class="threadText">{{ item.object.timecreated|timesince }}</span>
+            </div>
+        {% endifequal %}
 
-        </div>
-
-	 {% endfor %}
-{% endblock %}
-
-{% block userprofile_sidebar %}
-
-        <a class="upload icon16" href="/report" style="color:green;">Upload malware</a>
-        <hr style="margin:7px;">
-        <a class="add icon16"  href="/investigation" style="color:green;">New Investigation</a>
-        <hr style="margin:7px;">
-        <hr class="space">
-               <h3>Your investigations</h3>
-               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
-                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
-                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
-                    <hr style="margin:7px;">
-               {% endfor %}
-<!--   </div> -->
-{% endblock %}
-
-{% block userprofile_rightbar %}
-<!--
-               <h3>Suggestions</h3>
-               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
-                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
-                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
-                    <hr style="margin:7px;">
-               {% endfor %}
-
-            <hr class="space">
-
-               <h3>Readinglist</h3>
-               {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
-                    <a class="noicon icon16"  href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
-                   <span class="threadText">{{ investigation.lastupdated|timesince }} ago</span>
-                    <hr style="margin:7px;">
-               {% endfor %}
-
--->
+        <hr>
+    </div>
+<!-- END stream -->
+{% endfor %}
 {% endblock %}

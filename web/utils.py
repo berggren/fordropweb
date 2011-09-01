@@ -1,6 +1,8 @@
 from apps.report.models import *
 from django.contrib.comments.models import *
 from web.apps.investigation.models import Investigation
+from neo4jrestclient import client
+import simplejson
 
 def activity_stream():
     stream = []
@@ -17,3 +19,4 @@ def activity_stream():
     for investigation in investigations:
         stream.append({'type': 'investigation', 'time': investigation.timecreated, 'object': investigation})
     return stream
+

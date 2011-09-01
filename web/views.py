@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from neo4jrestclient.constants import STOP_AT_DEPTH_ONE
 from apps.search.forms import *
 #from apps.report.models import *
 #from apps.report.forms import *
@@ -86,4 +87,34 @@ def timeline(request, investigation_id):
             'events' : l
         }
     j2 = simplejson.dumps(j)
-    return HttpResponse(j2) 
+    return HttpResponse(j2)
+
+def node_color(node):
+    if node.properties['type'] == 'investigation':
+        color = "orange"
+    elif node.properties['type'] == 'person':
+        color = "green"
+    elif node.properties['type'] == 'report':
+        color = "green"
+    else:
+        color = "grey"
+    return color
+
+def arbor(request):
+    try:
+        nodeid = request.GET['n']
+    except:
+        nodeid = 6
+    gdb = client.GraphDatabase("http://localhost:7474/db/data/")
+    ref_node = gdb.nodes.get(nodeid)
+    nodes, edges, e = {}, {}, {}
+    nodes[ref_node.properties['name']] = {'color':node_color(ref_node),'label':ref_node.properties['name'], 'id':ref_node.id}
+    for node in ref_node.traverse(stop="1", returns=client.NODE):
+        nodes[node.properties['name']] = {'color':node_color(node),'label':node.properties['name'], 'id':node.id}
+    #for rel in ref_node.relationships.all():
+    #    e[rel.start.properties['name']] = {'label': rel.type, 'directed':True}
+    #    e[rel.end.properties['name']] = {'label': rel.type, 'directed':True}
+    #    edges[ref_node.properties['name']] = e
+    d = {'nodes': nodes, 'edges': edges}
+    return HttpResponse(simplejson.dumps(d))
+

@@ -10,6 +10,7 @@ from django.contrib.comments.models import *
 from apps.search.forms import *
 from apps.report.models import *
 from apps.pages.models import *
+from apps.report.utils import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from forms import *
@@ -57,6 +58,7 @@ def create(request):
             investigation.reference.add(reference)
             investigation.save()
         url = "/investigation/%i" % investigation.id
+        add_node_to_graph(investigation, "investigation")
         return HttpResponseRedirect(url)
 
 @login_required
@@ -76,7 +78,7 @@ def overview(request, id):
     tagform = TagForm()
     investigation = Investigation.objects.get(pk=id)
     investigationform = InvestigationForm()
-    startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
+    #startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
     stream = activity_stream()
     tags = Tag.objects.get_for_object(investigation)
     people = get_people(investigation)
@@ -86,7 +88,7 @@ def overview(request, id):
         for file in ref_files:
             if file not in files:
                 files.append(files)
-    return render_to_response('apps/investigation/overview2.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'startdate': startdate, 'stream': stream, 'tagform': tagform, 'tags': tags, 'people': people, 'files':files}, RequestContext(request))
+    return render_to_response('apps/investigation/overview.html', {'searchform': searchform, 'investigation': investigation, 'investigationform': investigationform, 'stream': stream, 'tagform': tagform, 'tags': tags, 'people': people, 'files':files}, RequestContext(request))
 
 @login_required
 def discussion(request, id):
@@ -111,7 +113,7 @@ def timeline(request, id):
                 files.append(files)
     people = get_people(investigation)
     startdate = investigation.timecreated.strftime('%Y %m %d %H:%M:%S')
-    return render_to_response('apps/investigation/timeline2.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate, 'files': files, 'people': people}, RequestContext(request))
+    return render_to_response('apps/investigation/timeline.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'startdate': startdate, 'files': files, 'people': people}, RequestContext(request))
 
 @login_required
 def library(request, id):
@@ -127,6 +129,11 @@ def library(request, id):
                 files.append(file)
     people = get_people(investigation)
     return render_to_response('apps/investigation/library.html', {'searchform': searchform, 'investigation': investigation, 'tagform': tagform, 'tags': tags, 'files': files, 'people': people}, RequestContext(request))
+
+@login_required
+def graph(request, id):
+    investigation = Investigation.objects.get(pk=id)
+    return render_to_response('apps/investigation/graph.html', {'investigation': investigation}, RequestContext(request))
 
 @login_required
 @revision.create_on_success

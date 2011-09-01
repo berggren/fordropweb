@@ -1,61 +1,63 @@
 {% extends "apps/investigation/investigation_base.html" %}
-{% load thumbnail %}
 {% load comments %}
+{% load thumbnail %}
 
-{% block extrahead %}
-  <script>
-      Timeline_ajax_url="/site_media/js/timeline_2.3.0/timeline_ajax/simile-ajax-api.js";
-      Timeline_urlPrefix="/site_media/js/timeline_2.3.0/timeline_js/";       
-      Timeline_parameters='bundle=true';
-  </script>
-  <script src="/site_media/js/timeline_2.3.0/timeline_js/timeline-api.js"    
-      type="text/javascript">
-  </script> 
-  <script src="/site_media/js/timeline_2.3.0/timeline_js/timeline-api.js?bundle=true" type="text/javascript"></script>
-  <script src="/site_media/js/timeline_2.3.0/timeline_ajax/simile-ajax-api.js" type="text/javascript"></script>
-  <script>
-    var jsonurl = '/timeline';
-    var date = '{{ startdate }}';
-  </script>
-  <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
-{% endblock %}
+{% block extratitle %}<button class="btn right">Follow</button>{% endblock %}
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li class="active"><a href="/investigation/{{ investigation.id }}">Activity</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+</ul>
 
-{% block investigation_submenu %}
-    <li><a href="/investigation/{{ investigation.id }}" title="" class="current">Overview</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/timeline" title="">Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library" title="">Library</a></li>
-{% endblock %}
-
-{% block investigation_content %}
-
-    {% if investigation.description %}
-      {{ investigation.description.content|linebreaksbr }}
-      <hr class="space">
-      <hr>
-      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Edit</span></div>
+    {% get_comment_form for investigation as form %}
+    <form action="/comments/post/" method="post">{% csrf_token %}
+        <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {{ form.comment }}
+        <br><br>
+        <input class="btn" type="submit" value="Post">
+    </form>
+    {% get_comment_list for investigation as comments %}
+    {% if comments %}
+        {% for comment in comments reversed %}
+            <div class="comment-container">
+                <div class="comment">
+                    <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+                    <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
+                    <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
+                    {{ comment.comment|linebreaksbr }}
+                    <br><br><hr>
+                </div>
+            </div>
+        {% endfor %}
     {% else %}
-      <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><span class="icon16 edit">Add description</span></div>
+        <h6>No discussion in this investigation..</h6>
     {% endif %}
-         <div id="hidetext" style="display:none;">
-          <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
-            <br>
-           <textarea id="id_description" rows="10" cols="40" name="description">
+
+
+    {% if investigation.description.content %}
+    {{ investigation.description.content|linebreaksbr }}
+    <br><br><hr>
+    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><button class="btn primary">Edit</button></div>
+{% else %}
+    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><button class="btn primary">Add description</button></div>
+{% endif %}
+<div id="hidetext" style="display:none;">
+    <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <br>
+<textarea id="id_description" rows="10" cols="40" name="description">
+{% if investigation.description.content %}
 {{ investigation.description.content|linebreaks|striptags }}
-            </textarea>
-            <input type="submit" value="Save" /> 
-          </form>
-    </div>
-        <div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
-
-
-{% endblock %}
-
-{% block investigation_sidebar %}
-
-
-
-
-
-
+{% endif %}
+</textarea>
+    <br><br>
+<input class="btn" type="submit" value="Save" />
+    </form>
+</div>
+<div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
 {% endblock %}

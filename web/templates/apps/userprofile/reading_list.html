@@ -1,19 +1,12 @@
 {% extends "apps/userprofile/userprofile_base.html" %}
 {% load thumbnail %}
-{% load comments %}
 
-{% block userprofile_submenu %}
-    <li><a href="/home" title=""">Dashboard</a></li>
-    <li><a href="/home/investigations" title="">My investigations</a></li>
-    <li><a href="/home/inventory" title=""">Inventory</a></li>
-    <li><a href="/home/readinglist" title="" class="current">Reading list</a></li>
-    <li><a href="/home/suggestions" title="">Suggestions</a></li>
-{% endblock %}
-
-
-{% block userprofile_content %}
+{% block userprofile_leftside %}
+    <ul class="tabs">
+      <li><a href="/home">Activity</a></li>
+      <li><a href="/home/inventory">Inventory</a></li>
+      <li class="active"><a href="/home/readinglist">Reading list</a></li>
+      <li><a href="/home/suggestions">Suggestions</a></li>
+    </ul>
     <h2>Reading list</h2>
-{% endblock %}
-
-{% block userprofile_sidebar %}
 {% endblock %}

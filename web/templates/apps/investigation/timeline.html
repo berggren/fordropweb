@@ -1,6 +1,5 @@
-{% extends "apps/investigation/investigation_base.html" %}
+{% extends "apps/investigation/investigation_base_wide.html" %}
 {% load thumbnail %}
-{% load comments %}
 
 {% block extrahead %}
   <script>
@@ -18,20 +17,20 @@
   <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block investigation_submenu %}
-    <li><a href="/investigation/{{ investigation.id }}" title="">Overview</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/timeline" title="" class="current" >Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library" title="">Library</a></li>
-{% endblock %}
+{% block extrabody %}onload="onLoad();" onresize="onResize();"{% endblock %}
 
-{% block investigation_content %}
- <div class="news_box_grey">
-  <h3>Timeline</h3>
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li><a href="/investigation/{{ investigation.id }}">Description</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+</ul>
+
+ <div class="well">
   <div id="timeline"></div>
-
-    <hr class="pace">
-
     <table border=0>
         <th>Time</th>
         <th>Reporter</th>
@@ -45,6 +44,4 @@
         {% endfor %}
     </table>
 </div>
-
-
 {% endblock %}

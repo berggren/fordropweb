@@ -1,61 +1,37 @@
-{% load thumbnail %}
+<!doctype html>
 <html>
-	<head>
-		<title>fordrop</title>
-		<link rel="stylesheet" href="/site_media/css/blueprint/reset.css" type="text/css">
-		<link rel="stylesheet" href="/site_media/css/blueprint/screen.css" type="text/css" media="screen, projection">
-		<link rel="stylesheet" href="/site_media/css/blueprint/print.css" type="text/css" media="print">
-		<!--[if lt IE 8]><link rel="stylesheet" href="/site_media/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-		<link rel="stylesheet" href="/site_media/css/blueprint/typography.css" type="text/css">
-		<link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
-		<link rel='stylesheet' href='/site_media/css/jquery-ui.css' type='text/css'>
-		<script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" language="javascript" src="/site_media/js/jquery-ui-1.8.4.custom.min.js"></script>
-		{% block extrahead %}{% endblock %}
-	</head>
-	<body onload="onLoad();" onresize="onResize();">
-    	<div id="header">
+<head>
+    <title>fordrop</title>
+    <link rel='stylesheet' href='/site_media/css/bootstrap-1.1.0.min.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/style2.css' type='text/css'>
+	<script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
+	{% block extrahead %}{% endblock %}
+</head>
 
-			<div class="container">
-          		<div id="logo">
-          			<a href="/"><img src="/site_media/img/logo3.png"></a>
-				</div>
-                    <div id="search">
-                        <form style="display:inline" method="post" action="/search">{% csrf_token %}
-                            <input class="searchinput" type="text" name="search" value="Search"/>
-                        </form>
-                    </div>
+<body {% block extrabody %}{% endblock %}>
+<div class="topbar-wrapper" style="z-index: 5;">
+  <div class="topbar">
+    <div class="fill">
+      <div class="container">
+        <h3><a href="/">fordrop</a></h3>
+        <form action="">
+          <input type="text" placeholder="Search" />
+        </form>
+        <ul class="secondary-nav">
+          <li>
+            <a href="#" class="menu">Settings</a>
+          </li>
+          <li>
+            <a href="#" class="menu">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div> <!-- /fill -->
+  </div> <!-- /topbar -->
+</div> <!-- topbar-wrapper -->
 
-	<ul id="navlist">
-        {% block menu %}{% endblock %}
-	</ul>
-				<div class="login_box2">
-					<div class="avatar-mini" style="margin-right:10px;"><img src={% thumbnail user.get_profile.avatar 25x25 crop %}></div>
-					<div style="margin-top:10px;">
-    					{{ user.first_name }}
-                        <a href="#">Settings</a>
+<br>
 
-								</div>
-				</div>
-
-			</div>
-		</div>
-
-		<div id="subheader">
-			<div class="container">
-                {% block submenu %}{% endblock %}
-		</div>
-
-		<div class="container">
-			<div class="span-24">
-                <hr class="space">
-				{% block content %}{% endblock %}
-			</div>
-			<hr class="space">
-		</div>
-        <div id="footer">
-            {% block footer %}{% endblock %}
-        </div>
-
-  	</body>
+{% block content %}{% endblock %}
+</body>
 </html>

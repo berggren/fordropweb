@@ -37,7 +37,7 @@ def report(request):
     uploadform = UploadFileForm()
     reports = UserReport.objects.all()
     files = UserFile.objects.all()
-    return render_to_response('apps/report/index.html', {
+    return render_to_response('apps/report/report.html', {
                                                             'reports': reports, 
                                                             'files': files,
                                                             'genericreportform': genericreportform,
@@ -111,8 +111,16 @@ def file(request):
                                   }, RequestContext(request))
 
 @login_required
+def graph(request, id):
+    file = File.objects.get(id=id)
+    return render_to_response(
+                              'apps/report/graph.html',
+                              {
+                                    'file':           file,
+                              }, RequestContext(request))
+
+@login_required
 def show_file(request, file_id):
-    searchform = SearchForm()
     file = File.objects.get(id=file_id)
     resultall = UserFile.objects.filter(file=file)
     tagform = TagForm()
@@ -121,6 +129,7 @@ def show_file(request, file_id):
     strings = None
     pe_dump = None
     filebasepath = FD_FILEBASEPATH
+    investigations = None
     refs = []
     if os.path.exists(filebasepath+"/"+file.datefolder+"/"+file.sha1+".pedump"):
         is_pefile = True
@@ -162,13 +171,15 @@ def show_file(request, file_id):
     try:
         resultme = UserFile.objects.get(user=request.user, file=file)
     except: resultme = None
+    for ref in refs:
+        investigations = Investigation.objects.filter(reference__name__exact=ref)
     return render_to_response(
                               'apps/report/file.html',
                               {
+                                    "investigations":   investigations,
                                     "multiple_hits":    multiple_hits,
                                     "multiple_refs":    multiple_refs, 
-                                    'searchform':       searchform, 
-                                    'result':           file, 
+                                    'result':           file,
                                     'resultall':        resultall, 
                                     'resultme':         resultme, 
                                     'tagform':          tagform, 

@@ -1,64 +1,23 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 
-{% block menu %}
-    <li><a href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
-    <li><a href="{% url apps.report.views.report %}"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
-    <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
-{% endblock %}
-
-{% block submenu %}
-    <ul id="saturday">
-<!--
-    <li><a href="/home" title="">Dashboard</a></li>
-    <li><a href="/home/inventory" title="">Inventory</a></li>
-    <li><a href="/home/readinglist" title="">Reading list</a></li>
-    <li><a href="/home/suggestions" title="">Suggestions</a></li>
--->
-</ul>
-
-{% endblock %}
-
 {% block content %}
-    <hr class="space">
-	<div class="span-5 leftcol">
-
-        <a class="upload icon16" href="/report">Upload evidence</a>
-        <hr style="margin:7px;">
-        <a class="add icon16"  href="#">Add annotation</a>
-        <hr style="margin:7px;">
-
-        <hr class="space">
-
-
-        <a class="icon16" style="text-indent:10px;" href="/investigation/{{ investigation.id }}/discussion">Discussion</a>
-        <hr style="margin:7px;">
-
-
-        <a class="icon16" style="text-indent:10px;" href="/investigation/{{ investigation.id }}/timeline">Timeline</a>
-        <hr style="margin:7px;">
-
-        <a class="icon16" style="text-indent:10px;" href="/investigation/{{ investigation.id }}/library">Library</a>
-        <hr style="margin:7px;">
-
-        <a class="icon16" style="text-indent:10px;" href="/investigation/{{ investigation.id }}/reports">Reports</a>
-        <hr style="margin:7px;">
-
-
-        <hr class="space">
-    
-    {% for user in people %}
-    <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
-    {% endfor %}
-    <br>There are {{ people|length }} people involved
-    <hr class="space">
-        {% block investigation_sidebar %}{% endblock %}
+<div class="container">
+    <div class="row">
+        <div class="span10 columns">
+            <h2 class="inline">{{ investigation.title }}</h2>{% block extratitle %}{% endblock %}
+            <br><br>
+            {% block investigation_leftside %}{% endblock %}
+        </div>
+        <div class="span5 columns offset1">
+            {% for user in people %}
+                <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
+            {% endfor %}
+            <br>
+            There are {{ people|length }} people involved
+            <br>
+            {% block investigation_rightside %}{% endblock %}
+        </div>
     </div>
-    <div class="span-1">&nbsp;</div>
-    <div class="span-17 rightcol">
-        <h2><a class="titlelink" href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a></h2>
-        <hr class="space">
-        {% block investigation_content %}{% endblock %}
-    </div>
-
+</div>
 {% endblock %}

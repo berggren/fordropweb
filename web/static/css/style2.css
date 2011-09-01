@@ -1,5 +1,6 @@
 body {
 	color:#222;
+    background: #fbfbfb;
 }
 
 .topbar {
@@ -35,6 +36,11 @@ body {
     height:70px;
 }
 
+#id_description {
+    width: 100%;
+    height:200px;
+}
+
 #timeline {
 	height: 250px;
     border: 1px solid silver;
@@ -43,4 +49,8 @@ body {
 .quiet {
     color: #999;
     font-size:0.9em;
+}
+
+.topbar form input {
+    width:475px;
 }

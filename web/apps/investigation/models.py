@@ -20,6 +20,7 @@ class Investigation(models.Model):
     watcher = models.ManyToManyField(User, null=True, blank=True)
     reference = models.ManyToManyField('Reference', null=True, blank=True)
     pages = models.ManyToManyField(Page, null=True, blank=True, related_name="pages")
+    graphid = models.IntegerField(null=True)
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

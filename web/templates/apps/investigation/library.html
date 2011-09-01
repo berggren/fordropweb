@@ -1,44 +1,37 @@
 {% extends "apps/investigation/investigation_base.html" %}
 {% load thumbnail %}
-{% load comments %}
 
-{% block investigation_submenu %}
-    <li><a href="/investigation/{{ investigation.id }}" title="">Overview</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/discussion" title="">Discussion</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/timeline" title="">Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library" title="" class="current">Library</a></li>
-{% endblock %}
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li><a href="/investigation/{{ investigation.id }}">Description</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+</ul>
 
-{% block investigation_content %}
-<h3>Pages</h3>
-<table>
-    {% for n in investigation.pages.all %}
+<h3>Files</h3>
+{% if files %}
+<table border=0>
+    <th>Reporter</th>
+    <th></th>
+    <th></th>
+    <th>Reference</th>
+    {% for n in files|slice:"10" reversed %}
         <tr class="{% cycle row1,row2 %}">
-            <td>{{ n.title }}</td>
+            <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
+            <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+            <td>{{ n.timecreated|timesince }} ago</td>
+            {% if n.reference %}
+                <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
+            {% else %}
+                <td></td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>
-
-<hr class="space">
-
-        <table border=0>
-            <th>Reporter</th>
-            <th></th>
-            <th></th>
-            <th>Reference</th>
-            {% for n in files|slice:"10" reversed %}
-                <tr class="{% cycle row1,row2 %}">
-                    <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-                    <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
-                    <td>{{ n.timecreated|timesince }} ago</td>
-                    {% if n.reference %}
-                        <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-
-
+{% else %}
+    <h6>No files</h6>
+{% endif %}
 {% endblock %}

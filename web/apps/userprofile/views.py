@@ -12,55 +12,42 @@ from web.apps.search.forms import SearchForm
 
 @login_required
 def dashboard(request):
-    searchform = SearchForm()
     files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
     stream = activity_stream()
     investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
-    return render_to_response('apps/userprofile/dashboard2.html',
+    return render_to_response('apps/userprofile/dashboard.html',
                             {
                                 'investigations': investigations,
                                 'stream': stream,
-                                'searchform': searchform,
                                 'files': files
                             }, RequestContext(request))
 
 @login_required
-def my_investigations(request):
-    searchform = SearchForm()
-    investigations = Investigation.objects.filter(creator=request.user)
-    return render_to_response('apps/userprofile/my_investigations.html',
-                            {
-                                'investigations': investigations,
-                                'searchform': searchform,
-                            }, RequestContext(request))
-
-@login_required
 def inventory(request):
-    searchform = SearchForm()
+    investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
     return render_to_response('apps/userprofile/inventory.html',
                             {
-                                'searchform': searchform,
+                                'investigations': investigations,
                             }, RequestContext(request))
 
 @login_required
 def reading_list(request):
-    searchform = SearchForm()
+    investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
     return render_to_response('apps/userprofile/reading_list.html',
                             {
-                                'searchform': searchform,
+                                'investigations': investigations,
                             }, RequestContext(request))
 
 @login_required
 def suggestions(request):
-    searchform = SearchForm()
+    investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
     return render_to_response('apps/userprofile/suggestions.html',
                             {
-                                'searchform': searchform,
+                                'investigations': investigations,
                             }, RequestContext(request))
 
 @login_required
 def profile(request, user_id):
-    searchform = SearchForm()
     user = User.objects.get(id=user_id)
     files = UserFile.objects.filter(user=user)
     return render_to_response('apps/userprofile/dashboard.html',

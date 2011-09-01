@@ -1,31 +1,37 @@
 {% extends "base.html" %}
 
-{% block menu %}
-    <!--
-
-    <li id="active"><a id="current" href="/home"><h3 class="menu">Home</h3><p class="menu">My place</p></a></li>
-    <li><a href="{% url apps.report.views.report %}"><h3 class="menu">Upload & Report</h3><p class="menu">Share</p></a></li>
-    <li><a href="#"><h3 class="menu">Explore</h3><p class="menu">Explore</p></a></li>
--->
-
-{% endblock %}
-
-{% block submenu %}
-<ul id="saturday">
-    {% block userprofile_submenu %}{% endblock %}
-
-</ul>
-{% endblock %}
-
 {% block content %}
-    <hr class="space">
-	<div class="span-5 leftcol">
-        {% block userprofile_sidebar %}{% endblock %}
+<div class="container">
+    <div class="row">
+        <!-- Leftside -->
+        <div class="span10 columns">
+            {% block userprofile_leftside %}{% endblock %}
+        </div>
+        <!-- Rightside -->
+        <div class="span5 columns offset1">
+            <a href="/report" class="btn primary">&nbsp;&nbsp;Upload malware&nbsp;&nbsp;</a>
+            <a href="/investigation" class="btn">New investigation</a>
+            <br><br>
+            <div class="well">
+                <h4>Your investigations</h4>
+                {% if investigations %}
+                <table>
+                    {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"5" %}
+                        <tr>
+                            <td>
+                                <a href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a>
+                                <br>
+                                <span class="quiet">{{ investigation.lastupdated|timesince }} ago</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                    <h6>No investigations</h6>
+                {% endif %}
+            </div>
+            {% block userprofile_rightside %}{% endblock %}
+        </div>
     </div>
-    <div class="span-1">&nbsp;</div>
-
-    <div class="span-15 rightcol">
-        {% block userprofile_content %}{% endblock %}
-    </div>
-    
+</div>
 {% endblock %}

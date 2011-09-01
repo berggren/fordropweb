@@ -1,31 +1,24 @@
-{% extends "apps/investigation/investigation_base_wide.html" %}
-{% load thumbnail %}
+{% extends "base.html" %}
 
-{% block investigation_content %}
-    <div class="news_box_grey">
-    <h2>Start new investigation</h2>
-    <form action="/investigation/create" method="post" enctype="multipart/form-data">{% csrf_token %}
-      {% for field in newinvestigationform %}
-            {{ field.errors }}
-            {{ field }}
-          {% endfor %}
-        <input type="submit" value="Start" />
-      </form>
+{% block content %}
+<div class="container">
+    <div class="span16 well">
+        <h2>Start new investigation</h2>
+        <br>
+        <form action="/investigation/create" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% for field in newinvestigationform %}
+                {{ field.errors }}
+                {{ field }}
+            {% endfor %}
+            <input type="submit" value="Start" />
+        </form>
     </div>
-    <br>
-
-<!--
-        <h2>Recent investigations</h2>
-  {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
-    <a href="/investigation/{{ investigation.id }}"><h3>{{ investigation.title }}</h3></a>
-    <span class="threadTextDarker">
-      <i>
-          {{ investigation.description.content|linebreaksbr|truncatewords:"50" }}<br>
-      </i>
-    </span>
-    <span class="threadText">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
-    <br><br>
-      <hr>
-  {% endfor %}
--->
+    {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}
+        <a href="/investigation/{{ investigation.id }}"><h4>{{ investigation.title }}</h4></a>
+        {{ investigation.description.content|linebreaksbr|truncatewords:"50" }}<br>
+        <span class="quiet">Last activity was {{ investigation.lastupdated|timesince }} ago</span>
+        <br><br>
+        <hr>
+    {% endfor %}
+</div>
 {% endblock %}
