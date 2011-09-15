@@ -48,15 +48,21 @@
             <div class="post_box">
                 <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.get_full_name }}</strong></a>
                 {% ifequal item.object.content_type.name "file" %}
-                    commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a>
+                        <span class="quiet right">{{ item.object.submit_date|timesince }} ago</span>
+                    </div>
                 {% endifequal %}
 
                 {% ifequal item.object.content_type.name "investigation" %}
-                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}"> {{ item.object.content_object.title }}</a></div>
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}"> {{ item.object.content_object.title }}</a>
+                        <span class="quiet right">{{ item.object.submit_date|timesince }} ago</span>
+                    </div>
                 {% endifequal %}
 
                 {% ifequal item.object.content_type.name "user" %}
-                    <div class="blokk">to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a></div>
+                    <div class="blokk">to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a>
+                        <span class="quiet right">{{ item.object.submit_date|timesince }} ago</span>
+                    </div>
                 {% endifequal %}
 
                 {% ifequal item.object.content_type.name "report" %}
@@ -75,7 +81,7 @@
 
                 {{ item.object.comment|linebreaksbr|slice:"140" }}
                 <br>
-                <span class="quiet">{{ item.object.submit_date|timesince }} ago</span>
+
             </div>
         {% endifequal %}
 
@@ -83,10 +89,9 @@
             <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
             <div class="post_box">
                 <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.get_full_name }}</strong></a>
-                <div class="blokk">uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a></div>
-                <br>
-                <span class="quiet">{{ item.object.timecreated|timesince }} ago</span>
-                <br>
+                <div class="blokk">uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
+                    <span class="quiet right">{{ item.object.timecreated|timesince }} ago</span>
+                </div>
             </div>
         {% endifequal %}
 
@@ -94,10 +99,9 @@
             <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.creator.get_profile.avatar 40x40 crop %}></div>
             <div class="post_box">
                 <a href="/user/{{ item.object.creator.id }}"><strong>{{ item.object.creator.get_full_name }}</strong></a>
-                <div class="blokk">started a {{ item.type }} <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a></div>
-                <br>
-                <span class="quiet">{{ item.object.timecreated|timesince }} ago</span>
-                <br>
+                <div class="blokk">started a {{ item.type }} <a href="/investigation/{{ item.object.id }}">{{ item.object.title}}</a>
+                    <span class="quiet right">{{ item.object.timecreated|timesince }} ago</span>
+                </div>
             </div>
         {% endifequal %}
     </div>
