@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from apps.pages.models import Page
+from web.apps.pages.models import Page
 
 class ReferencePollManager(models.Manager):
     def get_count(self, reference):
-        from apps.report.models import UserReport, UserFile
+        from web.apps.report.models import UserReport, UserFile
         reference_object = Reference.objects.get(name=reference)
         self.files = UserFile.objects.filter(reference=reference_object).count()
         self.reports = UserReport.objects.filter(reference=reference_object).count()
@@ -24,7 +24,7 @@ class Investigation(models.Model):
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.title)
+        return '%s' % self.title
     class Admin:
         pass
 
@@ -34,7 +34,7 @@ class Reference(models.Model):
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.name)
+        return '%s' % self.name
     class Admin:
         pass
 
@@ -44,6 +44,6 @@ class Status(models.Model):
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.name)
+        return '%s' % self.name
     class Admin:
         pass

@@ -2,6 +2,24 @@
 {% load comments %}
 {% load thumbnail %}
 
+{% block extrahead %}
+<script>
+    $(document).ready(function() {
+        $("#button_block").hide()
+        $("#id_comment").focus(function() {
+            $(this).animate({"height": "85px"}, "fast" );
+            $("#button_block").slideDown("fast");
+            return false;
+        });
+        $("#button_cancel").click(function() {
+            $("#id_comment").animate({"height": "18px"}, "fast" );
+            $("#button_block").slideUp("fast");
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
 {% block extratitle %}<button class="btn right">Follow</button>{% endblock %}
 {% block investigation_leftside %}
 <ul class="tabs">
@@ -9,55 +27,64 @@
     <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
     <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
     <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
 </ul>
 
-    {% get_comment_form for investigation as form %}
-    <form action="/comments/post/" method="post">{% csrf_token %}
-        <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
+
+<div class="blackbook">
+    <!--
+    <form method="post" action="">
+        <textarea rows=5 id="id_comment" placeholder="Share"></textarea>
+        <br><br>
+            <h4 class="white">Timestamp</h4>
+                <input class="small" type="text" value="May 1, 2011" />
+                <input class="mini" type="text" value="12:00am" />
+         <br><br>
+         <input type="submit" class="btn primary" value="Post" />
+         <input type="submit" class="btn" value="Cancel" />
+    </form>
+    -->
+</div>
+
+    <h3>{{ people|length }} people involved</h3>
+    <br>
+                {% for user in people %}
+                <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
+            {% endfor %}
+
+{% endblock %}
+
+{% block investigation_rightside %}
+<!-- Comments -->
+{% get_comment_form for investigation as form %}
+{% get_comment_list for investigation as comments %}
+<form method="post" action="/comments/post/">{% csrf_token %}
+    <input type="hidden" name="next" value="/investigation/{{ investigation.id }}" />
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
-        {{ form.comment }}
+        <textarea rows=1 id="id_comment" name="comment" placeholder="Share"></textarea>
         <br><br>
-        <input class="btn" type="submit" value="Post">
-    </form>
-    {% get_comment_list for investigation as comments %}
-    {% if comments %}
-        {% for comment in comments reversed %}
-            <div class="comment-container">
-                <div class="comment">
-                    <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
-                    <span class="threadTitle"><a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></span><br>
-                    <span class="threadText">{{ comment.submit_date|timesince }} ago</span><br><br>
-                    {{ comment.comment|linebreaksbr }}
-                    <br><br><hr>
-                </div>
+        <div id="button_block">
+            <input type="submit" class="btn primary" id="button_submit" value="Post" />
+            <input type="submit" class="btn" id='button_cancel' value="Cancel" />
+        </div>
+</form>
+
+{% if comments %}
+    {% for comment in comments %}
+        <div class="comment-container">
+            <div class="comment">
+                <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
+                <a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a><br>
+                <span class="quiet">{{ comment.submit_date|timesince }} ago</span><br>
+                {{ comment.comment|linebreaksbr }}
+                <br><br><hr>
             </div>
-        {% endfor %}
-    {% else %}
-        <h6>No discussion in this investigation..</h6>
-    {% endif %}
-
-
-    {% if investigation.description.content %}
-    {{ investigation.description.content|linebreaksbr }}
-    <br><br><hr>
-    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><button class="btn primary">Edit</button></div>
+        </div>
+    {% endfor %}
 {% else %}
-    <div onclick="$(this).next('div.#hidetext').toggle('fast')" style="cursor:pointer;"><button class="btn primary">Add description</button></div>
+    <h6>No comments</h6>
 {% endif %}
-<div id="hidetext" style="display:none;">
-    <form action="/investigation/{{ investigation.id }}/edit" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <br>
-<textarea id="id_description" rows="10" cols="40" name="description">
-{% if investigation.description.content %}
-{{ investigation.description.content|linebreaks|striptags }}
-{% endif %}
-</textarea>
-    <br><br>
-<input class="btn" type="submit" value="Save" />
-    </form>
-</div>
-<div style="float:right;margin-top:-23px;">Last updated by {{ investigation.description.creator.get_full_name }} | {{ investigation.description.lastupdated|timesince }} ago</div>
+<!-- END comments -->
 {% endblock %}

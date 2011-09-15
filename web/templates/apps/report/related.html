@@ -1,0 +1,29 @@
+{% extends "apps/report/report_base.html" %}
+
+{% block extrahead %}
+    <script>
+    $(document).ready(function() {
+        $.getJSON("/related?n={{ file.graphid }}", function(data) {
+            $.each(data['nodes'], function(k, v) {
+                $("#foobar").append("<li>"+k+"</li>");
+            });
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block report_leftside %}
+<ul class="tabs">
+    <li><a href="/file/{{ file.id }}/show">Info</a></li>
+    <li class="active"><a href="/file/{{ file.id }}/related">Related</a></li>
+    <li><a href="/file/{{ file.id }}/graph">Graph</a></li>
+    <li><a href="/file/{{ file.id }}/wiki">Wiki</a></li>
+</ul>
+
+<h3>Related</h3>
+<div id="foobar"></div>
+
+
+    
+{% endblock %}
+

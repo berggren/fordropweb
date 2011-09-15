@@ -2,24 +2,15 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from neo4jrestclient.constants import STOP_AT_DEPTH_ONE
 from apps.search.forms import *
-#from apps.report.models import *
-#from apps.report.forms import *
 from apps.report.forms import *
-from apps.report.utils import *
-from apps.pages.models import *
-from apps.investigation.models import *
-#from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
-#from tagging.models import *
-#from tagging.utils import *
 from forms import *
 import simplejson
-#import datetime
 from utils import *
 from django.contrib.contenttypes.models import ContentType
 from apps.investigation.models import *
+from graphutils import FordropGraphClient
 
 @login_required
 def index(request):
@@ -33,6 +24,7 @@ def index(request):
 def add_tag(request, obj_type, obj_id):
     if request.method == 'POST':
         form = TagForm(request.POST)
+        _object = None
         if form.is_valid():
             _tag = form.cleaned_data['tag']
             if obj_type == "file":
@@ -49,6 +41,7 @@ def add_tag(request, obj_type, obj_id):
 @login_required
 def add_reference(request, obj_type, obj_id):
     if request.method == 'POST':
+        _object = None
         form = ReferenceForm(request.POST)
         if form.is_valid():
             _ref_name = form.cleaned_data['reference']
@@ -89,32 +82,10 @@ def timeline(request, investigation_id):
     j2 = simplejson.dumps(j)
     return HttpResponse(j2)
 
-def node_color(node):
-    if node.properties['type'] == 'investigation':
-        color = "orange"
-    elif node.properties['type'] == 'person':
-        color = "green"
-    elif node.properties['type'] == 'report':
-        color = "green"
-    else:
-        color = "grey"
-    return color
-
 def arbor(request):
-    try:
-        nodeid = request.GET['n']
-    except:
-        nodeid = 6
-    gdb = client.GraphDatabase("http://localhost:7474/db/data/")
-    ref_node = gdb.nodes.get(nodeid)
-    nodes, edges, e = {}, {}, {}
-    nodes[ref_node.properties['name']] = {'color':node_color(ref_node),'label':ref_node.properties['name'], 'id':ref_node.id}
-    for node in ref_node.traverse(stop="1", returns=client.NODE):
-        nodes[node.properties['name']] = {'color':node_color(node),'label':node.properties['name'], 'id':node.id}
-    #for rel in ref_node.relationships.all():
-    #    e[rel.start.properties['name']] = {'label': rel.type, 'directed':True}
-    #    e[rel.end.properties['name']] = {'label': rel.type, 'directed':True}
-    #    edges[ref_node.properties['name']] = e
-    d = {'nodes': nodes, 'edges': edges}
-    return HttpResponse(simplejson.dumps(d))
+    graph = FordropGraphClient()
+    return graph.gen_arbor_json(request.GET['n'])
 
+def related(request):
+    graph = FordropGraphClient()
+    return graph.get_related(request.GET['n'])

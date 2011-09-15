@@ -29,6 +29,8 @@ import os
 import re
 import hashlib
 from web.apps.search.forms import SearchForm
+from web.graphutils import FordropGraphClient
+
 
 @login_required
 def report(request):
@@ -85,29 +87,22 @@ def file(request):
             if not created:
                 messages.error(request, 'Already reported by you')
             else:
-                file_node = add_node_to_graph(file, "file")
-                user_node = add_node_to_graph(request.user.get_profile(), "person")
-                rel = add_relationship_to_graph(user_node, file_node, "reported")
-                messages.success(request, 'Thank you for your submission')
-                print file_node, user_node, rel
+                gc = FordropGraphClient()
+                gc.add_node(request, file, "file")
+                gc.add_relationship(request.user.get_profile().graphid, file.graphid, "reported")
+                #messages.success(request, 'Thank you for your submission')
             url = "/file/%i/show" % file.id
             return HttpResponseRedirect(url)
         else:
             return HttpResponseRedirect("/upload")
     else:
         uploadform = UploadFileForm()
-        searchform = SearchForm()
-        genericreportform = GenericReportForm()
         files = UserFile.objects.all().order_by('-timecreated')
-        tagcloud = Tag.objects.cloud_for_model(File,  steps=5, distribution=LOGARITHMIC, filters=None, min_count=None)
         return render_to_response(
                                   'apps/upload/dashboard.html',
                                   {
                                     'uploadform':   uploadform, 
-                                    'searchform':   searchform,
-                                    'genericreportform': genericreportform,
-                                    'files':        files, 
-                                    'tagcloud':     tagcloud
+                                    'files':        files,
                                   }, RequestContext(request))
 
 @login_required
@@ -117,6 +112,27 @@ def graph(request, id):
                               'apps/report/graph.html',
                               {
                                     'file':           file,
+                                    'result':           file,
+                              }, RequestContext(request))
+
+@login_required
+def related(request, id):
+    file = File.objects.get(id=id)
+    return render_to_response(
+                              'apps/report/related.html',
+                              {
+                                    'file':           file,
+                                    'result':           file,
+                              }, RequestContext(request))
+
+@login_required
+def wiki(request, id):
+    file = File.objects.get(id=id)
+    return render_to_response(
+                              'apps/report/wiki.html',
+                              {
+                                    'file':           file,
+                                    'result':           file,
                               }, RequestContext(request))
 
 @login_required

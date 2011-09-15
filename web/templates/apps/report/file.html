@@ -2,6 +2,24 @@
 {% load comments %}
 {% load thumbnail %}
 
+{% block extrahead %}
+<script>
+    $(document).ready(function() {
+        $("#button_block").hide()
+        $("#id_comment").focus(function() {
+            $(this).animate({"height": "85px"}, "fast" );
+            $("#button_block").slideDown("fast");
+            return false;
+        });
+        $("#button_cancel").click(function() {
+            $("#id_comment").animate({"height": "18px"}, "fast" );
+            $("#button_block").slideUp("fast");
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
 {% block report_leftside %}
 
 {% if messages %}
@@ -16,14 +34,11 @@
 {% endif %}
 
 <!--<a href="javascript: history.go(-1)" style="margin-right:10px;" class="btn left">&laquo; Back</a><h3 class="inline">{{ result.sha1 }}</h3>-->
-<h3>{{ result.sha1 }}</h3>
-<br>
 <ul class="tabs">
-    <li class="active"><a href="#">Description</a></li>
-    <li><a href="#">Related</a></li>
+    <li class="active"><a href="/file/{{ result.id }}/show">Info</a></li>
+    <li><a href="/file/{{ result.id }}/related">Related</a></li>
     <li><a href="/file/{{ result.id }}/graph"">Graph</a></li>
-    <li><a href="#">Printable strings</a></li>
-    <li><a href="#">PEdump</a></li>
+    <li><a href="/file/{{ result.id }}/wiki">Wiki</a></li>
 </ul>
 
 {% if investigations %}
@@ -58,6 +73,14 @@
     </table>
 </div>
 
+{% if resultme %}
+<div class="well">
+    {%  ifequal resultme.user n.user %}
+        <td><button class="btn">Add</button></td>
+    {% endifequal %}
+</div>
+{% endif %}
+
 {% if resultall %}
     <div class="well">
         <table border=0>
@@ -74,7 +97,11 @@
                             <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
                         {% else %}
                             {% if resultme %}
-                                <td><button class="btn">Add</button></td>
+                                {%  ifequal resultme.user n.user %}
+                                    <td><button class="btn">Add</button></td>
+                                {% else %}
+                                    <td></td>
+                                {% endifequal %}
                             {% else %}
                                 <td></td>
                             {% endif %}
@@ -88,11 +115,23 @@
 
 {% block report_rightside %}
 <!-- Comments -->
+<br>
 {% get_comment_list for result as comments %}
 {% get_comment_form for result as form %}
+<form method="post" action="/comments/post/">{% csrf_token %}
+    <input type="hidden" name="next" value="/file/{{ result.id }}/show" />
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        <textarea rows=1 id="id_comment" name="comment" placeholder="Share"></textarea>
+        <br><br>
+        <div id="button_block">
+            <input type="submit" class="btn primary" id="button_submit" value="Post" />
+            <input type="submit" class="btn" id='button_cancel' value="Cancel" />
+     </div>
+</form>
+
 {% if comments %}
-    <h3>Comments</h3>
-    <br>
     {% for comment in comments %}
         <div class="comment-container">
             <div class="comment">
@@ -107,14 +146,5 @@
 {% else %}
     <h6>No comments</h6>
 {% endif %}
-<form action="/comments/post/" method="post">{% csrf_token %}
-    <input type="hidden" name="next" value="/investigation/{{ investigation.id }}/discussion" />
-    {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-    {% endfor %}
-    {{ form.comment }}
-    <br><br>
-    <input type="submit" class="btn" value="Post">
-</form>
 <!-- END comments -->
 {% endblock %}

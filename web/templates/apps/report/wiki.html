@@ -1,0 +1,14 @@
+{% extends "apps/report/report_base.html" %}
+
+{% block report_leftside %}
+<ul class="tabs">
+    <li><a href="/file/{{ file.id }}/show">Info</a></li>
+    <li><a href="/file/{{ result.id }}/related">Related</a></li>
+    <li><a href="/file/{{ file.id }}/graph">Graph</a></li>
+    <li  class="active"><a href="/file/{{ file.id }}/wiki">Wiki</a></li>
+</ul>
+
+<h3>Wiki</h3>
+
+{% endblock %}
+

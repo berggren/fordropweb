@@ -1,19 +1,12 @@
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from models import *
-from tagging.models import *
-from tagging.utils import *
-from utils import *
 
 # Reversion
 from reversion.models import Version
 from reversion import revision
-#from reversion.helpers import generate_patch
 
 @login_required
 @revision.create_on_success

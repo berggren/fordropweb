@@ -10,7 +10,7 @@
                 {{ field.errors }}
                 {{ field }}
             {% endfor %}
-            <input type="submit" value="Start" />
+            <input type="submit" class="btn" value="Start" />
         </form>
     </div>
     {% for investigation in investigations|dictsortreversed:"lastupdated"|slice:"10" %}

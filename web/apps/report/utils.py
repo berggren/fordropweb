@@ -117,8 +117,10 @@ def add_node_to_graph(obj, type):
 def add_relationship_to_graph(node1, node2, type):
     import neo4jrestclient.client as neo4j
     graphdb = neo4j.GraphDatabase("http://127.0.0.1:7474/db/data/")
+    n1 = graphdb.nodes.get(node1)
+    n2 = graphdb.nodes.get(node2)
     try:
-        graphdb.relationships.create(node1, type, node2)
+        graphdb.relationships.create(n1, type, n2)
     except: return False
     return True
 

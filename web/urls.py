@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     (r'^reference/add/(\w+)/(\d+)$',    'views.add_reference'),
     (r'^timeline/(\d+)$',               'views.timeline'),
     (r'^arbor$',                        'views.arbor'),
+    (r'^related$',                      'views.related'),
+
 
     # Home
     (r'^home$',                         'apps.userprofile.views.dashboard'),
@@ -32,7 +34,9 @@ urlpatterns = patterns('',
 
     # Upload & Report
     (r'^file/(\d+)/show$',            'apps.report.views.show_file'),
-    (r'^file/(\d+)/graph$',            'apps.report.views.graph'),
+    (r'^file/(\d+)/graph$',           'apps.report.views.graph'),
+    (r'^file/(\d+)/related$',         'apps.report.views.related'),
+    (r'^file/(\d+)/wiki$',         'apps.report.views.wiki'),
 
     (r'^file/(\d+)/malware/mhr$',     'apps.report.views.get_malware_mhr'),
     (r'^report$',                     'apps.report.views.report'),
@@ -40,15 +44,16 @@ urlpatterns = patterns('',
     (r'^report/add/file$',            'apps.report.views.file'),
     (r'^report/(\d+)/show$',          'apps.report.views.show_file'),
 
+
     # Investigations
-    (r'^investigation$',                            'apps.investigation.views.index'),
+    (r'^investigation$',                            'apps.investigation.views.create'),
     (r'^investigation/(\d+)$',                      'apps.investigation.views.overview'),
     (r'^investigation/create$',                     'apps.investigation.views.create'),
     (r'^investigation/(\d+)/edit$',                 'apps.investigation.views.edit'),
-    (r'^investigation/(\d+)/discussion$',           'apps.investigation.views.discussion'),
     (r'^investigation/(\d+)/timeline$',             'apps.investigation.views.timeline'),
     (r'^investigation/(\d+)/library$',              'apps.investigation.views.library'),
     (r'^investigation/(\d+)/graph$',                'apps.investigation.views.graph'),
+    (r'^investigation/(\d+)/wiki$',                 'apps.investigation.views.wiki'),
     (r'^investigation/(\d+)/page/(\d+)$',           'apps.investigation.views.page'),
     (r'^investigation/(\d+)/page/create$',          'apps.investigation.views.page'),
 
@@ -69,10 +74,11 @@ urlpatterns = patterns('',
     
     # Login
     (r'^accounts/login/$', login,       {'template_name': "login.html"}),
-    (r'^accounts/login/federated/$',    'apps.auth.views.fedlogin'),
+    #(r'^accounts/login/federated/$',    'apps.auth.views.fedlogin'),
     (r'^accounts/login/local/$',        'apps.auth.views.local_login'),
-    (r'^accounts/logout/$',             'apps.auth.views.fedlogout'),
-    (r'^accounts/register/$',           'apps.auth.views.fedregister'),
+    #(r'^accounts/logout/$',             'apps.auth.views.fedlogout'),
+    (r'^accounts/logout/$', logout,       {'template_name': "login.html"}),
+    #(r'^accounts/register/$',           'apps.auth.views.fedregister'),
 
     # Media
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbn/stuff/work/code/fordrop/web/static', 'show_indexes': True}),

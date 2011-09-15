@@ -5,12 +5,11 @@
 {% block investigation_leftside %}
 
 <ul class="tabs">
-    <li><a href="/investigation/{{ investigation.id }}">Description</a></li>
-    <li class="active"><a href="/investigation/{{ investigation.id }}/discussion">Discussion</a></li>
+    <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
     <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
     <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
     <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/reports">Reports</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
 </ul>
 
 {% get_comment_form for investigation as form %}

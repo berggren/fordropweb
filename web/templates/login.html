@@ -1,31 +1,53 @@
+<!doctype html>
 <html>
+
 <head>
-<title>fordrop - Forensic Dropbox</head>
-<link type="text/css" href="/site_media/css/style-login.css" rel="stylesheet" /> 
+    <title>fordrop</title>
+    <link rel='stylesheet' href='/site_media/css/bootstrap-1.1.0.min.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/style2.css' type='text/css'>
 </head>
-<div id="header">
-        <div id="header-center">
-                <div id="logo">
-                        <a href="/"><img src="/site_media/img/logo.png"></a>
-                </div>
-<br>
-<br>
-<br>
-<br>
-<br>
 
-    <form action="/accounts/login-local/" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <br>
-        Username: <input type="text" name="username" id="username" /><br>
-        Password: <input type="password" name="password" id="password" /><br>
-        <input type="submit" value="Login" />
-      </form>
+<div class="container">
+  <div class="row">
+      <div class="span8 columns">
+          <h1 class="center">fordrop</h1>
+          <form class="center" action="/accounts/login/local/" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+          <div class="clearfix">
+            <label>Username</label>
+            <div class="input">
+              <input class="xlarge" type="text" name="username" id="username" />
+            </div>
+          </div>
+
+          <div class="clearfix">
+            <label>Password</label>
+            <div class="input">
+                <input class="xlarge" type="password" name="password" id="password" />
+            </div>
+          </div>
+
+            <input type="submit" class="btn left" value="Login" />
+          </form>
+      </div>
 
 
-<br>
-<br>
-        </div>
+
+
+  </div>
 </div>
 
 
+</body>
+</html>
 
+<!--
+<div class="span8 columns">
+    <h1 class="center">fordrop</h1>
+    <form class="center"  action="/accounts/login/local/" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <input class="xlarge error" type="text" name="username" id="username" /><br><br>
+        <input class="xlarge" type="password" name="password" /><br><br>
+        <input type="submit" class="btn left" value="Login" />
+    </form>
+</div>
+-->
