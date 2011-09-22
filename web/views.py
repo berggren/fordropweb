@@ -13,14 +13,6 @@ from apps.investigation.models import *
 from graphutils import FordropGraphClient
 
 @login_required
-def index(request):
-    searchform = SearchForm()
-    files = UserFile.objects.filter(user=request.user).order_by('-timecreated')
-    stream = activity_stream()
-    investigations = Investigation.objects.all()
-    return render_to_response('apps/userprofile/dashboard.html', {'investigations': investigations, 'stream': stream, 'searchform': searchform, 'files': files, 'uploadform': UploadFileForm(), 'genericreportform': GenericReportForm()}, RequestContext(request))
-
-@login_required
 def add_tag(request, obj_type, obj_id):
     if request.method == 'POST':
         form = TagForm(request.POST)
@@ -39,23 +31,16 @@ def add_tag(request, obj_type, obj_id):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 @login_required
-def add_reference(request, obj_type, obj_id):
+def add_reference(request, type, id):
     if request.method == 'POST':
-        _object = None
-        form = ReferenceForm(request.POST)
-        if form.is_valid():
-            _ref_name = form.cleaned_data['reference']
-            _ref_object, created = Reference.objects.get_or_create(name=_ref_name)
-            if obj_type == "file":
-                _object = UserFile.objects.get(id=obj_id)
-            if obj_type == "report":
-                _object = UserReport.objects.get(id=obj_id)
-            _object.reference = _ref_object
-            _object.save()
-            #ref_node = add_node_to_graph(_ref_object, "reference")
-            #file_node = add_node_to_graph(_object, "file")
-            #rel = add_relationship_to_graph(ref_node, file_node, "part of")
-
+        ref_name = request.POST['reference']
+        ref_object, created = Reference.objects.get_or_create(name=ref_name)
+        file = UserFile.objects.get(id=id)
+        file.reference = ref_object
+        file.save()
+        #ref_node = add_node_to_graph(_ref_object, "reference")
+        #file_node = add_node_to_graph(_object, "file")
+        #rel = add_relationship_to_graph(ref_node, file_node, "part of")
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 def timeline(request, investigation_id):

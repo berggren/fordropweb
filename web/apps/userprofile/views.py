@@ -19,7 +19,8 @@ def dashboard(request):
                             {
                                 'investigations': investigations,
                                 'stream': stream,
-                                'files': files
+                                'files': files,
+                                'request': request
                             }, RequestContext(request))
 
 @login_required

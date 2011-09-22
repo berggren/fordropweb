@@ -47,3 +47,4 @@ class Status(models.Model):
         return '%s' % self.name
     class Admin:
         pass
+

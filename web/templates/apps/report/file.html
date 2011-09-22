@@ -16,6 +16,10 @@
             $("#button_block").slideUp("fast");
             return false;
         });
+        $("#editref").click(function() {
+            $("#ref").remove();
+            $(this).replaceWith("<form method='post' action='/reference/add/file/{{ resultme.id }}'> {% csrf_token %}<input class='left' style='width:310px;margin-top:3px;margin-left:10px;' type=text name='reference'></input><input type=submit value='Change' class='btn right' style='margin-top:3px;'></form>");
+        });
     });
 </script>
 {% endblock %}
@@ -71,15 +75,22 @@
             {% endif %}
         </td></tr>
     </table>
+    {% if resultme %}
+    {% if not resultme.reference %}
+        <h3 class="left">Add reference</h3>
+        <form method="post" action="/reference/add/file/{{ resultme.id }}"> {% csrf_token %}
+            <input class="left" style="width:340px;margin-top:3px;margin-left:10px;" type='text' name="reference"></input>
+            <input type='submit' value="Add" class="btn right" style="margin-top:3px;"></input>
+        </form>
+    {% else %}
+            <h6 class="left" style="margin-right:10px;">Your reference</h6><h3 class="left" id="ref">{{ resultme.reference }}</h3>
+            <a href="#" class="right" id="editref" style="margin-top:8px;">Edit</a>
+    {% endif %}
+
+    {% endif %}
+    <br><br>
 </div>
 
-{% if resultme %}
-<div class="well">
-    {%  ifequal resultme.user n.user %}
-        <td><button class="btn">Add</button></td>
-    {% endifequal %}
-</div>
-{% endif %}
 
 {% if resultall %}
     <div class="well">
@@ -96,15 +107,7 @@
                         {% if n.reference %}
                             <td><a href="/search/reference?r={{ n.reference.id }}">{{ n.reference }}</a></td>
                         {% else %}
-                            {% if resultme %}
-                                {%  ifequal resultme.user n.user %}
-                                    <td><button class="btn">Add</button></td>
-                                {% else %}
-                                    <td></td>
-                                {% endifequal %}
-                            {% else %}
-                                <td></td>
-                            {% endif %}
+                            <td></td>
                         {% endif %}
                 </tr>
             {% endfor %}

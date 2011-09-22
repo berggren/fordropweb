@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block userprofile_leftside %}
+
 <ul class="tabs">
     <li class="active"><a href="/home">Activity</a></li>
     <li><a href="/home/inventory">Inventory</a></li>
@@ -89,7 +90,7 @@
             <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
             <div class="post_box">
                 <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.get_full_name }}</strong></a>
-                <div class="blokk">uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.file.sha1 }}</a>
+                <div class="blokk">uploaded file <a href="/file/{{ item.object.file.id }}/show">{{ item.object.file.sha1 }}</a>
                     <span class="quiet right">{{ item.object.timecreated|timesince }} ago</span>
                 </div>
             </div>

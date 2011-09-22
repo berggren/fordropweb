@@ -89,10 +89,9 @@ def timeline(request, id):
     investigation = Investigation.objects.get(pk=id)
     files = []
     for ref in investigation.reference.all():
-        files = UserFile.objects.filter(reference=ref)
-        for file in files:
-            if file not in files:
-                files.append(files)
+        f = UserFile.objects.filter(reference=ref)
+        for file in f:
+            files.append(file)
     people = get_people(investigation)
     startdate = investigation.timecreated.strftime('%Y %m %d %H:%M:%S')
     return render_to_response('apps/investigation/timeline.html', {'investigation': investigation, 'startdate': startdate, 'files': files, 'people': people}, RequestContext(request))
@@ -129,3 +128,11 @@ def page(request, investigation_id, page_id=None):
         url = "/investigation/%i/page/%i" % (investigation.id, page.id)
         return HttpResponseRedirect(url)
     return render_to_response('apps/investigation/page.html', {'investigation': investigation, 'page': page}, RequestContext(request))
+
+@login_required
+def add_reference(request, id):
+    investigation = Investigation.objects.get(id=id)
+    if request.method == "POST":
+        reference = Reference.objects.get(name=request.POST['reference'])
+        investigation.reference.add(reference)
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])

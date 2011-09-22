@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     (r'^investigation/(\d+)/wiki$',                 'apps.investigation.views.wiki'),
     (r'^investigation/(\d+)/page/(\d+)$',           'apps.investigation.views.page'),
     (r'^investigation/(\d+)/page/create$',          'apps.investigation.views.page'),
+    (r'^investigation/(\d+)/reference/add$',        'apps.investigation.views.add_reference'),
 
     # Pages
     (r'^pages/create$',             'apps.pages.views.create'),

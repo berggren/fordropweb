@@ -20,10 +20,10 @@
 </script>
 {% endblock %}
 
-{% block extratitle %}<button class="btn right">Follow</button>{% endblock %}
+{% block extratitle %}<!--<button class="btn right">Follow</button>-->{% endblock %}
 {% block investigation_leftside %}
 <ul class="tabs">
-    <li class="active"><a href="/investigation/{{ investigation.id }}">Activity</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}">Overview</a></li>
     <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
     <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
     <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
@@ -31,26 +31,46 @@
 </ul>
 
 
-<div class="blackbook">
-    <!--
+{% if investigation.reference %}
+{% for ref in investigation.reference.all  %}
+<div class="well">
+    <h3 class="left">{{ ref }}</h3>
+    <br><br>
+</div>
+{% endfor %}
+{% endif %}
+
+
+<div class="well">
     <form method="post" action="">
         <textarea rows=5 id="id_comment" placeholder="Share"></textarea>
         <br><br>
-            <h4 class="white">Timestamp</h4>
+            <h6>Timestamp</h6>
                 <input class="small" type="text" value="May 1, 2011" />
                 <input class="mini" type="text" value="12:00am" />
          <br><br>
          <input type="submit" class="btn primary" value="Post" />
          <input type="submit" class="btn" value="Cancel" />
     </form>
-    -->
 </div>
+
+        <h3 class="left">Add reference</h3>
+        <form method="post" action="/investigation/{{ investigation.id }}/reference/add"> {% csrf_token %}
+            <input class="left" style="width:340px;margin-top:3px;margin-left:10px;" type='text' name="reference"></input>
+            <input type='submit' value="Add" class="btn right" style="margin-top:3px;"></input>
+        </form>
+
+<!--
+    <br><br>
 
     <h3>{{ people|length }} people involved</h3>
     <br>
                 {% for user in people %}
                 <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
             {% endfor %}
+-->
+
+
 
 {% endblock %}
 
