@@ -35,6 +35,7 @@ def add_reference(request, type, id):
     if request.method == 'POST':
         ref_name = request.POST['reference']
         ref_object, created = Reference.objects.get_or_create(name=ref_name)
+        ref_object.users.add(request.user)
         file = UserFile.objects.get(id=id)
         file.reference = ref_object
         file.save()

@@ -133,6 +133,7 @@ def page(request, investigation_id, page_id=None):
 def add_reference(request, id):
     investigation = Investigation.objects.get(id=id)
     if request.method == "POST":
-        reference = Reference.objects.get(name=request.POST['reference'])
+        reference, created = Reference.objects.get_or_create(name=request.POST['reference'])
+        reference.users.add(request.user)
         investigation.reference.add(reference)
     return HttpResponseRedirect(request.META["HTTP_REFERER"])

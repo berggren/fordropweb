@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     (r'^file/(\d+)/show$',            'apps.report.views.show_file'),
     (r'^file/(\d+)/graph$',           'apps.report.views.graph'),
     (r'^file/(\d+)/related$',         'apps.report.views.related'),
-    (r'^file/(\d+)/wiki$',         'apps.report.views.wiki'),
+    (r'^file/(\d+)/wiki$',            'apps.report.views.wiki'),
 
     (r'^file/(\d+)/malware/mhr$',     'apps.report.views.get_malware_mhr'),
     (r'^report$',                     'apps.report.views.report'),

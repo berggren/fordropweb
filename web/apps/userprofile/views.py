@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -7,8 +8,8 @@ from django.contrib.auth.decorators import login_required
 from forms import *
 from models import *
 from utils import *
-from web.apps.investigation.models import Investigation
-from web.apps.search.forms import SearchForm
+from web.apps.investigation.models import Investigation, Reference
+from web.apps.report.models import UserFile
 
 @login_required
 def dashboard(request):
@@ -26,9 +27,14 @@ def dashboard(request):
 @login_required
 def inventory(request):
     investigations = Investigation.objects.filter(creator=request.user).order_by('-lastupdated')
+    files = UserFile.objects.filter(user=request.user)
+    references = request.user.reference_set.all()
     return render_to_response('apps/userprofile/inventory.html',
                             {
                                 'investigations': investigations,
+                                'files': files,
+                                'references': references,
+
                             }, RequestContext(request))
 
 @login_required

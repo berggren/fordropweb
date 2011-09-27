@@ -9,6 +9,7 @@ body {
 .avatar {
   margin-right: 10px;
   float:left;
+  margin-top: 3px;
 }
 
 .post_box {
@@ -95,5 +96,6 @@ textview:focus {
     background: #f5f5f5;
     color: #555;
     border: 1px solid #eee;
+    margin-top:1px;
 }
 

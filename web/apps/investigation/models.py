@@ -30,6 +30,7 @@ class Investigation(models.Model):
 
 class Reference(models.Model):
     name = models.CharField(max_length=255)
+    users = models.ManyToManyField(User)
     objects = ReferencePollManager()
     timecreated = models.DateTimeField(auto_now_add=True)
     lastupdated = models.DateTimeField(auto_now=True)

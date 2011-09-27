@@ -9,5 +9,35 @@
       <li><a href="/home/suggestions">Suggestions</a></li>
       <a href="/report" class="btn info right">Upload malware</a>
     </ul>
-    <h3>Inventory</h3>
+
+<h3>Your files</h3>
+<div class="well">
+<table>
+<th>Filename</th>
+<th>Reference</th>
+{% for file in files %}
+    <tr>
+        <td>{{ file.filename }}</td>
+        {% if file.reference %}
+            <td>{{ file.reference }}</td>
+        {% else %}
+            <td></td>
+        {% endif %}
+    </<tr>
+{%  endfor %}
+</table>
+</div>
+
+<h3>Your pages</h3>
+<div class="well"></div>
+
+<h3>Your references</h3>
+{% for ref in references %}
+    {{ ref }}
+{% endfor %}
+
+
+
 {% endblock %}
+
+
