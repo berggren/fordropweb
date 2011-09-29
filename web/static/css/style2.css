@@ -6,6 +6,10 @@ body {
 	position: static;
 }
 
+.content {
+    background: red;
+}
+
 .avatar {
   margin-right: 10px;
   float:left;
@@ -101,4 +105,11 @@ textview:focus {
 
 .hidden {
     display:none;
+}
+
+.add2 {
+  display:block;
+  text-decoration:none;
+  background:url(/site_media/img/button/add.gif) no-repeat 0px 2px;
+  text-indent:20px;
 }

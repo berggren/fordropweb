@@ -30,11 +30,17 @@
             });
             return false;
         });
+        $("#join_button").click(function(){
+           $("#reference_form").fadeIn('fast');
+        });
     });
 </script>
 {% endblock %}
 
-{% block extratitle %}<!--<button class="btn right">Join</button>-->{% endblock %}
+{% block extratitle %}
+    <!--<button class="btn right">Join</button>-->
+{% endblock %}
+
 {% block investigation_leftside %}
 <ul class="tabs">
     <li class="active"><a href="/investigation/{{ investigation.id }}">Overview</a></li>
@@ -43,7 +49,7 @@
     <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
     <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
     <button id="upload_button" class="btn info right">Upload evidence</button>
-    <button id="upload_cancel_button" class="btn right hidden">Cancel</button>
+    <button id="upload_cancel_button" class="btn right hidden error">Cancel</button>
 </ul>
 
 <div class="well" id="share">
@@ -68,14 +74,6 @@
 </form>
 </div>
 
-
-        <h3 class="left">Add reference</h3>
-        <form method="post" action="/investigation/{{ investigation.id }}/reference/add"> {% csrf_token %}
-            <input class="left" style="width:340px;margin-top:3px;margin-left:10px;" type='text' name="reference"></input>
-            <input type='submit' value="Add" class="btn right" style="margin-top:3px;"></input>
-        </form>
-
-    <br><br>
 <!-- Stream -->
 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
     <div class="post_container">
@@ -111,10 +109,8 @@
                 {% endifequal %}
 
                 <br>
-
                 {{ item.object.comment|linebreaksbr|slice:"140" }}
                 <br>
-
             </div>
         {% endifequal %}
 
@@ -132,25 +128,26 @@
 {% endfor %}
 <!-- END stream -->
 
-
 {% endblock %}
 
 {% block investigation_rightside %}
-<h4 class="left">Investigators</h4><span class="right">Join</span>
-<br><br>
+<h4 class="left">People</h4>
+<button class="right btn success" id="join_button" >Follow</button>
+<form id="reference_form" class="hidden" method="post" action="/investigation/{{ investigation.id }}/reference/add"> {% csrf_token %}
+        <input class="left"  type='text' name="reference"></input>
+        <input type='submit' value="Add" class="btn right"></input>
+</form>
+<br><br><hr style="margin:0;">
+<h6>Investigators</h6>
 {% for user in people %}
     <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
 {% endfor %}
 
+<!--<h6>Followers</h6>-->
+
 <br><br>
-
-{% if investigation.reference %}
-    <h4>Connected references</h4>
-    {% for ref in investigation.reference.all  %}
-        <li>{{ ref }}</li>
-    {% endfor %}
-{% endif %}
-
+<h4>Annotations</h4>
+<hr>
 
 
 {% endblock %}
