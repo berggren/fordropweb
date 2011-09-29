@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 import neo4jrestclient.client as neo4j
-from neo4j import GraphDatabase
+#from neo4j import GraphDatabase
 import simplejson
 
 from settings import NEO4J_RESOURCE
@@ -60,6 +60,7 @@ class FordropGraphClient():
         d = {'nodes': nodes}
         return HttpResponse(simplejson.dumps(d))
 
+"""
 class FordropGraphClientEmbedded():
     def __init__(self):
         self.graphdb = GraphDatabase("/tmp/graph.db")
@@ -113,3 +114,4 @@ class FordropGraphClientEmbedded():
             nodes[node.properties['name']] = {'label':node.properties['name'], 'id':node.id, 'type':node.properties['type']}
         d = {'nodes': nodes}
         return HttpResponse(simplejson.dumps(d))
+"""
