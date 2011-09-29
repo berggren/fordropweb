@@ -5,6 +5,7 @@
 {% block extrahead %}
 <script>
     $(document).ready(function() {
+        $('#upload').hide()
         $("#button_block").hide()
         $("#id_comment").focus(function() {
             $(this).animate({"height": "85px"}, "fast" );
@@ -16,11 +17,24 @@
             $("#button_block").slideUp("fast");
             return false;
         });
+        $("#upload_button").click(function() {
+            $('#share').fadeOut('fast', function() {
+                $('#upload_button').hide()
+                $('#upload_cancel_button').show().click(function() {
+                   $('#upload').hide();
+                   $('#share').show();
+                   $('#upload_cancel_button').hide()
+                   $('#upload_button').show()
+                });
+                $('#upload').fadeIn('fast');
+            });
+            return false;
+        });
     });
 </script>
 {% endblock %}
 
-{% block extratitle %}<!--<button class="btn right">Follow</button>-->{% endblock %}
+{% block extratitle %}<!--<button class="btn right">Join</button>-->{% endblock %}
 {% block investigation_leftside %}
 <ul class="tabs">
     <li class="active"><a href="/investigation/{{ investigation.id }}">Overview</a></li>
@@ -28,31 +42,32 @@
     <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
     <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
     <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
+    <button id="upload_button" class="btn info right">Upload evidence</button>
+    <button id="upload_cancel_button" class="btn right hidden">Cancel</button>
 </ul>
 
-
-{% if investigation.reference %}
-{% for ref in investigation.reference.all  %}
-<div class="well">
-    <h3 class="left">{{ ref }}</h3>
+<div class="well" id="share">
+<form method="post" action="">
+    <textarea rows=1 id="id_comment" placeholder="Share, report or upload malware.."></textarea>
     <br><br>
+    <div id="button_block">
+        <input type="submit" class="btn primary" id="button_submit" value="Post" />
+        <input type="submit" class="btn" id='button_cancel' value="Cancel" />
+    </div>
+</form>
 </div>
-{% endfor %}
-{% endif %}
 
-
-<div class="well">
-    <form method="post" action="">
-        <textarea rows=5 id="id_comment" placeholder="Share"></textarea>
-        <br><br>
-            <h6>Timestamp</h6>
-                <input class="small" type="text" value="May 1, 2011" />
-                <input class="mini" type="text" value="12:00am" />
-         <br><br>
-         <input type="submit" class="btn primary" value="Post" />
-         <input type="submit" class="btn" value="Cancel" />
-    </form>
+<div class="well hidden" id="upload">
+<form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in uploadform %}
+        {{ field.errors }}
+        {{ field }}
+    {% endfor %}
+    <input type="submit" value="Upload" class="btn"/>
+<br><br><br>
+</form>
 </div>
+
 
         <h3 class="left">Add reference</h3>
         <form method="post" action="/investigation/{{ investigation.id }}/reference/add"> {% csrf_token %}
@@ -60,51 +75,82 @@
             <input type='submit' value="Add" class="btn right" style="margin-top:3px;"></input>
         </form>
 
-<!--
     <br><br>
+<!-- Stream -->
+{% for item in stream|dictsortreversed:"time"|slice:"10" %}
+    <div class="post_container">
+        {% ifequal item.type "comment" %}
+            <div class="avatar"><img class="avatar-thumb" src="{% thumbnail item.object.user.get_profile.avatar 40x40 crop %}"></div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.get_full_name }}</strong></a>
+                <span class="quiet right">{{ item.object.submit_date|timesince }} ago</span>
+                {% ifequal item.object.content_type.name "file" %}
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a></div>
+                {% endifequal %}
 
-    <h3>{{ people|length }} people involved</h3>
-    <br>
-                {% for user in people %}
-                <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
-            {% endfor %}
--->
+                {% ifequal item.object.content_type.name "investigation" %}
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}"> {{ item.object.content_object.title }}</a>
+                    </div>
+                {% endifequal %}
 
+                {% ifequal item.object.content_type.name "user" %}
+                    <div class="blokk">to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.get_full_name }},</a>
+                    </div>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "report" %}
+                    <span class="threadText">
+                        <i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
+                    </span>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "tag" %}
+                    <span class="threadText">
+                        <i>{{ item.object.content_object }}</i>
+                    </span>
+                {% endifequal %}
+
+                <br>
+
+                {{ item.object.comment|linebreaksbr|slice:"140" }}
+                <br>
+
+            </div>
+        {% endifequal %}
+
+        {% ifequal item.type "file" %}
+            <div class="avatar"><img class="avatar-thumb" src={% thumbnail item.object.user.get_profile.avatar 40x40 crop %}></div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.get_full_name }}</strong></a>
+                <span class="quiet right">{{ item.object.timecreated|timesince }} ago</span>
+                <div class="blokk">uploaded file <a href="/file/{{ item.object.file.id }}/show">{{ item.object.file.sha1 }}</a>
+                </div>
+            </div>
+        {% endifequal %}
+
+    </div>
+{% endfor %}
+<!-- END stream -->
 
 
 {% endblock %}
 
 {% block investigation_rightside %}
-<!-- Comments -->
-{% get_comment_form for investigation as form %}
-{% get_comment_list for investigation as comments %}
-<form method="post" action="/comments/post/">{% csrf_token %}
-    <input type="hidden" name="next" value="/investigation/{{ investigation.id }}" />
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        <textarea rows=1 id="id_comment" name="comment" placeholder="Share"></textarea>
-        <br><br>
-        <div id="button_block">
-            <input type="submit" class="btn primary" id="button_submit" value="Post" />
-            <input type="submit" class="btn" id='button_cancel' value="Cancel" />
-        </div>
-</form>
+<h4 class="left">Investigators</h4><span class="right">Join</span>
+<br><br>
+{% for user in people %}
+    <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
+{% endfor %}
 
-{% if comments %}
-    {% for comment in comments %}
-        <div class="comment-container">
-            <div class="comment">
-                <div class="avatar"><img class="avatar-thumb" src={% thumbnail comment.user.get_profile.avatar 32x32 crop %}></div>
-                <a href="/user/{{ comment.user.id }}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a><br>
-                <span class="quiet">{{ comment.submit_date|timesince }} ago</span><br>
-                {{ comment.comment|linebreaksbr }}
-                <br><br><hr>
-            </div>
-        </div>
+<br><br>
+
+{% if investigation.reference %}
+    <h4>Connected references</h4>
+    {% for ref in investigation.reference.all  %}
+        <li>{{ ref }}</li>
     {% endfor %}
-{% else %}
-    <h6>No comments</h6>
 {% endif %}
-<!-- END comments -->
+
+
+
 {% endblock %}

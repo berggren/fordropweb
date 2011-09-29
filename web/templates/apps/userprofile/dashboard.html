@@ -2,23 +2,7 @@
 {% load thumbnail %}
 {% load comments %}
 
-{% block extrahead %}
-<script>
-    $(document).ready(function() {
-        $("#button_block").hide()
-        $("#id_comment").focus(function() {
-            $(this).animate({"height": "85px"}, "fast" );
-            $("#button_block").slideDown("fast");
-            return false;
-        });
-        $("#button_cancel").click(function() {
-            $("#id_comment").animate({"height": "18px"}, "fast" );
-            $("#button_block").slideUp("fast");
-            return false;
-        });
-    });
-</script>
-{% endblock %}
+
 
 {% block userprofile_leftside %}
 
@@ -27,12 +11,14 @@
     <li><a href="/home/inventory">Inventory</a></li>
     <li><a href="/home/readinglist">Reading list</a></li>
     <li><a href="/home/suggestions">Suggestions</a></li>
-    <a href="/report" class="btn info right">Upload malware</a>
+    <button id="upload_button" class="btn info right">Upload evidence</button>
+    <button id="upload_cancel_button" class="btn right hidden">Cancel</button>
+
 </ul>
 
-<div class="well">
+<div class="well" id="share">
 <form method="post" action="">
-    <textarea rows=1 id="id_comment" placeholder="Share"></textarea>
+    <textarea rows=1 id="id_comment" placeholder="Share your thoughts .."></textarea>
     <br><br>
     <div id="button_block">
         <input type="submit" class="btn primary" id="button_submit" value="Post" />
@@ -40,6 +26,18 @@
     </div>
 </form>
 </div>
+
+<div class="well hidden" id="upload">
+<form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in uploadform %}
+        {{ field.errors }}
+        {{ field }}
+    {% endfor %}
+    <input type="submit" value="Upload" class="btn"/>
+<br><br><br>
+</form>
+</div>
+ 
 
 <!-- Stream -->
 {% for item in stream|dictsortreversed:"time"|slice:"10" %}

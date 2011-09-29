@@ -1,5 +1,36 @@
 {% extends "base.html" %}
 
+{% block jquery %}
+        $("#button_block").hide()
+        $("#id_comment").focus(function() {
+            $(this).animate({"height": "85px"}, "fast" );
+            $("#button_block").slideDown("fast");
+            return false;
+        });
+        $("#button_cancel").click(function() {
+            $("#id_comment").animate({"height": "18px"}, "fast" );
+            $("#button_block").slideUp("fast");
+            return false;
+        });
+        $("#upload_button").click(function() {
+            $('#share').fadeOut('fast', function() {
+                $('#upload_button').hide()
+                $('#upload_cancel_button').show().click(function() {
+                   $('#upload').hide();
+                   $('#share').show();
+                   $('#upload_cancel_button').hide()
+                   $('#upload_button').show()
+                });
+                $('#upload').fadeIn('fast');
+            });
+            return false;
+        });
+        $("#new_investigation").click(function() {
+            $("#new_investigation_form").fadeIn("fast");
+            return false;
+        });
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -9,12 +40,13 @@
         </div>
         <!-- Rightside -->
         <div class="span5 columns offset1">
-            <!--
-            <a href="/report" class="btn primary">&nbsp;&nbsp;Upload malware&nbsp;&nbsp;</a>
-            <a href="/investigation" class="btn">New investigation</a>
-            <br><br>
-            -->
-                <h4 class="left">Your investigations</h4><a href="/investigation" style="margin-top:8px;" class="right add">New</a>
+                <h4 class="left">Your investigations</h4><a href="#" style="margin-top:8px;" class="right add" id="new_investigation">New</a>
+
+                <form method="post" action="/investigation/create" id="new_investigation_form" class="hidden"> {% csrf_token %}
+                    <input class="left" type='text' name="title" id="id_title"></input>
+                    <input type='submit' value="Add" class="btn right"></input>
+                </form>
+
                 <br><br>
                 {% if investigations %}
                 <table>

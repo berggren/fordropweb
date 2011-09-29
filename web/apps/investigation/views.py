@@ -9,13 +9,18 @@ from apps.report.utils import *
 from django.contrib.auth.decorators import login_required
 from utils import *
 from forms import *
+from web.apps.report.models import UserFile
+from web.apps.report.forms import UploadFileForm
 
 from web.graphutils import FordropGraphClient
+from django.core.mail import send_mail
+
 
 # Reversion
 #from reversion.models import Version
 #from reversion import revision
 #from web.apps.report.models import UserFile
+from web.utils import investigation_activity_stream
 
 def get_people(investigation):
     people = [investigation.creator]
@@ -47,6 +52,7 @@ def create(request):
         gc = FordropGraphClient()
         gc.add_node(request, investigation, "investigation")
         gc.add_relationship(investigation.creator.get_profile().graphid, investigation.graphid, "created")
+        send_mail('New investigation: %s' % investigation.title, 'A new investigation were created by %s' % investigation.creator.get_full_name(), 'fordrop@django',['jbn@django'], fail_silently=True)
         return HttpResponseRedirect(url)
     investigations = Investigation.objects.all()
     newinvestigationform = NewInvestigationForm()
@@ -66,17 +72,17 @@ def edit(request, id):
 @login_required
 def overview(request, id):
     investigation = Investigation.objects.get(pk=id)
-    investigationform = InvestigationForm()
+    uploadform = UploadFileForm()
     #startdate = UserFile.objects.all().order_by("timecreated")[:1][0].timecreated.strftime('%Y %m %d %H:%M:%S')
-    stream = activity_stream()
+    stream = investigation_activity_stream(investigation.id)
     people = get_people(investigation)
-    files = []
-    for ref in investigation.reference.all():
-        ref_files = UserFile.objects.filter(reference=ref)
-        for file in ref_files:
-            if file not in files:
-                files.append(files)
-    return render_to_response('apps/investigation/overview.html', {'investigation': investigation, 'investigationform': investigationform, 'stream': stream, 'people': people, 'files':files}, RequestContext(request))
+    return render_to_response('apps/investigation/overview.html',
+                                                                {
+                                                                    'investigation': investigation,
+                                                                    'uploadform': uploadform,
+                                                                    'stream': stream,
+                                                                    'people': people
+                                                                }, RequestContext(request))
 
 @login_required
 def wiki(request, id):

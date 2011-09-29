@@ -28,6 +28,7 @@ from settings import FD_FILEBASEPATH, FD_AUTHORIZATION_FILE
 import os
 import re
 import hashlib
+from web.apps.investigation.models import Investigation
 from web.apps.search.forms import SearchForm
 from web.graphutils import FordropGraphClient
 
@@ -138,48 +139,12 @@ def wiki(request, id):
 @login_required
 def show_file(request, file_id):
     file = File.objects.get(id=file_id)
-    resultall = UserFile.objects.filter(file=file)
-    tagform = TagForm()
-    referenceform = ReferenceForm()
-    tags = Tag.objects.get_for_object(file)
-    strings = None
-    pe_dump = None
-    filebasepath = FD_FILEBASEPATH
+    files = UserFile.objects.filter(file=file)
     investigations = None
     refs = []
-    if os.path.exists(filebasepath+"/"+file.datefolder+"/"+file.sha1+".pedump"):
-        is_pefile = True
-    else:
-        is_pefile = False
-    try:
-        if request.GET['strings'] == "True":
-            fh = open(filebasepath+"/"+file.datefolder+"/"+file.sha1+".strings", "r")
-            strings = ""
-            for line in fh.readlines():
-                strings = strings+line
-            fh.close()
-    except: pass
-    try:
-        if request.GET['pedump'] == "True":
-            fh = open(filebasepath+"/"+file.datefolder+"/"+file.sha1+".pedump", "r")
-            pe_dump = ""
-            for line in fh.readlines():
-                pe_dump = pe_dump+line
-            fh.close()
-    except: pass
-
-    if len(resultall) > 1:
-        multiple_hits = True
-        for f in resultall:
-            if f.reference not in refs and f.reference is not None:
-                refs.append(f.reference)
-        if len(refs) > 1:
-            multiple_refs = True
-        else:
-            multiple_refs = False
-    else:
-        multiple_hits = False
-        multiple_refs = False
+    for f in files:
+        if f.reference not in refs and f.reference is not None:
+            refs.append(f.reference)
     try:
         mhr = MalwareMhr.objects.get(file=file)
     except:
@@ -193,18 +158,10 @@ def show_file(request, file_id):
                               'apps/report/file.html',
                               {
                                     "investigations":   investigations,
-                                    "multiple_hits":    multiple_hits,
-                                    "multiple_refs":    multiple_refs, 
                                     'result':           file,
-                                    'resultall':        resultall, 
+                                    'files':            files,
                                     'resultme':         resultme, 
-                                    'tagform':          tagform, 
-                                    'referenceform':    referenceform, 
-                                    'tags':             tags, 
-                                    'mhr':              mhr, 
-                                    'strings':          strings, 
-                                    'is_pefile':        is_pefile, 
-                                    'pedump':           pe_dump,
+                                    'mhr':              mhr,
                                     'refs':             refs
                               }, RequestContext(request))
 
