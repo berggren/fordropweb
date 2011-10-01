@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from apps.investigation.models import *
 from tagging.models import *
+from web.apps.investigation.models import Reference
 
 class File(models.Model):
     filesize = models.IntegerField(null=True)
@@ -10,11 +11,11 @@ class File(models.Model):
     md5 = models.CharField(max_length=255)
     sha1 = models.CharField(max_length=255)
     sha256 = models.CharField(max_length=255)
-    graphid = models.IntegerField(null=True)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
+    graph_id = models.IntegerField(null=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.md5)
+        return '%s' % self.md5
     class Admin:
         pass
     
@@ -23,8 +24,8 @@ class UserFile(models.Model):
     file = models.ForeignKey(File)
     filename = models.CharField(max_length=255)
     reference = models.ForeignKey(Reference, null=True, blank=True)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
         return '%s' % (unicode(self.filename))
     class Admin:
@@ -35,43 +36,9 @@ class MalwareMhr(models.Model):
     percent = models.IntegerField(null=True)
     timecreated_mhr = models.DateTimeField(null=True)
     donotexist = models.BooleanField()
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.file)
-    class Admin:
-        pass
-
-class Report(models.Model):
-    type = models.ForeignKey('TypeReport')
-    value = models.TextField(null=True)
-    md5 = models.CharField(max_length=255)
-    sha1 = models.CharField(max_length=255)
-    sha256 = models.CharField(max_length=255)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
-        return '%s' % (self.value)
-    class Admin:
-        pass
-    
-class UserReport(models.Model):
-    user = models.ForeignKey(User)
-    report = models.ForeignKey(Report)
-    reference = models.ForeignKey(Reference, null=True, blank=True)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
-        return '%s' % (self.user)
-    class Admin:
-        pass
-
-class TypeReport(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
-        return '%s' % (self.name)
+        return '%s' % self.file
     class Admin:
         pass

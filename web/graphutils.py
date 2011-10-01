@@ -12,20 +12,20 @@ class FordropGraphClient():
 
     def add_node(self, request, obj, type):
         node = None
-        if not obj.graphid:
+        if not obj.graph_id:
             if type == 'file':
-                userfile = UserFile.objects.filter(file=obj, user=request.user)[0]
-                node = self.graphdb.nodes.create(name=userfile.filename, type='report')
+                user_file = UserFile.objects.filter(file=obj, user=request.user)[0]
+                node = self.graphdb.nodes.create(name=user_file.filename, type='report')
             if type == 'person':
                 node = self.graphdb.nodes.create(name=obj.user.get_full_name(), type='person')
             if type == 'investigation':
                 node = self.graphdb.nodes.create(name=obj.title, type='investigation')
             if type == 'reference':
                 node = self.graphdb.nodes.create(name=obj.name, type='reference')
-            obj.graphid = node.id
+            obj.graph_id = node.id
             obj.save()
         else:
-            node = self.graphdb.nodes.get(obj.graphid)
+            node = self.graphdb.nodes.get(obj.graph_id)
         return node
 
     def add_relationship(self, node1, node2, type):
@@ -34,13 +34,13 @@ class FordropGraphClient():
         self.graphdb.relationships.create(n1, type, n2)
         return True
 
-    def gen_arbor_json(self, graphid):
+    def gen_arbor_json(self, graph_id):
         node_color = {
             'investigation':    'orange',
             'person':           'green',
             'report':           'grey'
         }
-        ref_node = self.graphdb.nodes.get(graphid)
+        ref_node = self.graphdb.nodes.get(graph_id)
         nodes, edges, e = {}, {}, {}
         nodes[ref_node.properties['name']] = {'color':node_color[ref_node.properties['type']],'label':ref_node.properties['name'], 'id':ref_node.id}
         for node in ref_node.traverse(stop="1", returns=neo4j.NODE):
@@ -52,8 +52,8 @@ class FordropGraphClient():
         d = {'nodes': nodes, 'edges': edges}
         return HttpResponse(simplejson.dumps(d))
 
-    def get_related(self, graphid):
-        ref_node = self.graphdb.nodes.get(graphid)
+    def get_related(self, graph_id):
+        ref_node = self.graphdb.nodes.get(graph_id)
         nodes = {}
         for node in ref_node.traverse(stop="none", returns=neo4j.NODE):
             nodes[node.properties['name']] = {'label':node.properties['name'], 'id':node.id, 'type':node.properties['type']}
@@ -67,7 +67,7 @@ class FordropGraphClientEmbedded():
 
     def add_node(self, request, obj, type):
         node = None
-        if not obj.graphid:
+        if not obj.graph_id:
             if type == 'file':
                 userfile = UserFile.objects.filter(file=obj, user=request.user)[0]
                 node = self.graphdb.node(name=userfile.filename, type='report')
@@ -77,10 +77,10 @@ class FordropGraphClientEmbedded():
                 node = self.graphdb.node(name=obj.title, type='investigation')
             if type == 'reference':
                 node = self.graphdb.node(name=obj.name, type='reference')
-            obj.graphid = node.id
+            obj.graph_id = node.id
             obj.save()
         else:
-            node = self.graphdb.node[obj.graphid]
+            node = self.graphdb.node[obj.graph_id]
         return node
 
     def add_relationship(self, node1, node2, type):
@@ -89,13 +89,13 @@ class FordropGraphClientEmbedded():
         n1.relationships.create(type, n2)
         return True
 
-    def gen_arbor_json(self, graphid):
+    def gen_arbor_json(self, graph_id):
         node_color = {
             'investigation':    'orange',
             'person':           'green',
             'report':           'grey'
         }
-        ref_node = self.graphdb.nodes.get(graphid)
+        ref_node = self.graphdb.nodes.get(graph_id)
         nodes, edges, e = {}, {}, {}
         nodes[ref_node.properties['name']] = {'color':node_color[ref_node.properties['type']],'label':ref_node.properties['name'], 'id':ref_node.id}
         for node in ref_node.traverse(stop="1", returns=neo4j.NODE):
@@ -107,8 +107,8 @@ class FordropGraphClientEmbedded():
         d = {'nodes': nodes, 'edges': edges}
         return HttpResponse(simplejson.dumps(d))
 
-    def get_related(self, graphid):
-        ref_node = self.graphdb.nodes.get(graphid)
+    def get_related(self, graph_id):
+        ref_node = self.graphdb.nodes.get(graph_id)
         nodes = {}
         for node in ref_node.traverse(stop="none", returns=neo4j.NODE):
             nodes[node.properties['name']] = {'label':node.properties['name'], 'id':node.id, 'type':node.properties['type']}

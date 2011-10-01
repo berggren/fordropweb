@@ -5,10 +5,10 @@ from easy_thumbnails.fields import ThumbnailerImageField
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     avatar = ThumbnailerImageField(upload_to='avatars')
-    graphid = models.IntegerField(null=True)
-    timecreated = models.DateTimeField(auto_now_add=True)
-    lastupdated = models.DateTimeField(auto_now=True)
+    graph_id = models.IntegerField(null=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return '%s' % (self.user)
+        return '%s' % self.user
     class Admin:
         pass

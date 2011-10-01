@@ -4,7 +4,6 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from web.apps.investigation.models import Investigation, Reference
-from web.apps.pages.models import Page
 from web.apps.report.models import UserFile
 from web.apps.report.forms import UploadFileForm
 from web.graphutils import FordropGraphClient
@@ -31,22 +30,19 @@ def create(request):
     """
     if request.method == 'POST':
         title = request.POST['title']
-        description, created = Page.objects.get_or_create(title=title, creator=request.user, content=None)
-        investigation, created = Investigation.objects.get_or_create(title=title,
-                                                                     creator=request.user,
-                                                                     description=description)
-        investigation.pages.add(description)
+        investigation, created = Investigation.objects.get_or_create(title=title, creator=request.user)
         investigation.investigator.add(request.user)
         investigation.save()
         url = "/investigation/%i" % investigation.id
         gc = FordropGraphClient()
         gc.add_node(request, investigation, "investigation")
-        gc.add_relationship(investigation.creator.get_profile().graphid, investigation.graphid, "created")
-        send_mail('New investigation: %s' % investigation.title, 'A new investigation were created by %s' %
-                                                                 investigation.creator.get_full_name(),
-                                                                 'fordrop@django',
-                                                                 ['jbn@django'],
-                                                                 fail_silently=True)
+        gc.add_relationship(investigation.creator.get_profile().graphid, investigation.graph_id, "created")
+        mail_body = "A new investigation were created by %s" % investigation.creator.get_full_name()
+        send_mail('New investigation: %s' % investigation.title,
+                                            mail_body,
+                                            'fordrop@django',
+                                            ['jbn@django'],
+                                            fail_silently=True)
         return HttpResponseRedirect(url)
 
 @login_required
@@ -58,7 +54,7 @@ def overview(request, id):
     people = get_people(investigation)
     upload_form = UploadFileForm()
     stream = investigation_activity_stream(investigation.id)
-    return render_to_response('apps/investigation/overview.html',
+    return render_to_response('investigation/overview.html',
                                                                 {
                                                                     'investigation': investigation,
                                                                     'uploadform': upload_form,
@@ -73,7 +69,7 @@ def wiki(request, id):
     """
     investigation = Investigation.objects.get(pk=id)
     people = get_people(investigation)
-    return render_to_response('apps/investigation/wiki.html',
+    return render_to_response('investigation/wiki.html',
                                                             {
                                                                 'investigation': investigation,
                                                                 'people': people
@@ -91,8 +87,8 @@ def timeline(request, id):
         f = UserFile.objects.filter(reference=ref)
         for file in f:
             files.append(file)
-    start_date = investigation.timecreated.strftime('%Y %m %d %H:%M:%S')
-    return render_to_response('apps/investigation/timeline.html',
+    start_date = investigation.time_created.strftime('%Y %m %d %H:%M:%S')
+    return render_to_response('investigation/timeline.html',
                                                                 {
                                                                     'investigation': investigation,
                                                                     'startdate': start_date,
@@ -113,7 +109,7 @@ def library(request, id):
         for file in ref_files:
             if file not in files:
                 files.append(file)
-    return render_to_response('apps/investigation/library.html',
+    return render_to_response('investigation/library.html',
                                                                 {
                                                                     'investigation': investigation,
                                                                     'files': files,
@@ -127,7 +123,7 @@ def graph(request, id):
     Implemented with arbor.js, see the javascript in the template
     """
     investigation = Investigation.objects.get(pk=id)
-    return render_to_response('apps/investigation/graph.html',
+    return render_to_response('investigation/graph.html',
                                                             {
                                                                 'investigation': investigation
                                                             }, RequestContext(request))

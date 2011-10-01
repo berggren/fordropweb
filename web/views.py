@@ -2,7 +2,6 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from apps.search.forms import *
 from apps.report.forms import *
 from django.contrib.auth.decorators import login_required
 from forms import *

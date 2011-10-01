@@ -1,77 +1,16 @@
-# Django stuff
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.comments.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-# Imports from this application
 from utils import *
 from forms import *
 from models import *
-
-# Tagging
-from tagging.models import *
-from tagging.utils import *
-
-# Imports from other fordrop-apps 
 from apps.investigation.models import *
 from apps.search.forms import *
-
-# fordrop settings
 from settings import FD_FILEBASEPATH, FD_AUTHORIZATION_FILE
-
-# System
-import os
-import re
-import hashlib
 from web.apps.investigation.models import Investigation
-from web.apps.search.forms import SearchForm
 from web.graphutils import FordropGraphClient
-
-
-@login_required
-def report(request):
-    genericreportform = GenericReportForm()
-    searchform = SearchForm()
-    uploadform = UploadFileForm()
-    reports = UserReport.objects.all()
-    files = UserFile.objects.all()
-    return render_to_response('apps/report/report.html', {
-                                                            'reports': reports, 
-                                                            'files': files,
-                                                            'genericreportform': genericreportform,
-                                                            'searchform': searchform,
-                                                            'uploadform': uploadform,
-                                                        }, RequestContext(request))
-
-@login_required
-def add_report(request):
-    if request.method == 'POST':
-        form = GenericReportForm(request.POST)
-        if form.is_valid():
-            type = form.cleaned_data['type']
-            value = form.cleaned_data['value']
-            hash_string = unicode(type)+unicode(value)
-            md5 = hashlib.md5(hash_string).hexdigest()
-            sha1 = hashlib.sha1(hash_string).hexdigest()
-            sha256 = hashlib.sha256(hash_string).hexdigest()
-            # Create database entry
-            report, created = Report.objects.get_or_create(type=type, value=value, md5=md5, sha1=sha1, sha256=sha256)
-            user_report, created = UserReport.objects.get_or_create(user=request.user, report=report)
-            if not created:
-                messages.error(request, 'Already reported by you')
-            else:
-                messages.success(request, 'Thank you for your submission')
-            url = "/report/%i/show" % report.id
-            return HttpResponseRedirect(url)
-        else:
-            return HttpResponseRedirect("/upload")
-    else:
-        return HttpResponseRedirect("/upload")
 
 @login_required
 def file(request):
@@ -90,7 +29,7 @@ def file(request):
             else:
                 gc = FordropGraphClient()
                 gc.add_node(request, file, "file")
-                gc.add_relationship(request.user.get_profile().graphid, file.graphid, "reported")
+                gc.add_relationship(request.user.get_profile().graph_id, file.graph_id, "reported")
                 #messages.success(request, 'Thank you for your submission')
             url = "/file/%i/show" % file.id
             return HttpResponseRedirect(url)
@@ -164,28 +103,6 @@ def show_file(request, file_id):
                                     'mhr':              mhr,
                                     'refs':             refs
                               }, RequestContext(request))
-
-@login_required
-def show_report(request, report_id):
-    searchform = SearchForm()
-    referenceform = ReferenceForm()
-    tagform = TagForm()
-    report = Report.objects.get(id=report_id)
-    resultall = UserReport.objects.filter(report=report)
-    tags = Tag.objects.get_for_object(report)
-    try:
-        resultme = UserReport.objects.get(user=request.user, report=report)
-    except: resultme = None
-    return render_to_response('apps/report/show.html', {
-                                                            "tagform": tagform, 
-                                                            'searchform': searchform, 
-                                                            'referenceform': referenceform, 
-                                                            'result': report, 
-                                                            'resultall': resultall, 
-                                                            'resultme': resultme, 
-                                                            'tags': tags
-                                                          }, RequestContext(request))
-    
 
 @login_required
 def get_malware_mhr(request, file_id):

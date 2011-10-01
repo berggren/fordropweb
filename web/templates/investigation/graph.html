@@ -1,0 +1,35 @@
+{% extends "investigation_base_wide.html" %}
+
+{% block extrahead %}
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/jquery-1.6.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/arbor.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/graphics.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/renderer.js" ></script>
+{%  endblock %}
+
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
+</ul>
+
+<canvas id="viewport" width="960" height="600"></canvas>
+<script language="javascript" type="text/javascript">
+$(document).ready(function() {
+    $('body').bind('foobar', function(event, node) {
+        $.getJSON("/arbor?n="+node.data.id, function(data) {
+            sys.graft(data);
+        });
+    });
+    var sys = arbor.ParticleSystem({repulsion:200, stiffness:512, friction:0.2, gravity: false, dt:0.1});
+    sys.screenPadding(50);
+    sys.renderer = Renderer("#viewport");
+    var data = $.getJSON("/arbor?n={{ investigation.graphid }}", function(data) {
+        sys.graft(data);
+    });
+});
+</script>
+{% endblock %}

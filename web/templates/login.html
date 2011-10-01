@@ -3,15 +3,15 @@
 
 <head>
     <title>fordrop</title>
-    <link rel='stylesheet' href='/site_media/css/bootstrap-1.1.0.min.css' type='text/css'>
-    <link rel='stylesheet' href='/site_media/css/style2.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/bootstrap-1.2.0.min.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
 </head>
 
 <div class="container">
   <div class="row">
       <div class="span8 columns">
           <h1 class="center">fordrop</h1>
-          <form class="center" action="/accounts/login/local/" method="post" enctype="multipart/form-data">{% csrf_token %}
+          <form class="center" action="/accounts/login/" method="post" enctype="multipart/form-data">{% csrf_token %}
 
           <div class="clearfix">
             <label>Username</label>
@@ -30,24 +30,8 @@
             <input type="submit" class="btn left" value="Login" />
           </form>
       </div>
-
-
-
-
   </div>
 </div>
 
-
 </body>
 </html>
-
-<!--
-<div class="span8 columns">
-    <h1 class="center">fordrop</h1>
-    <form class="center"  action="/accounts/login/local/" method="post" enctype="multipart/form-data">{% csrf_token %}
-        <input class="xlarge error" type="text" name="username" id="username" /><br><br>
-        <input class="xlarge" type="password" name="password" /><br><br>
-        <input type="submit" class="btn left" value="Login" />
-    </form>
-</div>
--->
