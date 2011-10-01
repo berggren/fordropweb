@@ -27,6 +27,8 @@
         });
         $("#new_investigation").click(function() {
             $("#new_investigation_form").fadeIn("fast");
+            $("#new_investigation").hide();
+            $("#id_title").focus();
             return false;
         });
 {% endblock %}

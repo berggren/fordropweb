@@ -32,6 +32,8 @@
         });
         $("#join_button").click(function(){
            $("#reference_form").fadeIn('fast');
+           $("#join_button").hide();
+           $("#reference_input").focus();
         });
     });
 </script>
@@ -123,7 +125,7 @@
                 </div>
             </div>
         {% endifequal %}
-
+h
     </div>
 {% endfor %}
 <!-- END stream -->
@@ -131,14 +133,16 @@
 {% endblock %}
 
 {% block investigation_rightside %}
-<h4 class="left">People</h4>
-<button class="right btn success" id="join_button" >Follow</button>
+
+
+<h4 class="left">Investigators</h4>
+<button class="right btn success" id="join_button" >Join</button>
 <form id="reference_form" class="hidden" method="post" action="/investigation/{{ investigation.id }}/reference/add"> {% csrf_token %}
-        <input class="left"  type='text' name="reference"></input>
-        <input type='submit' value="Add" class="btn right"></input>
+        <br><br><br>
+        <input class="left" id="reference_input" type='text' name="reference"></input>
+        <input class="btn right" type='submit' value="Add"></input>
 </form>
-<br><br><hr style="margin:0;">
-<h6>Investigators</h6>
+<br><br><hr>
 {% for user in people %}
     <img src={% thumbnail user.get_profile.avatar 35x35 crop %}>
 {% endfor %}
