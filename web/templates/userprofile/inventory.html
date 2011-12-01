@@ -3,40 +3,35 @@
 
 {% block userprofile_leftside %}
     <ul class="tabs">
-      <li><a href="/home">Activity</a></li>
+      <li><a href="/home">Stream</a></li>
       <li class="active"><a href="/home/inventory">Inventory</a></li>
       <li><a href="/home/readinglist">Reading list</a></li>
-      <li><a href="/home/suggestions">Suggestions</a></li>
-      <a href="/report" class="btn info right">Upload malware</a>
     </ul>
 
-<h3>Your files</h3>
-<div class="well">
-<table>
-<th>Filename</th>
-<th>Reference</th>
-{% for file in files %}
-    <tr>
-        <td>{{ file.filename }}</td>
-        {% if file.reference %}
-            <td>{{ file.reference }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-    </<tr>
-{%  endfor %}
-</table>
+<div class="well hidden" id="upload">
+<form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in uploadform %}
+        {{ field.errors }}
+        {{ field }}
+    {% endfor %}
+    <input type="submit" value="Upload" class="btn"/>
+<br><br><br>
+</form>
 </div>
 
-<h3>Your pages</h3>
-<div class="well"></div>
-
-<h3>Your references</h3>
-{% for ref in references %}
-    {{ ref }}
-{% endfor %}
-
-
+<br><br><br>
+    <h4>Files</h4>
+    {% for file in files %}
+        <div class="post_container">
+            <a href="/file/{{ file.id }}/show">{{ file.filename }}</a>
+            <br>
+            <span class="quiet">{{ file.file.filetype }}
+            <br>
+            Reference: {{ file.reference }}
+            </span>
+            <br><br>
+        </div>
+    {% endfor %}
 
 {% endblock %}
 

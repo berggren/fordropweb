@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     (r'^home/suggestions$',               'apps.userprofile.views.suggestions'),
 
     # Upload & Report
-    (r'^file/(\d+)/show$',            'apps.report.views.show_file'),
+    (r'^file/(\d+)/show$',            'apps.report.views.file'),
     (r'^file/(\d+)/graph$',           'apps.report.views.graph'),
     (r'^file/(\d+)/related$',         'apps.report.views.related'),
     (r'^file/(\d+)/wiki$',            'apps.report.views.wiki'),
@@ -35,16 +35,21 @@ urlpatterns = patterns('',
     (r'^investigation/(\d+)$',                      'apps.investigation.views.overview'),
     (r'^investigation/create$',                     'apps.investigation.views.create'),
     (r'^investigation/(\d+)/timeline$',             'apps.investigation.views.timeline'),
-    (r'^investigation/(\d+)/library$',              'apps.investigation.views.library'),
     (r'^investigation/(\d+)/graph$',                'apps.investigation.views.graph'),
+    (r'^investigation/(\d+)/related$',                'apps.investigation.views.related'),
     (r'^investigation/(\d+)/wiki$',                 'apps.investigation.views.wiki'),
     (r'^investigation/(\d+)/reference/add$',        'apps.investigation.views.add_reference'),
 
     # Pages
     (r'^pages/create$',             'apps.pages.views.create'),
-    
+
+    # Postss
+    (r'^post$',             'apps.post.views.post'),
+
     # User
     (r'^user/(\d+)$',               'apps.userprofile.views.profile'),
+
+    (r'^federation$',                 'apps.userprofile.views.settings'),
 
     # Search
     (r'^search$',                   'apps.search.views.search'),

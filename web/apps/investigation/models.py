@@ -1,6 +1,8 @@
+from django.contrib.contenttypes import generic
 from django.db import models
 from django.contrib.auth.models import User
 from web.apps.pages.models import Page
+from web.apps.post.models import Post
 
 class Investigation(models.Model):
     title = models.CharField(max_length=255)
@@ -11,6 +13,8 @@ class Investigation(models.Model):
     reference = models.ManyToManyField('Reference', null=True, blank=True)
     pages = models.ManyToManyField(Page, null=True, blank=True, related_name="pages")
     graph_id = models.IntegerField(null=True)
+    posts = generic.GenericRelation(Post)
+    uuid = models.CharField(max_length=255)
     time_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

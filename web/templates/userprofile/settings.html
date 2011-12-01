@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block extrahead %}
+    <script src='/site_media/pubsubbox/js/jquery-ui-1.8.16.min.js'></script>
+    <script src='/site_media/pubsubbox/js/bootstrap-tabs-1.3.0.js'></script>
+    <script src='/site_media/pubsubbox/js/bootstrap-modal-1.3.0.js'></script>
+    <script src='/site_media/pubsubbox/js/strophe-1.0.2.min.js'></script>
+    <script src='/site_media/pubsubbox/js/pubsubbox.js'></script>
+    <link rel='stylesheet' href='/site_media/pubsubbox/css/pubsubbox.css'>
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="container">
+
+<div id="login-screen">
+
+<div class="row">
+	<div class="span10">
+		<h1 class="left">Federation administration</h1>
+		<br><br><br>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae odio lorem, ut scelerisque mi. Fusce velit magna, dignissim sed commodo non, facilisis in elit. Sed porta sem et odio iaculis iaculis. Aenean aliquam dui ac felis molestie cursus. Fusce ac ligula non quam lacinia tincidunt. Cras ut nisl at ante euismod euismod dignissim dapibus felis. Nunc consectetur lectus id est varius scelerisque. Morbi purus neque, eleifend vel iaculis aliquet, fermentum vitae dui. Nulla in ipsum nisi. Fusce sed nisi et nisi dictum feugiat.</p>
+		<br>
+	</div>
+</div>
+
+<div class="row">	
+	<div class="span7">
+		<div id="login-form">
+			<form>
+            	<label for="xlInput">Password</label>
+            	<div class="input">
+              	    <input id="password" size="30" type="password" />
+            	</div>
+			</form>
+            <button value="Login" id="login-button" style="margin-left:150px;" class="btn primary">Login</button>
+		</div>
+	</div>
+</div>
+</div>
+
+<div id="main-screen" class="hidden">
+<div class="row">
+	<div class="span16">
+        <h1>Manage your federations</h1>
+		<br><br><br>
+		<button class="btn ">+ Contact</button>
+        <button data-controls-modal="my-modal" data-backdrop="true" data-keyboard="true" class="btn">+ PubSub Node</button>
+        <div class="right hide" id="spinner"><img src="/site_media/img/spinner.gif"/></div>
+		<br><br>
+	</div>
+</div>
+	<div class="row">
+		<div class="span16">
+			<div id="roster" class="scroll">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span16">
+			<div id="nodeinfo" class="hide"></div>
+            <div id="nodeinfo_whitelist" class="scroll2 hide"></div>
+            <div id="nodeinfo_buttonlist" class="hide"></div>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="span16">
+            <h6>PubSub Nodes</h6>
+			<div id="pubsub"></div>
+		</div>
+	</div>
+	<br>
+	<hr>
+</div>
+
+<div id="my-modal" class="modal hide fade">
+    <div class="modal-header">
+        <a href="#" class="close">&times;</a>
+        <h3>Create new PubSub node</h3>
+    </div>
+    <div class="modal-body">
+        <form>
+            <label for="xlInput">Name</label>
+            <div class="input">
+                <input class="xlarge" id="node" size="30" type="text" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn primary" id="create-node-button">Create</button>
+    </div>
+</div>
+
+<div id="login_spinner" class="hide center vcenter">
+    &nbsp;&nbsp;&nbsp;&nbsp;<img src="/site_media/img/spinner.gif" />
+</div>
+
+
+</div>
+
+
+{% endblock %}

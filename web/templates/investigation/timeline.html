@@ -1,4 +1,4 @@
-{% extends "investigation_base_wide.html" %}
+{% extends "investigation/investigation_base_wide.html" %}
 {% load thumbnail %}
 
 {% block extrahead %}
@@ -23,24 +23,34 @@
 <ul class="tabs">
     <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
     <li class="active"><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/wiki">Docs</a></li>
 </ul>
+
+<br><br><br>
 
  <div class="well">
   <div id="timeline"></div>
-    <table border=0>
+ </div>
+    <table border=0 class="noborder">
         <th>Time</th>
         <th>Reporter</th>
         <th></th>
         {% for n in files %}
             <tr class="{% cycle row1,row2 %}">
-                <td>{{ n.timecreated|timesince }} ago</td>
+                <td>{{ n.time_created|date:"Y-m-d H:i:s" }}</td>
                 <td><div class="avatar"><img src={% thumbnail n.user.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.user.id }}">{{ n.user.first_name }} {{ n.user.last_name }}</a></td>
-                <td><a href="/report/{{ n.id }}/show">{{ n }}</a></td>
+                <td><a href="/file/{{ n.file.id }}/show">{{ n }}</a></td>
             </tr>
         {% endfor %}
-    </table>
-</div>
+        {% for n in investigation.posts.all %}
+             <tr class="{% cycle row1,row2 %}">
+                 <td>{{ n.time_created|date:"Y-m-d H:i:s" }}</td>
+                 <td><div class="avatar"><img src={% thumbnail n.author.get_profile.avatar 20x20 %}></div><a href="/user/{{ n.author.id }}">{{ n.author.first_name }} {{ n.author.last_name }}</a></td>
+                 <td>{{ n.post|slice:":50" }} ..</td>
+             </tr>
+         {% endfor %}
+     </table>
+
+ </div>
 {% endblock %}

@@ -1,14 +1,14 @@
-{% extends "investigation_base.html" %}
+{% extends "investigation/investigation_base.html" %}
 
 {% block investigation_leftside %}
 <ul class="tabs">
     <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
     <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/graph">Graph</a></li>
-    <li><a href="/investigation/{{ investigation.id }}/library">Library</a></li>
-    <li class="active"><a href="/investigation/{{ investigation.id }}/wiki">Wiki</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/wiki">Docs</a></li>
 </ul>
 
-<h3>Wiki</h3>
+<h3>Docs</h3>
+<h6>No docs</h6>
 
 {% endblock %}

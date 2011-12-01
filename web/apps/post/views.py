@@ -1,0 +1,20 @@
+from uuid import uuid4
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from models import Post
+from apps.investigation.models import Investigation
+
+@login_required
+def post(request):
+    if request.method == 'POST':
+        #form = PostForm(request.POST)
+        #if form.is_valid():
+        type = request.POST['type']
+        post = request.POST['post']
+        if type == "user":
+            object = request.user
+        elif type == "investigation":
+            object = Investigation.objects.get(pk=request.POST['id'])
+        Post(post=post, content_object=object, author=request.user, uuid=uuid4().urn).save()
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    

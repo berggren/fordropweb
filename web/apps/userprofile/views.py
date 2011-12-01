@@ -50,7 +50,11 @@ def suggestions(request):
                                                                     {
                                                                         'investigations': investigations,
                                                                     }, RequestContext(request))
-
+@login_required
+def settings(request):
+    return render_to_response('userprofile/settings.html',
+                                                                    {
+                                                                    }, RequestContext(request))
 @login_required
 def profile(request, user_id):
     user = User.objects.get(id=user_id)

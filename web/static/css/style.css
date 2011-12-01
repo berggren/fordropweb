@@ -6,10 +6,6 @@ body {
 	position: static;
 }
 
-.content {
-    background: red;
-}
-
 .avatar {
   margin-right: 10px;
   float:left;
@@ -25,11 +21,12 @@ body {
 .post_container {
     padding: 5px;
     padding-top: 20px;
-    border-bottom: 1px solid silver;
+    border-bottom: 1px solid #ddd;
 }
 
 .post_container:hover {
     background: #f5f5f5;
+
 }
 
 .inline {
@@ -97,9 +94,8 @@ textview:focus {
 
 .blokk {
     padding: 2px;
-    background: #f0f0f0;
+    background: #f5f5f5;
     color: #555;
-    border: 1px solid #eee;
     margin-top:1px;
 }
 
@@ -112,4 +108,8 @@ textview:focus {
   text-decoration:none;
   background:url(/site_media/img/button/add.gif) no-repeat 0px 2px;
   text-indent:20px;
+}
+
+.noborder {
+    border: none;
 }

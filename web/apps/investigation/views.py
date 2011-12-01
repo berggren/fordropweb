@@ -1,14 +1,16 @@
+import json
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from web.apps.investigation.models import Investigation, Reference
-from web.apps.report.models import UserFile
+from web.apps.report.models import UserFile, File
 from web.apps.report.forms import UploadFileForm
 from web.graphutils import FordropGraphClient
 from web.utils import investigation_activity_stream
-
+from uuid import uuid4
 def get_people(investigation):
     """
     List of active people in a investigation, based on references
@@ -31,12 +33,14 @@ def create(request):
     if request.method == 'POST':
         title = request.POST['title']
         investigation, created = Investigation.objects.get_or_create(title=title, creator=request.user)
+        if created:
+            investigation.uuid = uuid4().urn
         investigation.investigator.add(request.user)
         investigation.save()
         url = "/investigation/%i" % investigation.id
         gc = FordropGraphClient()
         gc.add_node(request, investigation, "investigation")
-        gc.add_relationship(investigation.creator.get_profile().graphid, investigation.graph_id, "created")
+        gc.add_relationship(investigation.creator.get_profile().graph_id, investigation.graph_id, "created")
         mail_body = "A new investigation were created by %s" % investigation.creator.get_full_name()
         send_mail('New investigation: %s' % investigation.title,
                                             mail_body,
@@ -54,12 +58,18 @@ def overview(request, id):
     people = get_people(investigation)
     upload_form = UploadFileForm()
     stream = investigation_activity_stream(investigation.id)
+    files = []
+    for ref in investigation.reference.all():
+        f = UserFile.objects.filter(reference=ref)
+        for file in f:
+            files.append(file)
     return render_to_response('investigation/overview.html',
                                                                 {
                                                                     'investigation': investigation,
                                                                     'uploadform': upload_form,
                                                                     'stream': stream,
-                                                                    'people': people
+                                                                    'people': people,
+                                                                    'files': files,
                                                                 }, RequestContext(request))
 
 @login_required
@@ -126,6 +136,30 @@ def graph(request, id):
     return render_to_response('investigation/graph.html',
                                                             {
                                                                 'investigation': investigation
+                                                            }, RequestContext(request))
+
+@login_required
+def related(request, id):
+    graph = FordropGraphClient()
+    investigation = Investigation.objects.get(id=id)
+    related = json.loads(graph.get_related2(investigation.graph_id))['nodes']
+    people = []
+    investigations = []
+    files = []
+    for k,v  in related.items():
+        if v['web_id']:
+            if v['type'] == 'person':
+                people.append(User.objects.get(pk=v['web_id']))
+            if v['type'] == 'investigation':
+                investigations.append(Investigation.objects.get(pk=v['web_id']))
+            if v['type'] == 'report':
+                files.append(File.objects.get(pk=v['web_id']))
+    return render_to_response('investigation/related.html',
+                                                            {
+                                                                'investigation': investigation,
+                                                                'people':           people,
+                                                                'investigations':   investigations,
+                                                                'files':            files,
                                                             }, RequestContext(request))
 
 @login_required

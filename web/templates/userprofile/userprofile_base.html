@@ -43,15 +43,13 @@
         <!-- Rightside -->
         <div class="span5 columns offset1">
                 <h4 class="left">Your investigations</h4><a href="#" style="margin-top:8px;" class="right add" id="new_investigation">New</a>
-
                 <form method="post" action="/investigation/create" id="new_investigation_form" class="hidden"> {% csrf_token %}
                     <input class="left" type='text' name="title" id="id_title"></input>
                     <input type='submit' value="Add" class="btn right"></input>
                 </form>
-
                 <br><br>
                 {% if investigations %}
-                <table>
+                <table class="noborder">
                     {% for investigation in investigations|dictsortreversed:"last_updated"|slice:"5" %}
                         <tr>
                             <td>
@@ -62,11 +60,19 @@
                         </tr>
                     {% endfor %}
                 </table>
-               
                 {% else %}
                     <h6>No investigations</h6>
                 {% endif %}
+
+            <hr>
+
+            <h4>Your stuff</h4>
+                <ul>
+                <li><a href="#">{{ files|length }} files</a></li>
+                <li><a href="#">{{ docs|length }} documents</li>
+                </ul>
             </div>
+
             {% block userprofile_rightside %}{% endblock %}
     </div>
 </div>
