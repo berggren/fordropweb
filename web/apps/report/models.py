@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 from django.contrib.comments.signals import comment_was_posted
 from sleekxmpp.xmlstream.jid import JID
 from tagging.models import *
-from fordrop import FordropXmpp
+from web.xmpp import FordropXmpp
 from xml.etree import cElementTree as ET
 from web.apps.post.models import Post
 from web.apps.investigation.models import *
