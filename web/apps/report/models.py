@@ -108,6 +108,6 @@ def make_activity(obj):
 def make_person_object(user):
     return {'objectType': 'fordropPerson', 'displayName': user.username}
 
-post_save.connect(publish, sender=File, dispatch_uid="file")
-post_save.connect(publish, sender=Post, dispatch_uid="post")
-comment_was_posted.connect(publish, sender=Comment, dispatch_uid="comment")
+#post_save.connect(publish, sender=File, dispatch_uid="file")
+#post_save.connect(publish, sender=Post, dispatch_uid="post")
+#comment_was_posted.connect(publish, sender=Comment, dispatch_uid="comment")

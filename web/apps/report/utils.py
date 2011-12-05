@@ -49,9 +49,8 @@ def get_file_type(file):
     if sys.platform == "darwin":
         type = "Magic not supported on MacOSX"
     else:
-        ms = magic.open(magic.MAGIC_NONE)
-        ms.load()
-        type =  ms.file(file)
+        m = magic.Magic()
+        type =  m.from_file(file)
     return type
 
 def get_strings(file, sha1, path):

@@ -12,8 +12,7 @@ from apps.investigation.models import *
 from apps.search.forms import *
 from settings import FD_FILEBASEPATH, FD_AUTHORIZATION_FILE
 from web.apps.investigation.models import Investigation
-from web.graphutils import FordropGraphClient
-
+import web.graphutils as gc
 
 @login_required
 def file(request, file_id=None):
@@ -36,9 +35,8 @@ def file(request, file_id=None):
                                                                 file=file,
                                                                 filename=result['filename'])
             if uf_created:
-                gc = FordropGraphClient()
-                gc.add_node(request, file, "file")
-                gc.add_relationship(request.user.get_profile().graph_id, file.graph_id, "reported")
+                gc.add_node(gc.neo4jdb, request, file, "file")
+                gc.add_relationship(gc.neo4jdb, request.user.get_profile().graph_id, file.graph_id, "reported")
             else:
                 messages.error(request, 'Already reported by you')
             url = "/file/%i/show" % file.id
@@ -84,10 +82,8 @@ def graph(request, id):
 
 @login_required
 def related(request, id):
-    graph = FordropGraphClient()
     file = File.objects.get(id=id)
-    print file
-    related = json.loads(graph.get_related2(file.graph_id))['nodes']
+    related = json.loads(gc.get_related(file.graph_id))['nodes']
     people = []
     investigations = []
     files = []

@@ -8,9 +8,12 @@ from django.core.mail import send_mail
 from web.apps.investigation.models import Investigation, Reference
 from web.apps.report.models import UserFile, File
 from web.apps.report.forms import UploadFileForm
-from web.graphutils import FordropGraphClient
+import web.graphutils as gc
 from web.utils import investigation_activity_stream
 from uuid import uuid4
+
+print gc.neo4jdb
+
 def get_people(investigation):
     """
     List of active people in a investigation, based on references
@@ -38,7 +41,6 @@ def create(request):
         investigation.investigator.add(request.user)
         investigation.save()
         url = "/investigation/%i" % investigation.id
-        gc = FordropGraphClient()
         gc.add_node(request, investigation, "investigation")
         gc.add_relationship(investigation.creator.get_profile().graph_id, investigation.graph_id, "created")
         mail_body = "A new investigation were created by %s" % investigation.creator.get_full_name()
@@ -140,9 +142,8 @@ def graph(request, id):
 
 @login_required
 def related(request, id):
-    graph = FordropGraphClient()
     investigation = Investigation.objects.get(id=id)
-    related = json.loads(graph.get_related2(investigation.graph_id))['nodes']
+    related = json.loads(gc.get_related2(gc.neo4jdb, investigation.graph_id))['nodes']
     people = []
     investigations = []
     files = []
@@ -154,6 +155,7 @@ def related(request, id):
                 investigations.append(Investigation.objects.get(pk=v['web_id']))
             if v['type'] == 'report':
                 files.append(File.objects.get(pk=v['web_id']))
+    print related
     return render_to_response('investigation/related.html',
                                                             {
                                                                 'investigation': investigation,

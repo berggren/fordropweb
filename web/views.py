@@ -5,7 +5,7 @@ from django.template import RequestContext
 from apps.report.forms import *
 from django.contrib.auth.decorators import login_required
 from forms import *
-import simplejson
+import json
 from utils import *
 from django.contrib.contenttypes.models import ContentType
 from apps.investigation.models import *
@@ -64,7 +64,7 @@ def timeline(request, investigation_id):
             'dateTimeFormat': 'iso8601',
             'events' : l
         }
-    j2 = simplejson.dumps(j)
+    j2 = json.dumps(j)
     return HttpResponse(j2)
 
 def arbor(request):
