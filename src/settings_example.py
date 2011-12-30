@@ -118,15 +118,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
-
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
     'django.contrib.comments',
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -174,4 +165,4 @@ FD_FILEBASEPATH = "%s/storage/files" % BASE_DIR
 NEO4J_RESOURCE = "%s/db/neo4j" % BASE_DIR
 MAIL_HOST = "127.0.0.1"
 MAIL_PORT = 25
-
+THUMBNAIL_ENGINE = "sorl.thumbnail.engines.convert_engine.Engine"
