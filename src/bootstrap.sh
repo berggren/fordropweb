@@ -8,7 +8,11 @@ if [ ! -d storage ]; then
 	mkdir -p storage/files
 fi
 
+if [ ! -d static/cache ]; then
+	mkdir -p static/cache
+fi
+
 cp -af settings_example.py settings.py
 
-/bin/env python ./manage.py syncdb
-/bin/env python ./manage.py migrate
+python ./manage.py syncdb
+python ./manage.py migrate

@@ -4,7 +4,6 @@ django-reversion==1.5.1
 django-taggit==0.9.3
 django-taggit-templatetags==0.4.6dev
 django-tastypie==0.9.11
-neo4j-embedded==1.6.dev0
 pefile==1.2.10-114
 python-dateutil==1.5
 python-magic==0.4.0
