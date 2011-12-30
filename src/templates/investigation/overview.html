@@ -1,0 +1,215 @@
+{% extends "investigation/investigation_base.html" %}
+{% load comments %}
+{% load thumbnail %}
+
+{% block extrahead %}
+<script>
+    $(document).ready(function() {
+        $('#upload').hide()
+        $("#button_block").hide()
+        $("#id_comment").focus(function() {
+            $(this).animate({"height": "85px"}, "fast" );
+            $("#button_block").slideDown("fast");
+            return false;
+        });
+        $("#button_cancel").click(function() {
+            $("#id_comment").animate({"height": "18px"}, "fast" );
+            $("#button_block").slideUp("fast");
+            return false;
+        });
+        $("#upload_button").click(function() {
+            $('#share').fadeOut('fast', function() {
+                $('#upload_button').hide()
+                $('#upload_cancel_button').show().click(function() {
+                   $('#upload').hide();
+                   $('#share').show();
+                   $('#upload_cancel_button').hide()
+                   $('#upload_button').show()
+                });
+                $('#upload').fadeIn('fast');
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extratitle %}
+    <!--<button class="btn right">Join</button>-->
+{% endblock %}
+
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li class="active"><a href="/investigation/{{ investigation.id }}">Activity</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
+    {% if user in investigation.investigator.all %}
+        <button id="upload_button" class="btn info right">Upload evidence</button>
+        <button id="upload_cancel_button" class="btn right hidden error">Cancel</button>
+    {% endif %}
+</ul>
+
+<br><br><br>
+
+<div class="well" id="share">
+    <form method="post" action="/post">{% csrf_token %}
+        <textarea rows=1 id="id_comment" name="post" placeholder="Share your thoughts .."></textarea>
+        <br><br>
+        <div id="button_block">
+            <input type="submit" class="btn success" id="button_submit" value="Post" />
+            <input type="submit" class="btn" id='button_cancel' value="Cancel" />
+            <input type="hidden" name="type" value="investigation" />
+            <input type="hidden" name="id" value="{{ investigation.id }}" />
+
+        </div>
+    </form>
+</div>
+
+<div class="well hidden" id="upload">
+<form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in uploadform %}
+        {{ field.errors }}
+        {{ field }}
+    {% endfor %}
+    <input type="submit" value="Upload" class="btn"/>
+<br><br><br>
+</form>
+</div>
+
+<!-- Stream -->
+{% for item in stream|dictsortreversed:"time"|slice:"10" %}
+    <div class="post_container">
+        {% ifequal item.type "comment" %}
+            <div class="avatar">
+                {% if item.object.user.profile.avatar %}
+                    {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+                <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.profile_name }}</strong></a>
+                <span class="quiet right">{{ item.object.submit_date|timesince }} ago</span>
+                {% ifequal item.object.content_type.name "file" %}
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/file/{{ item.object.content_object.id }}/show"> {{ item.object.content_object.sha1 }}</a></div>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "investigation" %}
+                    <div class="blokk">commented on {{ item.object.content_type }}<a href="/investigation/{{ item.object.content_object.id }}"> {{ item.object.content_object.title }}</a>
+                    </div>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "user" %}
+                    <div class="blokk">to <a href="/file/{{ item.object.content_object.id }}/show">{{ item.object.content_object.profile.name }},</a>
+                    </div>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "report" %}
+                    <span class="threadText">
+                        <i><a href="/report/{{ item.object.content_object.id }}/show">{{ item.object.content_object.sha1 }}</a></i>
+                    </span>
+                {% endifequal %}
+
+                {% ifequal item.object.content_type.name "tag" %}
+                    <span class="threadText">
+                        <i>{{ item.object.content_object }}</i>
+                    </span>
+                {% endifequal %}
+
+                <br>
+                {{ item.object.comment|linebreaksbr|slice:"140" }}
+                <br>
+            </div>
+        {% endifequal %}
+
+        {% ifequal item.type "post" %}
+            <div class="avatar">
+                {% if item.object.author.profile.avatar %}
+                    {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+
+            <div class="post_box">
+                <a href="/user/{{ item.object.author.id }}"><strong>{{ item.object.author.profile.name }}</strong></a>
+                <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
+                <div class="blokk">New post</div>
+                <br>
+                {{ item.object.post|linebreaksbr }}
+            </div>
+        {% endifequal %}
+    
+        {% ifequal item.type "file" %}
+            <div class="avatar">
+                {% if item.object.user.profile.avatar %}
+                    {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+            <div class="post_box">
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.profile.name }}</strong></a>
+                <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
+                <div class="blokk">uploaded file <a href="/file/{{ item.object.file.id }}/show">{{ item.object.file.sha1 }}</a>
+                </div>
+            </div>
+        {% endifequal %}
+
+    </div>
+{% endfor %}
+<!-- END stream -->
+
+{% endblock %}
+
+{% block investigation_rightside %}
+
+<h4 class="left">Investigators</h4>
+
+<br><br>
+{% for user in people %}
+    <div class="avatar">
+        {% if user.profile.avatar %}
+            {% thumbnail user.profile.avatar "40x40" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+        {% else %}
+            {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+        {% endif %}
+    </div>
+{% endfor %}
+
+    <br><br><br><br>
+    <h5>Tags</h5>
+    <form method="post" action="/investigation/{{ investigation.id }}/tag">{% csrf_token %}
+        <span class="left">{{ tagform.tags }}</span>
+    </form>
+    <br>
+    {% for tag in investigation.tags.most_common %}
+        <span class="label">{{ tag }} {{ tag.num_times }}</span>
+    {% endfor %}
+
+    {% if files %}
+    <br><br><br>
+    <h4 class="left">Files</h4>
+    <br><hr>
+    {% for file in files  %}
+        <a href="/file/{{ file.file.id }}/show">{{ file }}</a><br>
+    {% endfor %}
+    {% endif %}
+
+{% endblock %}

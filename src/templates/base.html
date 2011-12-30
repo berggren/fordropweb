@@ -1,0 +1,56 @@
+{% load thumbnail %}
+<!doctype html>
+<html>
+<head>
+    <title>fordrop</title>
+    <link rel='stylesheet' href='/site_media/css/bootstrap-1.3.0.min.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+	<script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.4.2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            {% block jquery %}{% endblock %}
+        });
+    </script>
+	{% block extrahead %}{% endblock %}
+</head>
+
+<body {% block extrabody %}{% endblock %}>
+<div class="topbar-wrapper" style="z-index: 5;">
+  <div class="topbar">
+    <div class="fill">
+      <div class="container">
+        <h3><a href="/">fordrop</a></h3>
+        <form action="/search" method="post">{% csrf_token %}
+          <input type="text" name="search" placeholder="Search" />
+        </form>
+        <ul class="secondary-nav">
+            <li>
+            <div class="avatar">
+                {% if user.profile.avatar %}
+                    {% thumbnail user.profile.avatar "30x30" crop="center" as im %}
+                        <a href="/user/{{ user.id }}"><img class="avatar-thumb left" style="margin-right:10px; margin-top:-5px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">{{  user.username }}</a>
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "30x30" crop="center" as im %}
+                        <a href="/user/{{ user.id }}"><img class="avatar-thumb left" style="margin-right:10px; margin-top:-5px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">{{  user.username }}</a>
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+            </li>
+          <li>
+            <a href="/settings" style="margin-top:4px;">Settings</a>
+          </li>
+          <li>
+            <a href="/accounts/logout" style="margin-top:4px;">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+
+{% block content %}{% endblock %}
+</body>
+</html>

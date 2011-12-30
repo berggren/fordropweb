@@ -1,0 +1,58 @@
+{% extends "investigation/investigation_base.html" %}
+{% load comments %}
+{% load thumbnail %}
+
+{% block extrahead %}
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/jquery-1.6.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/arbor.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/graphics.js" ></script>
+    <script language="javascript" type="text/javascript" src="/site_media/js/arbor/renderer.js" ></script>
+{%  endblock %}
+
+{% block investigation_leftside %}
+<ul class="tabs">
+    <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
+    <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
+    <li class="active"><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
+    <a href="/investigation/{{ investigation.id }}/graph" class="btn info right">Graph</a>
+
+</ul>
+
+    <br><br><br>
+    {% for file_user in people %}
+        {% ifnotequal user file_user %}
+        <div class="post_container">
+            <div class="avatar">
+                 {% thumbnail file_user.get_profile.avatar "40x40" crop="center" as im %}
+                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                 {% endthumbnail %}
+             </div>
+            <div class="post_box">
+                <a href="/user/{{ file_user.id }}"><strong>{{ file_user.get_full_name }}</strong></a>
+                <br>
+                {{ file_user.email }}
+            </div>
+        <br>
+        </div>
+        {% endifnotequal %}
+    {% endfor %}
+
+    {% for investigation in investigations %}
+        <div class="post_container">
+            <div class="post_box">{{ investigation.title }}</div>
+        </div>
+    {% endfor %}
+
+    {% for file in files %}
+        <div class="post_container">
+            <a href="/file/{{ file.id }}/show">{{ file.sha1 }}</a>
+            <br>
+            <span class="quiet">{{ file.filetype }}
+            <br>
+            {{ file.time_created }}
+            </span>
+            <br><br>
+        </div>
+    {% endfor %}
+
+{% endblock %}

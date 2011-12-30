@@ -1,11 +1,9 @@
-authorization.txt
 database.db
 *.pyc
-.project
-.pydevproject
-web/TODO
-web/storage
-web/static/js
-web/settings.py
-web/static/avatars
+src/TODO
+src/storage
+src/static/cache
+src/static/avatars
+src/settings.py
 .idea
+src/db

@@ -1,0 +1,40 @@
+{% extends "userprofile/userprofile_base.html" %}
+{% load thumbnail %}
+
+{% block userprofile_leftside %}
+        <br>
+            <ul class="tabs">
+                <li><a href="/settings/profile">Profile</a></li>
+                <li><a href="/accounts/change_password">Password</a></li>
+                <li class="active"><a href="/settings/notifications">Notifications</a></li>
+                <li><a href="/settings/federation">Federation</a></li>
+            </ul>
+            {% if messages %}
+                <br>
+                <br>
+                <br>
+                {% for message in messages %}
+                    <div class="alert-message info">
+                        <p>
+                            <strong>{{ message }}</strong>
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+                <h5>Email me when:</h5>
+                <i class="quiet">Make sure you have entered you email address in your <a href="/settings/profile">profile</a></i>
+                <br><br>
+                {{ form.notification_comment_on_post }} Somebody comments on one of my posts
+                <br><br>
+                {{ form.notification_same_file }} Somebody reports the same file as me
+                <br><br><br>
+                <input class="btn success" type="submit" value="Save">
+            </form>
+{% endblock %}
+
+{% block userprofile_rightside %}
+    <h5>Configure notifications</h5>
+    <p>Here you can configure how fordrop will notify you when something has changed tha might be if interest to you.</p>
+{% endblock %}
