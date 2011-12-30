@@ -8,7 +8,7 @@ if [ ! -d storage ]; then
 	mkdir -p storage/files
 fi
 
-echo "Now you need to:"
-echo "* Edit settings.py"
-echo "* Run python manage.py syncdb"
-echo ""
+cp -af settings_example.py settings.py
+
+/bin/env python ./manage.py syncdb
+/bin/env python ./manage.py migrate
