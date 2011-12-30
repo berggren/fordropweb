@@ -70,5 +70,5 @@ urlpatterns = patterns('',
     (r'^accounts/change_password/done/$', 'django.contrib.auth.views.password_change_done'),
 
     # Media
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbn/stuff/work/code/fordrop/src/static', 'show_indexes': True}),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'src/static', 'show_indexes': True}),
 )
