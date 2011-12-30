@@ -8,3 +8,4 @@ pefile==1.2.10-114
 python-dateutil==1.5
 python-magic==0.4.0
 sorl-thumbnail==11.09.1
+dnspython==1.9.4
