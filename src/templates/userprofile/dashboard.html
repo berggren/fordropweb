@@ -118,7 +118,7 @@
             <div class="post_box">
                 <a href="/user/{{ item.object.author.id }}"><strong>{{ item.object.author.profile.name }}</strong></a>
                 <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
-                <div class="blokk">New post <a href="/investigation/{{ item.object.content_object.id }}">{{ item.object.content_object.title}}</a></div>
+                <div class="blokk">New post in <a href="{{ item.object.content_object.get_absolute_url }}">{{ item.object.content_object }}</a></div>
                 <br>
                 {{ item.object.post|linebreaksbr|escape }}
             </div>
@@ -171,8 +171,9 @@
         <h6>No investigations</h6>
     {% endif %}
 
-    <h4>Trending tags</h4>
     {% get_taglist as tags %}
+    {% if tags %}
+    <h4>Trending</h4>
     <table class="noborder">
             {% for tag in tags|slice:"5" %}
             <tr>
@@ -184,4 +185,5 @@
             </tr>
             {% endfor %}
     </table>
+    {% endif %}
 {% endblock %}

@@ -18,6 +18,10 @@ class Investigation(models.Model):
     tags = TaggableManager()
     time_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('apps.investigation.views.overview', [str(self.id)])
     def __unicode__(self):
         return '%s' % self.title
     class Admin:

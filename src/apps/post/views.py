@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from models import Post
 from apps.investigation.models import Investigation
+from apps.report.models import File
 
 @login_required
 def post(request):
@@ -15,6 +16,8 @@ def post(request):
             object = request.user
         elif type == "investigation":
             object = Investigation.objects.get(pk=request.POST['id'])
+        elif type == "file":
+            object = File.objects.get(pk=request.POST['id'])
         Post(post=post, content_object=object, author=request.user, uuid=uuid4().urn).save()
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
     
