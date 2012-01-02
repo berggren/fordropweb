@@ -1,5 +1,3 @@
-import json
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -12,14 +10,16 @@ import graphutils as gc
 from utils import investigation_activity_stream
 from uuid import uuid4
 
-print gc.neo4jdb
-
 def get_people(investigation):
     """
     List of active people in a investigation, based on tags
     """
-    #TODO: iterate through all tags and pick out the people
     people = [investigation.creator]
+    tag_list = [x.name for x in investigation.tags.all()]
+    files = File.objects.filter(tags__name__in=tag_list)
+    for file in files:
+        if file.user not in people:
+            people.append(file.user)
     return people
 
 @login_required
@@ -34,12 +34,13 @@ def create(request):
         investigation, created = Investigation.objects.get_or_create(title=title, creator=request.user)
         if created:
             investigation.uuid = uuid4().urn
+        investigation.tags.add(investigation.uuid)
         investigation.investigator.add(request.user)
         investigation.save()
-        url = "/investigation/%i" % investigation.id
+        # Add to neo4j
         gc.add_node(gc.neo4jdb, request, investigation, "investigation")
         gc.add_relationship(gc.neo4jdb, investigation.creator.get_profile().graph_id, investigation.graph_id, "created")
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(investigation.get_absolute_url())
 
 @login_required
 def add_tag(request, id):
@@ -107,23 +108,20 @@ def graph(request, id):
 @login_required
 def related(request, id):
     investigation = Investigation.objects.get(id=id)
-    related = json.loads(gc.get_related(gc.neo4jdb, investigation.graph_id))['nodes']
-    people = []
-    investigations = []
-    files = []
-    for k,v  in related.items():
-        if v['web_id']:
-            if v['type'] == 'person':
-                people.append(User.objects.get(pk=v['web_id']))
-            if v['type'] == 'investigation':
-                investigations.append(Investigation.objects.get(pk=v['web_id']))
-            if v['type'] == 'report':
-                files.append(File.objects.get(pk=v['web_id']))
-    print related
+    ## Related from neo4j database. This needs work before enabled.
+    #related = json.loads(gc.get_related(gc.neo4jdb, investigation.graph_id))['nodes']
+    #people = []
+    #investigations = []
+    #files = []
+    #for k,v  in related.items():
+    #    if v['web_id']:
+    #        if v['type'] == 'person':
+    #            people.append(User.objects.get(pk=v['web_id']))
+    #        if v['type'] == 'investigation':
+    #            investigations.append(Investigation.objects.get(pk=v['web_id']))
+    #        if v['type'] == 'report':
+    #            files.append(File.objects.get(pk=v['web_id']))
     return render_to_response('investigation/related.html',
                                                             {
                                                                 'investigation': investigation,
-                                                                'people':           people,
-                                                                'investigations':   investigations,
-                                                                'files':            files,
                                                             }, RequestContext(request))

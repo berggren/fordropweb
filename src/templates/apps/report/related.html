@@ -3,20 +3,25 @@
 {% load thumbnail %}
 
 {% block extrahead %}
-<script>
-    $(document).ready(function() {
-        $("#button_block").hide()
-        $("#id_comment").focus(function() {
-            $(this).animate({"height": "85px"}, "fast" );
-            $("#button_block").slideDown("fast");
-            return false;
+    <script>
+        $(document).ready(function() {
+            $("#button_block").hide();
+
+            $("#tag").hide();
+            $("#add_tag").click(function() {
+                $("#tag").show();
+            });
+            $("#id_comment").focus(function() {
+                $(this).animate({"height": "85px"}, "fast" );
+                $("#button_block").slideDown("fast");
+                return false;
+            });
+            $("#button_cancel").click(function() {
+                $("#id_comment").animate({"height": "18px"}, "fast" );
+                $("#button_block").slideUp("fast");
+                return false;
+            });
         });
-        $("#button_cancel").click(function() {
-            $("#id_comment").animate({"height": "18px"}, "fast" );
-            $("#button_block").slideUp("fast");
-            return false;
-        });
-    });
     </script>
 {% endblock %}
 
@@ -29,84 +34,56 @@
 
     <br><br><br>
 
-    {% for file_user in people %}
-        {% ifnotequal user file_user %}
+    {% for obj in file.tags.similar_objects %}
         <div class="post_container">
-            <div class="avatar">
-                 {% thumbnail file_user.profile.avatar "40x40" crop="center" as im %}
-                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                 {% endthumbnail %}
-             </div>
-
-            <div class="post_box">
-                <a href="/user/{{ file_user.id }}"><strong>{{ file_user.profile.name }}</strong></a>
-                <br>
-                {{ file_user.profile.email }}
-            </div>
-        </div>
-        <br>
-        {% endifnotequal %}
-    {% endfor %}
-
-    {% for investigation in investigations %}
-        <div class="post_container">
-            <div class="post_box"><strong>Investigation </strong><a href="/investigation/{{ investigation.id }}">{{ investigation.title }}</a></div>
-        </div>
-    {% endfor %}
-
-    {% for file in files %}
-        <div class="post_container">
-            <strong>File</strong> <a href="/file/{{ file.id }}/show">{{ file.sha1 }}</a>
+            <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
             <br>
-            <span class="quiet">{{ file.filetype }}
+            <span class="quiet">Sharing {{ obj.similar_tags }} tags with this investigation</span>
             <br>
-            {{ file.time_created }}
-            </span>
-            <br><br>
         </div>
     {% endfor %}
 
 {% endblock %}
 
 {% block report_rightside %}
-<h4>Discussion</h4>
-<!-- Comments -->
-<br>
-{% get_comment_list for result as comments%}
-{% get_comment_form for result as form %}
-<form method="post" action="/comments/post/">{% csrf_token %}
-    <input type="hidden" name="next" value="/file/{{ result.id }}/related" />
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        <textarea rows=1 id="id_comment" name="comment" placeholder="Say what you want to say .."></textarea>
-        <br><br>
-        <div id="button_block">
-            <input type="submit" class="btn success" id="button_submit" value="Post" />
-            <input type="submit" class="btn" id='button_cancel' value="Cancel" />
-     </div>
-</form>
+    <h4>Discussion</h4>
+    <br>
+    <div id="share">
+        <form method="post" action="/post">{% csrf_token %}
+            <textarea rows=1 id="id_comment" name="post" placeholder="Share your thoughts .."></textarea>
+            <br><br>
+            <div id="button_block">
+                <input type="submit" class="btn success" id="button_submit" value="Post" />
+                <input type="submit" class="btn" id='button_cancel' value="Cancel" />
+                <input type="hidden" name="type" value="file" />
+                <input type="hidden" name="id" value="{{ file.id }}" />
+            </div>
+        </form>
+    </div>
 
-{% if comments %}
-    {% for comment in comments reversed %}
-        <div class="comment-container">
-            <div class="comment">
+    {% if posts %}
+        {% for post in posts %}
             <div class="avatar">
-                {% thumbnail comment.user.get_profile.avatar "30x30" crop="center" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                {% endthumbnail %}
+                {% if post.author.profile.avatar %}
+                    {% thumbnail post.author.profile.avatar "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
             </div>
+            <div class="post_box">
+                <a href="/user/{{ post.author.id }}"><strong>{{ post.author.profile.name }}</strong></a>
+                <span class="quiet right">{{ post.time_created|timesince }} ago</span>
+                <br>
+                {{ post.post|linebreaksbr|escape }}
+            </div>
+        {% endfor %}
+    {% else %}
+        <h6>No posts</h6>
+    {% endif %}
 
-                <a href="/user/{{ comment.user.id }}">{{ comment.user.profile.name }}</a><br>
-                <span class="quiet">{{ comment.submit_date|timesince }} ago</span><br>
-                {{ comment.comment|linebreaksbr }}
-                <br><br><hr>
-            </div>
-        </div>
-    {% endfor %}
-{% else %}
-    <h6>No comments</h6>
-{% endif %}
-<!-- END comments -->
 
 {% endblock %}

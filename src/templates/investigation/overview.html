@@ -70,7 +70,9 @@
         {{ field.errors }}
         {{ field }}
     {% endfor %}
+    <input type="hidden" name="investigation" value="{{ investigation.uuid }}"/>
     <input type="submit" value="Upload" class="btn"/>
+
 <br><br><br>
 </form>
 </div>
@@ -201,14 +203,5 @@
     {% for tag in investigation.tags.all %}
         <span class="label">{{ tag }}</span>
     {% endfor %}
-
-    {% if files %}
-    <br><br><br>
-    <h4 class="left">Files</h4>
-    <br><hr>
-    {% for file in files  %}
-        <a href="/file/{{ file.file.id }}/show">{{ file }}</a><br>
-    {% endfor %}
-    {% endif %}
 
 {% endblock %}

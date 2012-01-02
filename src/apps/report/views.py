@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.datastructures import MultiValueDictKeyError
 from utils import *
 from forms import *
 from models import *
@@ -38,6 +39,10 @@ def file(request, file_id=None):
                 gc.add_node(gc.neo4jdb, request, file, "file")
                 for f in File.objects.filter(sha256=file.sha256):
                     gc.add_relationship(gc.neo4jdb, request.user.profile.graph_id, f.graph_id, "reported")
+                try:
+                    file.tags.add(request.POST['investigation'])
+                except MultiValueDictKeyError:
+                    pass
             else:
                 messages.error(request, 'Already reported by you')
             url = "/file/%i/show" % file.id
@@ -88,6 +93,7 @@ def graph(request, id):
 @login_required
 def related(request, id):
     file = File.objects.get(id=id)
+    posts = file.posts.all().order_by('-time_created')[:10]
     try:
         related = json.loads(gc.get_related(gc.neo4jdb, file.graph_id))['nodes']
     except KeyError:
@@ -112,6 +118,7 @@ def related(request, id):
                                     'people':           people,
                                     'investigations':   investigations,
                                     'files':            files,
+                                    'posts':            posts,
                               }, RequestContext(request))
 
 @login_required
