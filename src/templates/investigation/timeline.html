@@ -46,7 +46,7 @@
                         {% endthumbnail %}
                     {% endif %}
                 </div>
-                At <strong>{{ n.time_created|date:"Y-m-d H:i:s" }}</strong> {{ n.user.username }} reported <a href="/file/{{ n.file.id }}/show">{{ n }}</a>
+                At <strong>{{ n.time_created|date:"Y-m-d H:i:s" }}</strong> {{ n.user.profile.name }} reported <a href="/file/{{ n.id }}/show">{{ n }}</a>
             </td>
             </tr>
         {% endfor %}

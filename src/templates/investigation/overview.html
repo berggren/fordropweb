@@ -163,7 +163,7 @@
             <div class="post_box">
                 <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.profile.name }}</strong></a>
                 <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
-                <div class="blokk">uploaded file <a href="/file/{{ item.object.file.id }}/show">{{ item.object.file.sha1 }}</a>
+                <div class="blokk">uploaded file <a href="/file/{{ item.object.id }}/show">{{ item.object.sha1 }}</a>
                 </div>
             </div>
         {% endifequal %}
@@ -199,8 +199,8 @@
         <span class="left">{{ tagform.tags }}</span>
     </form>
     <br>
-    {% for tag in investigation.tags.most_common %}
-        <span class="label">{{ tag }} {{ tag.num_times }}</span>
+    {% for tag in investigation.tags.all %}
+        <span class="label">{{ tag }}</span>
     {% endfor %}
 
     {% if files %}

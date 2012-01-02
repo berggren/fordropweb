@@ -29,6 +29,8 @@ def create(request):
     """
     if request.method == 'POST':
         title = request.POST['title']
+        if not title:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
         investigation, created = Investigation.objects.get_or_create(title=title, creator=request.user)
         if created:
             investigation.uuid = uuid4().urn
@@ -58,8 +60,8 @@ def overview(request, id):
     people = get_people(investigation)
     upload_form = UploadFileForm()
     stream = investigation_activity_stream(investigation.id)
-    files = []
-    #TODO: iterate through al tags and pich out the files
+    tag_list = [x.name for x in investigation.tags.all()]
+    files = File.objects.filter(tags__name__in=tag_list).distinct()
     return render_to_response('investigation/overview.html',
                                                                 {
                                                                     'investigation': investigation,
@@ -78,8 +80,8 @@ def timeline(request, id):
     """
     investigation = Investigation.objects.get(pk=id)
     people = get_people(investigation)
-    files = []
-    #TODO: iterate through al tags and pich out the files
+    tag_list = [x.name for x in investigation.tags.all()]
+    files = File.objects.filter(tags__name__in=tag_list).distinct()
     start_date = investigation.time_created.strftime('%Y %m %d %H:%M:%S')
     return render_to_response('investigation/timeline.html',
                                                                 {

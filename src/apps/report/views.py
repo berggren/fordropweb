@@ -46,6 +46,8 @@ def file(request, file_id=None):
         file = File.objects.get(id=file_id)
         files = File.objects.filter(sha256=file.sha256)
         investigations = None
+        tag_list = [x.name for x in file.tags.all()]
+        investigations = Investigation.objects.filter(tags__name__in=tag_list).distinct()
         try:
             mhr = MalwareMhr.objects.get(file=file)
         except:

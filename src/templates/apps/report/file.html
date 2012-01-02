@@ -149,8 +149,8 @@
 <span class="left">{{ tagform.tags }}</span>
 </form>
 <br>
-{% for tag in result.tags.most_common %}
-    <span class="label">{{ tag }} {{ tag.num_times }}</span>
+{% for tag in result.tags.all %}
+    <span class="label">{{ tag }}</span>
 {% endfor %}
 
 {% endblock %}

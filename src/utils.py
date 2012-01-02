@@ -20,9 +20,10 @@ def activity_stream():
     return stream
 
 def investigation_activity_stream(id):
-    stream = []
-    files = []
     investigation = Investigation.objects.get(pk=id)
+    stream = []
+    tag_list = [x.name for x in investigation.tags.all()]
+    files = File.objects.filter(tags__name__in=tag_list).distinct()[:10]
     posts = investigation.posts.all().order_by('-time_created')[:10]
     for file in files:
         stream.append({'type': 'file', 'time': file.time_created, 'object': file})
