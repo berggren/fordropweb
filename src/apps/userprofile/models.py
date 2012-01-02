@@ -23,18 +23,19 @@ class UserProfile(models.Model):
 class UserSettings(models.Model):
     user = models.ForeignKey(User)
     notification_new_follower = models.BooleanField(default=False)
-    notification_comment_on_post = models.BooleanField(default=True)
-    notification_same_file = models.BooleanField(default=True)
+    notification_comment_on_post = models.BooleanField(default=False)
+    notification_same_file = models.BooleanField(default=False)
     notification_investigation_post = models.BooleanField(default=False)
     notification_investigation_file = models.BooleanField(default=False)
     notification_investigation_new_investigator = models.BooleanField(default=False)
+    avatar_public = models.BooleanField(default=False)
+    post_as_you = models.BooleanField(default=False)
     time_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
         return '%s' % self.user
     class Admin:
         pass
-
 
 def add_user_to_graph(sender, **kwargs):
     if 'created' in kwargs:

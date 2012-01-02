@@ -52,6 +52,7 @@ urlpatterns = patterns('',
     (r'^settings$',                         'apps.userprofile.views.edit_profile'),
     (r'^settings/profile$',                 'apps.userprofile.views.edit_profile'),
     (r'^settings/notifications$',           'apps.userprofile.views.edit_notifications'),
+    (r'^settings/visibility$',           'apps.userprofile.views.edit_visibility'),
     (r'^settings/federation$',              'apps.userprofile.views.federation'),
 
     # Search

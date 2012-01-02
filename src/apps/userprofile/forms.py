@@ -6,7 +6,12 @@ class UserProfileForm(ModelForm):
         model = UserProfile
         exclude = ('user', 'graph_id')
 
-class UserSettingsForm(ModelForm):
+class UserNotificationForm(ModelForm):
     class Meta:
         model = UserSettings
         exclude = ('user', 'notification_new_follower', 'notification_investigation_post', 'notification_investigation_file', 'notification_investigation_new_investigator')
+
+class UserVisibilityForm(ModelForm):
+    class Meta:
+        model = UserSettings
+        exclude = ('user', 'notification_new_follower', 'notification_comment_on_post', 'notification_investigation_post', 'notification_same_file ', 'notification_investigation_file', 'notification_investigation_new_investigator', )

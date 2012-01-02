@@ -9,7 +9,7 @@ from apps.investigation.models import Investigation
 from apps.report.forms import UploadFileForm
 from apps.report.models import File
 from utils import activity_stream, user_activity_stream
-from forms import UserProfileForm, UserSettingsForm
+from forms import UserProfileForm, UserNotificationForm, UserVisibilityForm
 
 
 @login_required
@@ -56,10 +56,21 @@ def edit_profile(request):
 @login_required
 def edit_notifications(request):
     user_settings, created = UserSettings.objects.get_or_create(user=request.user)
-    form = UserSettingsForm(instance=user_settings)
+    form = UserNotificationForm(instance=user_settings)
     if request.method == 'POST':
-        form = UserSettingsForm(request.POST, instance=user_settings)
+        form = UserNotificationForm(request.POST, instance=user_settings)
         form.save()
         messages.error(request, 'Notification settings saved!')
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
     return render_to_response('userprofile/edit_notifications.html',{'form': form}, RequestContext(request))
+
+@login_required
+def edit_visibility(request):
+    user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+    form = UserVisibilityForm(instance=user_settings)
+    if request.method == 'POST':
+        form = UserVisibilityForm(request.POST, instance=user_settings)
+        form.save()
+        messages.error(request, 'Notification settings saved!')
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    return render_to_response('userprofile/edit_visibility.html',{'form': form}, RequestContext(request))
