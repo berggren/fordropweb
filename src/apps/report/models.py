@@ -1,7 +1,6 @@
 from django.contrib.contenttypes import generic
 from django.db import models
 from django.contrib.auth.models import User
-from tagging.models import Tag
 from taggit.managers import TaggableManager
 from apps.post.models import Post
 from apps.pages.models import Page
@@ -50,6 +49,6 @@ class MalwareMhr(models.Model):
     class Admin:
         pass
 
-@receiver(post_save, sender=Tag)
-def my_handler(sender, **kwargs):
-    print sender
+#@receiver(post_save, sender=Tag)
+#def my_handler(sender, **kwargs):
+#    print sender
