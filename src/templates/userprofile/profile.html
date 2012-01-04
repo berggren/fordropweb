@@ -36,14 +36,14 @@
 
 {% block userprofile_leftside %}
         <br>
-            <div class="avatar left">
+            <div class="avatar left" style="margin-right: 30px;">
                 {% if profile_user.profile.avatar %}
                     {% thumbnail profile_user.profile.avatar "120x120" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "120x120" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -74,11 +74,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -123,11 +123,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -144,11 +144,11 @@
             <div class="avatar">
                 {% if item.object.author.profile.avatar %}
                     {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -166,11 +166,11 @@
             <div class="avatar">
                 {% if item.object.creator.profile.avatar %}
                     {% thumbnail item.object.creator.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>

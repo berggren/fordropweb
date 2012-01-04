@@ -34,22 +34,17 @@
 </script>
 {% endblock %}
 
-{% block extratitle %}
-    <!--<button class="btn right">Join</button>-->
-{% endblock %}
 
 {% block investigation_leftside %}
 <ul class="tabs">
     <li class="active"><a href="/investigation/{{ investigation.id }}">Activity</a></li>
     <li><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
     <li><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
-    {% if user in investigation.investigator.all %}
+    {% if investigation.tags.all %}
         <button id="upload_button" class="btn info right">Upload evidence</button>
         <button id="upload_cancel_button" class="btn right hidden error">Cancel</button>
     {% endif %}
 </ul>
-
-<br><br><br>
 
 <div class="well" id="share">
     <form method="post" action="/post">{% csrf_token %}
@@ -64,18 +59,19 @@
     </form>
 </div>
 
+{% if investigation.tags.all %}
 <div class="well hidden" id="upload">
 <form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
     {% for field in uploadform %}
         {{ field.errors }}
         {{ field }}
     {% endfor %}
-    <input type="hidden" name="investigation" value="{{ investigation.uuid }}"/>
+    <input type="hidden" name="investigation" value="{{ investigation.tags.all|first }}"/>
     <input type="submit" value="Upload" class="btn"/>
-
 <br><br><br>
 </form>
 </div>
+{% endif %}
 
 <!-- Stream -->
 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
@@ -84,11 +80,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -131,11 +127,11 @@
             <div class="avatar">
                 {% if item.object.author.profile.avatar %}
                     {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -153,11 +149,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -184,24 +180,14 @@
     <div class="avatar">
         {% if user.profile.avatar %}
             {% thumbnail user.profile.avatar "40x40" crop="center" as im %}
-                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
         {% else %}
             {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
         {% endif %}
     </div>
 {% endfor %}
-
-    <br><br><br><br>
-    <h5>Tags</h5>
-    <form method="post" action="/investigation/{{ investigation.id }}/tag">{% csrf_token %}
-        <span class="left">{{ tagform.tags }}</span>
-    </form>
-    <br>
-    {% for tag in investigation.tags.all %}
-        <span class="label">{{ tag }}</span>
-    {% endfor %}
 
 {% endblock %}

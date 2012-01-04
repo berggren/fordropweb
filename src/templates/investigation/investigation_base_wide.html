@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 
+{% block jquery %}
+    $("#tag").hide();
+    $("#add_tag").click(function() {
+    $("#tag").show();
+    });
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="span16 columns">
-            <h2 class="inline">{{ investigation.title }}</h2>{% block extratitle %}{% endblock %}
+            <h2>{{ investigation.title }}</h2>
+            {% if not investigation.tags.all %}
+                <span class="quiet">No tracked tags</span>
+            {% else %}
+                <span class="quiet">Tracking</span>
+                {% for tag in investigation.tags.all %}
+                    <span class="label" style="margin-right: 5px;">
+                        {{ tag }}
+                    </span>
+                {% endfor %}
+            {% endif %}
+            {% if user in investigation.investigator.all %}
+                <span id="add_tag" class="label success">Add +</span>
+                <span id="tag">
+            <form method="post" action="{{ investigation.get_absolute_url }}/tag">{% csrf_token %}
+                <span class="left">{{ tagform.tags }}</span>
+            </form>
+            </span>
+            {% endif %}
             <br><br>
             {% block investigation_leftside %}{% endblock %}
         </div>

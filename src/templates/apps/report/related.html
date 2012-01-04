@@ -32,13 +32,11 @@
     <a href="/file/{{ file.id }}/graph" class="btn info right">Graph</a>
 </ul>
 
-    <br><br><br>
-
     {% for obj in file.tags.similar_objects %}
         <div class="post_container">
             <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
             <br>
-            <span class="quiet">Sharing {{ obj.similar_tags }} tags with this investigation</span>
+            <span class="quiet">Sharing {{ obj.similar_tags }} tag{{ obj.simliar_tags|pluralize }} with this file</span>
             <br>
         </div>
     {% endfor %}
@@ -66,11 +64,11 @@
             <div class="avatar">
                 {% if post.author.profile.avatar %}
                     {% thumbnail post.author.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>

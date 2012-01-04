@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load comments %}
+{% load thumbnail %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="span10 columns">
+            <br>
+
+                    {%  if users %}
+                        {% for n in users %}
+                            <div class="avatar">
+                                {% if n.profile.avatar %}
+                                    {% thumbnail n.profile.avatar "33x33" crop="center" as im %}
+                                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    {% endthumbnail %}
+                                {% else %}
+                                    {% thumbnail "img/avatar_placeholder.png" "30x30" crop="center" as im %}
+                                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    {% endthumbnail %}
+                                {% endif %}
+                            </div>
+
+                            <a href="{{ n.get_absolute_url }}"><span class="bigger underline">{{ n.profile.name }}</span></a>
+                            <br>
+                            <span class="green">https://{{ site_name }}{{ n.get_absolute_url }}</span>
+                            <br>
+                            <p>{{ n.profile.bio }}</p>
+                            <br><br><br>
+                        {% endfor %}
+                    {% endif %}
+
+            {%  if investigations %}
+            {% for n in investigations reversed %}
+            <a href="{{ n.get_absolute_url }}"><span class="bigger underline">{{ n.title }}</span></a>
+            <br>
+            <span class="green">https://{{ site_name }}{{ n.get_absolute_url }}</span>
+            <br>
+            <span style="text-indent: 10px;">
+            <div class="avatar">
+                {% if n.creator.profile.avatar %}
+                    {% thumbnail n.creator.profile.avatar "20x20" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "20x20" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+            <a href="/user/{{ n.creator.id }}">{{ n.creator.profile.name }}</a>
+            <span class="quiet">started this investigation {{ n.time_created|date:"Y-m-d" }}</span>
+            </span>
+            <br><br><br>
+		{% endfor %}
+        {% endif %}
+
+        {% if files %}
+		{% for n in files reversed %}
+            <a href="/file/{{ n.id }}/show"><span class="bigger underline">{{ n.filename }}</span></a>
+            <br>
+            <span class="green">https://{{ site_name }}{% url apps.report.views.file n.id %}</span>
+            <br>
+            {% if n.description %}
+            <p>{{ n.description }}</p>
+            {% endif %}
+            <span style="text-indent: 10px;">
+            <div class="avatar">
+                {% if n.user.profile.avatar %}
+                    {% thumbnail n.user.profile.avatar "20x20" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/avatar_placeholder.png" "20x20" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+            </div>
+            <a href="/user/{{ n.user.id }}">{{ n.user.profile.name }}</a>
+            <span class="quiet">reported this {{ n.time_created|date:"Y-m-d" }}</span>
+            </span>
+            <br><br><br>
+		{% endfor %}
+    {% endif %}
+
+    </div>
+</div>
+    </div>
+
+
+
+{% endblock %}

@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 
 class Investigation(models.Model):
     title = models.CharField(max_length=255)
-    description = models.ForeignKey(Page, null=True, blank=True, related_name="description")
+    description = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=255, null=True, blank=True)
     creator = models.ForeignKey(User, null=True, blank=True, related_name="creator")
     investigator = models.ManyToManyField(User, null=True, blank=True, related_name="investigator")

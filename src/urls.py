@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 
-from api import FileResource
+from api import FileResource, UserResource, PageResource, BoxResource
 from tastypie.api import Api
 
 # Uncomment the next two lines to enable the admin:
@@ -10,6 +10,9 @@ admin.autodiscover()
 
 v1_api = Api(api_name='v1')
 v1_api.register(FileResource())
+v1_api.register(UserResource())
+v1_api.register(PageResource())
+v1_api.register(BoxResource())
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
@@ -24,6 +27,7 @@ urlpatterns = patterns('',
 
     # Upload & Report
     (r'^file/(\d+)/show$',            'apps.report.views.file'),
+    (r'^file/(\d+)/description$',           'apps.report.views.add_description'),
     (r'^file/(\d+)/graph$',           'apps.report.views.graph'),
     (r'^file/(\d+)/related$',         'apps.report.views.related'),
     (r'^file/(\d+)/malware/mhr$',     'apps.report.views.get_malware_mhr'),
@@ -40,7 +44,7 @@ urlpatterns = patterns('',
     (r'^investigation/(\d+)/tag$',                           'apps.investigation.views.add_tag'),
 
     # Pages
-    (r'^pages/create$',             'apps.pages.views.create'),
+    (r'^pages$',             'apps.pages.views.page'),
 
     # Postss
     (r'^post$',             'apps.post.views.post'),

@@ -5,11 +5,41 @@
 
 {% block userprofile_leftside %}
 <br>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert-message block-message success">
+                <strong>{{ message }}</strong>
+                <p>in order to set up your account, please take a moment and fill out your <a href="/settings">profile information</a>. From there you will also be able to adjust your <a href="/settings/visibility">visibility settings</a> and <a href="settings/notifications">turn on notifications</a>.</p>
+        
+        </div>
+    {% endfor %}
+    {% endif %}
+
 <div class="well" id="share">
 <form method="post" action="/post">{% csrf_token %}
     <textarea rows=1 id="id_comment" name="post" placeholder="Share your thoughts .."></textarea>
     <br><br>
     <div id="button_block">
+              <div class="input-prepend left inline">
+                <span class="add-on">Share</span>
+                <ul class="checkbox-select nav input-small" data-dropdown="dropdown">
+                    <li class="menu">
+                        <a href="#" class="menu">Local</a>
+                        <ul class="menu-dropdown inputs-list" data-checkbox-dropdown="checkbox-dropdown">
+                            {% for box in boxes %}
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="boxes" value="{{ box.node }}">
+                                        <span>{{ box }}</span>
+                                    </label>
+                                </li>
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         <input type="submit" class="btn success" id="button_submit" value="Post" />
         <input type="submit" class="btn" id='button_cancel' value="Cancel" />
         <input type="hidden" name="type" value="user" />
@@ -19,14 +49,38 @@
 </div>
 
 <div class="well hidden" id="upload">
+<h6>Upload evidence</h6>
 <form action="/report/add/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <span class="left" style="margin-right:10px;">
     {% for field in uploadform %}
         {{ field.errors }}
         {{ field }}
     {% endfor %}
+    </span>
+    <div class="input-prepend inline">
+        <span class="add-on">Share</span>
+        <ul class="checkbox-select nav input-small" data-dropdown="dropdown">
+            <li class="menu">
+                <a href="#" class="menu">Local</a>
+                <ul class="menu-dropdown inputs-list" data-checkbox-dropdown="checkbox-dropdown">
+                    {% for box in boxes %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="boxes" value="{{ box.node }}">
+                                <span>{{ box }}</span>
+                            </label>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </li>
+        </ul>
+    </div>
+
     <input type="submit" value="Upload" class="btn"/>
     <a href="" id="upload_cancel_button" class="btn error hidden">Cancel</a>
-    <br><br><br>
+
+
 </form>
 </div>
 
@@ -37,11 +91,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -85,11 +139,11 @@
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -106,11 +160,11 @@
             <div class="avatar">
                 {% if item.object.author.profile.avatar %}
                     {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -128,11 +182,11 @@
             <div class="avatar">
                 {% if item.object.creator.profile.avatar %}
                     {% thumbnail item.object.creator.profile.avatar "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
                     {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endif %}
             </div>
@@ -171,6 +225,7 @@
         <h6>No investigations</h6>
     {% endif %}
 
+    <!--
     {% get_taglist as tags %}
     {% if tags %}
     <h4>Trending</h4>
@@ -186,4 +241,5 @@
             {% endfor %}
     </table>
     {% endif %}
+    -->
 {% endblock %}

@@ -8,10 +8,11 @@ from apps.report.models import File
 @login_required
 def post(request):
     if request.method == 'POST':
-        #form = PostForm(request.POST)
-        #if form.is_valid():
         type = request.POST['type']
         post = request.POST['post']
+        print request.POST
+        if not post:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
         if type == "user":
             object = request.user
         elif type == "investigation":

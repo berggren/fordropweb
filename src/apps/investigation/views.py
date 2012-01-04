@@ -9,6 +9,7 @@ from apps.report.forms import UploadFileForm
 import graphutils as gc
 from utils import investigation_activity_stream
 from uuid import uuid4
+from django.template.defaultfilters import slugify
 
 def get_people(investigation):
     """
@@ -34,7 +35,6 @@ def create(request):
         investigation, created = Investigation.objects.get_or_create(title=title, creator=request.user)
         if created:
             investigation.uuid = uuid4().urn
-        investigation.tags.add(investigation.uuid)
         investigation.investigator.add(request.user)
         investigation.save()
         # Add to neo4j
@@ -42,14 +42,19 @@ def create(request):
         gc.add_relationship(gc.neo4jdb, investigation.creator.get_profile().graph_id, investigation.graph_id, "created")
         return HttpResponseRedirect(investigation.get_absolute_url())
 
+
 @login_required
 def add_tag(request, id):
     investigation = Investigation.objects.get(pk=id)
+    if request.user != investigation.creator:
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
     form = TagForm(request.POST, instance=investigation)
     if form.is_valid():
         obj = form.save(commit=False)
         for tag in form.cleaned_data['tags']:
             obj.tags.add(tag)
+            #gc.add_node(gc.neo4jdb, request, tag, "investigation")
+            #gc.add_relationship(gc.neo4jdb, investigation.creator.get_profile().graph_id, investigation.graph_id, "created")
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
@@ -89,7 +94,8 @@ def timeline(request, id):
                                                                     'investigation': investigation,
                                                                     'startdate': start_date,
                                                                     'files': files,
-                                                                    'people': people
+                                                                    'people': people,
+                                                                    'tagform': TagForm(),
                                                                 }, RequestContext(request))
 
 

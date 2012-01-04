@@ -6,6 +6,9 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.datastructures import MultiValueDictKeyError
+from apps.pages.forms import PageForm
+from apps.pages.models import Page
+from apps.boxes.models import Box
 from utils import *
 from forms import *
 from models import *
@@ -22,10 +25,15 @@ def file(request, file_id=None):
     """
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        if not request.FILES:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
         if form.is_valid():
             result = handle_uploaded_file(request.FILES['file'])
-            if not result:
-                return render_to_response('report/error.html', {}, RequestContext(request))
+            result_me = File.objects.filter(user=request.user, sha1=result['sha1'])
+            if result_me:
+                messages.error(request, 'Already reported by you')
+                return HttpResponseRedirect(result_me[0].get_absolute_url())
+            boxes = request.POST.getlist('boxes')
             file, created = File.objects.get_or_create(filesize=int(result['filesize']),
                                                        filename = result['filename'],
                                                        user = request.user,
@@ -33,8 +41,11 @@ def file(request, file_id=None):
                                                        md5=result['md5'],
                                                        sha1=result['sha1'],
                                                        sha256=result['sha256'],
+                                                       sha512=result['sha512'],
+                                                       ctph=result['ctph'],
                                                        uuid = uuid4().urn,
                                                        datefolder=result['datefolder'])
+
             if created:
                 gc.add_node(gc.neo4jdb, request, file, "file")
                 for f in File.objects.filter(sha256=file.sha256):
@@ -43,10 +54,10 @@ def file(request, file_id=None):
                     file.tags.add(request.POST['investigation'])
                 except MultiValueDictKeyError:
                     pass
-            else:
-                messages.error(request, 'Already reported by you')
-            url = "/file/%i/show" % file.id
-            return HttpResponseRedirect(url)
+                for box in boxes:
+                    b = Box.objects.get(node=box)
+                    file.boxes.add(b)
+            return HttpResponseRedirect(file.get_absolute_url())
     else:
         file = File.objects.get(id=file_id)
         posts = file.posts.all().order_by('-time_created')[:10]
@@ -66,8 +77,21 @@ def file(request, file_id=None):
                                         'files':            files,
                                         'posts':            posts,
                                         'mhr':              mhr,
-                                        'tagform':          TagForm()
+                                        'tagform':          TagForm(),
+                                        'descriptionform':  DescriptionForm(instance=file)
                                   }, RequestContext(request))
+@login_required
+def add_description(request, id):
+    file = File.objects.get(pk=id)
+    if request.user != file.user:
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    form = DescriptionForm(request.POST)
+    if form.is_valid():
+        file.description = form.cleaned_data['description']
+        file.save()
+    else:
+        print form.errors
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
 def add_tag(request, id):

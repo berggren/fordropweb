@@ -1,5 +1,6 @@
 import hashlib
 import magic
+import subprocess
 import tempfile
 import os
 import sys
@@ -26,6 +27,7 @@ def handle_uploaded_file(f):
     md5 = hashlib.md5(fileread).hexdigest()
     sha1 = hashlib.sha1(fileread).hexdigest()
     sha256 = hashlib.sha256(fileread).hexdigest()
+    sha512 = hashlib.sha512(fileread).hexdigest()
     filetype = get_file_type(fh.name)
     filepath = path+"/"+sha1+".file"
     if not os.path.exists(filepath):
@@ -34,14 +36,17 @@ def handle_uploaded_file(f):
     else:
         fh.close()
         os.unlink(fh.name)
+    ctph = get_ctph(filepath)
     d = {
             'filesize': f.size,
             'filename': f.name,
             'md5': md5,
             'sha1': sha1,
             'sha256': sha256,
+            'sha512': sha512,
             'filetype': filetype,
-            'datefolder': dt
+            'datefolder': dt,
+            'ctph':    ctph
         }
     return d
 
@@ -72,6 +77,12 @@ def get_pefile(file, sha1, path):
         fh.write(pe_dump_all)
         fh.close()
     return outfile
+
+def get_ctph(file):
+    fuzzy_hash = None
+    b = subprocess.Popen('/home/jbn/stuff/bin/ssdeep-2.7/ssdeep %s -b -s' % file, shell=True, stdout=subprocess.PIPE)
+    fuzzy_hash = b.stdout.readlines()[1].split(',')[0]
+    return fuzzy_hash
 
 def query_mhr(hash):
     query_string = "%s.malware.hash.cymru.com" % hash

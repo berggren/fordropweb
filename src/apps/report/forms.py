@@ -9,3 +9,8 @@ class TagForm(ModelForm):
 
 class UploadFileForm(forms.Form):
     file  = forms.FileField(required=True)
+
+class DescriptionForm(ModelForm):
+    class Meta:
+        model = File
+    fields = ('description')

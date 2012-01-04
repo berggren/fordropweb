@@ -6,4 +6,4 @@ src/static/cache
 src/static/avatars
 src/settings.py
 .idea
-src/db
+src/db/*

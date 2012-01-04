@@ -6,6 +6,7 @@ import graphutils as gc
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, null=True, blank=True)
+    is_first_login = models.BooleanField(default=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     avatar = ImageField(upload_to='avatars', null=True, blank=True)

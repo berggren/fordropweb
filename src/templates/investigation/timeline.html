@@ -26,7 +26,6 @@
     <li><a href="/investigation/{{ investigation.id }}/related">Related</a></li>
 </ul>
 
-<br><br><br>
 
  <div class="well">
  <div id="timeline"></div>
@@ -38,11 +37,11 @@
                 <div class="avatar">
                     {% if n.user.profile.avatar %}
                         {% thumbnail n.user.profile.avatar "20x20" crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                         {% endthumbnail %}
                     {% else %}
                         {% thumbnail "img/avatar_placeholder.png" "20x20" crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                         {% endthumbnail %}
                     {% endif %}
                 </div>
@@ -56,11 +55,11 @@
                      <div class="avatar">
                          {% if n.author.get_profile.avatar %}
                              {% thumbnail n.author.get_profile.avatar "20x20" crop="center" as im %}
-                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                 <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                              {% endthumbnail %}
                          {% else %}
                              {% thumbnail "img/avatar_placeholder.png" "20x20" crop="center" as im %}
-                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                 <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                              {% endthumbnail %}
                          {% endif %}
                      </div>

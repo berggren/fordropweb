@@ -10,12 +10,12 @@
     <a href="/investigation/{{ investigation.id }}/graph" class="btn info right">Graph</a>
 
 </ul>
-    <br><br><br>
+
         {% for obj in investigation.tags.similar_objects %}
         <div class="post_container">
             <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
             <br>
-            <span class="quiet">Sharing {{ obj.similar_tags }} tags with this investigation</span>
+            <span class="quiet">Sharing {{ obj.similar_tags }} tag{{ obj.simliar_tags|pluralize }} with this investigation</span>
             <br>
         </div>
     {% endfor %}

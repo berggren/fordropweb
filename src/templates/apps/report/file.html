@@ -43,23 +43,22 @@
     <li><a href="/file/{{ result.id }}/related">Related</a></li>
 </ul>
 
-<br><br><br>
 
 {% if investigations %}
 <div class="alert-message block-message info">
     <h3>Appears in the following investigations</h3>
     {% for investigation in investigations %}
-        <a href="/investigation/{{ investigation.id }}" class="btn" style="margin-top:5px;">{{  investigation.title }}</a>
+        <a href="/investigation/{{ investigation.id }}" class="btn" style="margin-top:5px;">{{ investigation.title }}</a>
     {% endfor %}
 </div>
 {% endif %}
-
-    <table border=0 class="noborder">
+    <table>
 	    <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
 		<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>
 		<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
 		<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
 		<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
+        <tr><td><b>fuzzy:</b></td><td>{{ result.ctph }}</td></tr>
         <!--
         <tr><td><b>MHR</b></td>
         <td>
@@ -76,7 +75,6 @@
         -->
         <tr><td><b>Tags</b></td>
         <td>
-        <span id="add_tag" class="right btn">Add tag</span>
         {% if result.tags.all %}
         {% for tag in result.tags.all %}
             <span class="label">{{ tag }}</span>
@@ -84,14 +82,25 @@
         {% else %}
             <span class="quiet">No tags</span>
         {% endif %}
+            {% ifequal user file.user %}
+            <span id="add_tag" class="label success">Add +</span>
             <span id="tag">
             <form method="post" id="tag_form" action="/file/{{ result.id }}/tag">{% csrf_token %}
                 <span class="left">{{ tagform.tags }}</span>
             </form>
         </span>
+        {% endifequal %}
         </td>
+        <tr><td><b>Shared</b></td>
+            <td>
+                {% for box in file.boxes.all %}
+                    <span class="label notice">{{ box }}</span>
+                {% endfor %}
+            </td>
         </tr>
     </table>
+
+    <br>
 
 {% if files %}
         <table border=0 class="noborder">
@@ -103,11 +112,11 @@
                         <div class="avatar">
                             {% if n.user.profile.avatar %}
                                 {% thumbnail n.user.profile.avatar "30x30" crop="center" as im %}
-                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                                 {% endthumbnail %}
                             {% else %}
                                 {% thumbnail "img/avatar_placeholder.png" "30x30" crop="center" as im %}
-                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                                 {% endthumbnail %}
                             {% endif %}
                         </div>
@@ -137,15 +146,15 @@
     </div>
 
 {% if posts %}
-    {% for post in posts %}
+    {% for post in posts|dictsort:"time_created" %}
         <div class="avatar">
             {% if post.author.profile.avatar %}
                 {% thumbnail post.author.profile.avatar "40x40" crop="center" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
             {% else %}
                 {% thumbnail "img/avatar_placeholder.png" "40x40" crop="center" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
             {% endif %}
         </div>

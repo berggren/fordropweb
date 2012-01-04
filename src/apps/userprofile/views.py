@@ -10,6 +10,7 @@ from apps.report.forms import UploadFileForm
 from apps.report.models import File
 from utils import activity_stream, user_activity_stream
 from forms import UserProfileForm, UserNotificationForm, UserVisibilityForm
+from apps.boxes.models import Box
 
 
 @login_required
@@ -18,11 +19,13 @@ def dashboard(request):
     stream = activity_stream()
     upload_form = UploadFileForm()
     investigations = Investigation.objects.filter(creator=request.user).order_by('-last_updated')
+    boxes = Box.objects.all()
     return render_to_response('userprofile/dashboard.html',
                                                                 {
                                                                     'investigations': investigations,
                                                                     'stream': stream,
                                                                     'files': files,
+                                                                    'boxes': boxes,
                                                                     'uploadform': upload_form,
                                                                     'request': request
                                                                 }, RequestContext(request))

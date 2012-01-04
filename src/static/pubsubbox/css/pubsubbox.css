@@ -1,0 +1,138 @@
+body {
+    #background: #E1E6EB;
+    #height:400px;
+}
+
+.hidden {
+    display: none;
+}
+
+.xlinput {
+    padding:15px;
+    color:#000;
+}
+
+.right {
+    float:right;
+}
+
+.left {
+    float:left;
+}
+
+#avatar {
+    margin-top:4px;
+    margin-right: 10px;
+}
+
+.log {
+    color: silver;
+}
+
+div.scroll {
+    height: 480px;
+    overflow: auto;
+}
+
+div.scroll2 {
+    height: 221px;
+    overflow: auto;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+    width:100px;
+}
+
+.vcenter {
+    margin-top: 30%;
+}
+
+.shadow {
+    -moz-box-shadow: 5px 5px 38px #999;
+    -webkit-box-shadow: 5px 5px 38px #999;
+    box-shadow: 5px 5px 38px #999;
+}
+
+.highlight {
+  outline: 0;
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  border-color: rgba(82, 168, 236, 0.8);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.well2 {
+    background-color: #f5f5f5;
+    padding: 20px;
+    -moz-border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+}
+
+.well3 {
+    background-color: #fff;
+    padding: 20px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+}
+.box_node {
+    text-align: center;
+    font-weight: bold;
+    width: 90px;
+    height: 90px;
+    padding: 5px;
+    background: #E1E6EB;
+    border: 1px solid #BDC2C7;
+    margin: 2px;
+}
+
+.box_node h1 {
+    color: #999;
+}
+
+.box_roster {
+    position:relative;
+    text-align: center;
+    width: 90px;
+    height: 90px;
+    padding: 5px;
+    background:#fff;
+    border: 1px solid #f1f1f1;
+    margin: 2px;
+}
+
+.box_plus {
+    float: left;
+    text-align: center;
+    width: 90px;
+    height: 90px;
+    padding: 5px;
+    background:#fff url('/img/plus.png');
+    border: 1px solid #BDC2C7;
+    margin: 2px;
+}
+
+canvas {
+    background:#E1E8ED;
+}
+
+.noborder {
+    border:0;
+}
+
+.vcard_remove {
+    position:absolute;
+    top:0;
+    right:0px;
+    width: 14px;
+    height: 14px;
+    background:#fff url('/img/close.png');
+}
