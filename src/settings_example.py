@@ -1,3 +1,4 @@
+import sorl
 # Django settings for fordrop project.
 
 DEBUG = True
@@ -100,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'apps.userprofile.middleware.FirstLoginMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -165,3 +167,8 @@ NEO4J_RESOURCE = "%s/db/neo4j" % BASE_DIR
 MAIL_HOST = "127.0.0.1"
 MAIL_PORT = 25
 THUMBNAIL_ENGINE = "sorl.thumbnail.engines.convert_engine.Engine"
+
+ABSOLUTE_URL_OVERRIDES = {
+     'auth.user': lambda o: "/user/%s" % o.id,
+}
+
