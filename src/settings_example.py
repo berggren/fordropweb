@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'apps.pages',
     'apps.userprofile',
     'apps.post',
+    'apps.boxes',
 )
 
 # A sample logging configuration. The only tangible logging

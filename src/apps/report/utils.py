@@ -80,7 +80,7 @@ def get_pefile(file, sha1, path):
 
 def get_ctph(file):
     fuzzy_hash = None
-    b = subprocess.Popen('/home/jbn/stuff/bin/ssdeep-2.7/ssdeep %s -b -s' % file, shell=True, stdout=subprocess.PIPE)
+    b = subprocess.Popen('/usr/local/bin/ssdeep %s -b -s' % file, shell=True, stdout=subprocess.PIPE)
     fuzzy_hash = b.stdout.readlines()[1].split(',')[0]
     return fuzzy_hash
 
