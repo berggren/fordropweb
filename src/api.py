@@ -23,7 +23,6 @@ class HeaderApiKeyAuthentication(ApiKeyAuthentication):
         request.user = user
         return self.get_key(user, api_key)
 
-
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
@@ -43,8 +42,6 @@ class BoxResource(ModelResource):
         queryset = Box.objects.all()
         resource_name = 'box'
         allowed_methods = ['get', 'put', 'post']
-        authorization = Authorization()
-        authentication = Authentication()
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
 
