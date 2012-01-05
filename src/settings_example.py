@@ -164,10 +164,10 @@ LOGGING = {
 
 AUTH_PROFILE_MODULE = 'userprofile.UserProfile'
 FD_FILEBASEPATH = "%s/storage/files" % BASE_DIR
+SSDEEP = '/usr/local/bin/ssdeep'
 NEO4J_RESOURCE = "%s/db/neo4j" % BASE_DIR
 MAIL_HOST = "127.0.0.1"
 MAIL_PORT = 25
-THUMBNAIL_ENGINE = "sorl.thumbnail.engines.convert_engine.Engine"
 
 ABSOLUTE_URL_OVERRIDES = {
      'auth.user': lambda o: "/user/%s" % o.id,

@@ -9,7 +9,7 @@ import pefile
 from dns import message, query
 from dns.exception import DNSException
 from datetime import datetime
-from settings import FD_FILEBASEPATH
+from settings import FD_FILEBASEPATH, SSDEEP
 
 def handle_uploaded_file(f):
     dt = datetime.now().strftime("%Y%m")
@@ -79,8 +79,9 @@ def get_pefile(file, sha1, path):
     return outfile
 
 def get_ctph(file):
-    fuzzy_hash = None
-    b = subprocess.Popen('/usr/local/bin/ssdeep %s -b -s' % file, shell=True, stdout=subprocess.PIPE)
+    if not os.path.exists(SSDEEP):
+        return None
+    b = subprocess.Popen('%s %s -b -s' % (SSDEEP, file), shell=True, stdout=subprocess.PIPE)
     fuzzy_hash = b.stdout.readlines()[1].split(',')[0]
     return fuzzy_hash
 

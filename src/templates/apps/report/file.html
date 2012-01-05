@@ -52,13 +52,13 @@
     {% endfor %}
 </div>
 {% endif %}
-    <table>
-	    <tr><td><b>Type:</b></td><td>{{ result.filetype }}</td></tr>
-		<tr><td><b>Size:</b></td><td>{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>
-		<tr><td><b>md5:</b></td><td>{{ result.md5 }}</td></tr>
-		<tr><td><b>sha1:</b></td><td>{{ result.sha1 }}</td></tr>
-		<tr><td><b>sha256:</b></td><td>{{ result.sha256 }}</td></tr>
-        <tr><td><b>fuzzy:</b></td><td>{{ result.ctph }}</td></tr>
+    <table style="border-image:none;">
+	    <tr><td style="border-top:none;"><b>Type:</b></td><td style="border-top:none;">{{ result.filetype }}</td></tr>
+		<tr><td style="border-top:none;"><b>Size:</b></td><td style="border-top:none;">{{ result.filesize }} bytes ({{ result.filesize|filesizeformat }})</td></tr>
+		<tr><td style="border-top:none;"><b>md5:</b></td><td style="border-top:none;">{{ result.md5 }}</td></tr>
+		<tr><td style="border-top:none;"><b>sha1:</b></td><td style="border-top:none;">{{ result.sha1 }}</td></tr>
+		<tr><td style="border-top:none;"><b>sha256:</b></td><td style="border-top:none;">{{ result.sha256 }}</td></tr>
+        <!-- <tr><td style="border-top:none;"><b>fuzzy:</b></td><td style="border-top:none;">{{ result.ctph }}</td></tr> -->
         <!--
         <tr><td><b>MHR</b></td>
         <td>
