@@ -88,7 +88,8 @@ def timeline(request, id):
     people = get_people(investigation)
     tag_list = [x.name for x in investigation.tags.all()]
     files = File.objects.filter(tags__name__in=tag_list).distinct()
-    start_date = investigation.time_created.strftime('%Y %m %d %H:%M:%S')
+    start_date = investigation.time_created.strftime('%a %b %d %Y %H:%M:%S')
+    print start_date
     return render_to_response('investigation/timeline.html',
                                                                 {
                                                                     'investigation': investigation,
