@@ -25,7 +25,7 @@ class File(models.Model):
     published = models.BooleanField()
     tags = TaggableManager(blank=True)
     posts = generic.GenericRelation(Post)
-    boxes = models.ManyToManyField(Box, blank=True)
+    boxes = models.ManyToManyField(Box, blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 

@@ -28,7 +28,7 @@ or implied, of NORDUnet A/S.
 
 var XMPP = {
     /* Set the relative path to the configuration file */
-    CONFIG_FILE: '/site_media/pubsubbox/js/klutt_config.js',
+    CONFIG_FILE: '/site_media/pubsubbox/js/pubsub_config.js',
     connection: null,
     my_jid: null,
     nodes: {},
@@ -586,10 +586,6 @@ $(document).ready(function() {
         $(document).trigger('notification_tab');
     });
 
-    /*
-    $('#login-screen').hide();
-    $('#login_spinner').show();
-    */
     $.getScript(XMPP.CONFIG_FILE, function(){
         $('#login-button').click(function() {
             $(document).trigger('connect', {
