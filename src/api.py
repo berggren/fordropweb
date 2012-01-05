@@ -9,23 +9,44 @@ from apps.report.models import File
 from apps.pages.models import Page
 from apps.boxes.models import Box
 
+class HeaderApiKeyAuthentication(ApiKeyAuthentication):
+    def is_authenticated(self, request, **kwargs):
+        username = request.META.get('HTTP_X_FORDROP_USERNAME') or request.GET.get('username')
+        api_key = request.META.get('HTTP_X_FORDROP_API_KEY') or request.GET.get('api_key')
+
+        if not username or not api_key:
+            return self._unauthorized()
+        try:
+            user = User.objects.get(username=username)
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            return self._unauthorized()
+        request.user = user
+        return self.get_key(user, api_key)
+
+
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         resource_name = 'user'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
 
 class PageResource(ModelResource):
     class Meta:
         queryset = Page.objects.all()
         resource_name = 'page'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
 
 class BoxResource(ModelResource):
     class Meta:
         queryset = Box.objects.all()
         resource_name = 'box'
+        allowed_methods = ['get', 'put', 'post']
         authorization = Authorization()
         authentication = Authentication()
-        allowed_methods = ['get', 'put', 'post']
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
 
 class FileResource(ModelResource):
     user = fields.ForeignKey(UserResource, 'user')
@@ -35,7 +56,7 @@ class FileResource(ModelResource):
         resource_name = 'file'
         allowed_methods = ['get', 'put', 'post']
         authorization = Authorization()
-        authentication = ApiKeyAuthentication()
+        authentication = HeaderApiKeyAuthentication()
         filtering = {
             "published": ALL
         }
