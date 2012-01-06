@@ -37,6 +37,7 @@ class UserResource(ModelResource):
         resource_name = 'user'
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
+        excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
 
 class PageResource(ModelResource):
     class Meta:
