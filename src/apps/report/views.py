@@ -11,7 +11,7 @@ from apps.pages.models import Page
 from apps.boxes.models import Box
 from utils import *
 from forms import *
-from models import *
+from models import File
 from apps.investigation.models import *
 from apps.search.forms import *
 from settings import FD_FILEBASEPATH
