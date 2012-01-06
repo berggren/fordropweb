@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from apps.post.models import Post
 from apps.pages.models import Page
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from apps.boxes.models import Box
 
 class File(models.Model):
@@ -21,14 +19,13 @@ class File(models.Model):
     sha512 = models.CharField(max_length=255, null=True, blank=True)
     ctph = models.CharField(max_length=255, null=True, blank=True)
     graph_id = models.IntegerField(null=True, blank=True)
-    uuid = models.CharField(max_length=255, null=True, blank=True)
+    uuid = models.CharField(max_length=255, unique=True, null=True, blank=True)
     published = models.BooleanField()
     tags = TaggableManager(blank=True)
     posts = generic.GenericRelation(Post)
     boxes = models.ManyToManyField(Box, blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
-
+    time_updated = models.DateTimeField(auto_now=True)
     @models.permalink
     def get_absolute_url(self):
         return 'apps.report.views.file', [str(self.id)]
@@ -37,18 +34,14 @@ class File(models.Model):
     class Admin:
         pass
 
-class MalwareMhr(models.Model):
-    file = models.ForeignKey(File)
-    percent = models.IntegerField(null=True)
-    timecreated_mhr = models.DateTimeField(null=True)
-    donotexist = models.BooleanField()
-    time_created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
-        return '%s' % self.file
-    class Admin:
-        pass
-
-#@receiver(post_save, sender=Tag)
-#def my_handler(sender, **kwargs):
-#    print sender
+#class MalwareMhr(models.Model):
+#    file = models.ForeignKey(File)
+#    percent = models.IntegerField(null=True)
+#    timecreated_mhr = models.DateTimeField(null=True)
+#    donotexist = models.BooleanField()
+#    time_created = models.DateTimeField(auto_now_add=True)
+#    last_updated = models.DateTimeField(auto_now=True)
+#    def __unicode__(self):
+#        return '%s' % self.file
+#    class Admin:
+#        pass

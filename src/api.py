@@ -8,12 +8,12 @@ from django.contrib.auth.models import User
 from apps.report.models import File
 from apps.pages.models import Page
 from apps.boxes.models import Box
+from apps.userprofile.models import UserProfile
 
 class HeaderApiKeyAuthentication(ApiKeyAuthentication):
     def is_authenticated(self, request, **kwargs):
         username = request.META.get('HTTP_X_FORDROP_USERNAME') or request.GET.get('username')
         api_key = request.META.get('HTTP_X_FORDROP_API_KEY') or request.GET.get('api_key')
-
         if not username or not api_key:
             return self._unauthorized()
         try:
@@ -23,7 +23,15 @@ class HeaderApiKeyAuthentication(ApiKeyAuthentication):
         request.user = user
         return self.get_key(user, api_key)
 
+class ProfileResource(ModelResource):
+    class Meta:
+        queryset = UserProfile.objects.all()
+        resource_name = 'profile'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+
 class UserResource(ModelResource):
+    profile = fields.ForeignKey(ProfileResource, 'profile', full=True)
     class Meta:
         queryset = User.objects.all()
         resource_name = 'user'
@@ -46,7 +54,7 @@ class BoxResource(ModelResource):
         authentication = HeaderApiKeyAuthentication()
 
 class FileResource(ModelResource):
-    user = fields.ForeignKey(UserResource, 'user')
+    user = fields.ForeignKey(UserResource, 'user', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
         queryset = File.objects.all()

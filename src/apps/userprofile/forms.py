@@ -4,7 +4,7 @@ from apps.userprofile.models import UserSettings, UserProfile
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
-        exclude = ('user', 'graph_id')
+        exclude = ('user', 'uuid', 'graph_id')
 
 class UserNotificationForm(ModelForm):
     class Meta:

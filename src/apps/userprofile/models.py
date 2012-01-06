@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -14,8 +15,9 @@ class UserProfile(models.Model):
     web = models.URLField(null=True, blank=True)
     bio = models.TextField(max_length=140, null=True, blank=True)
     graph_id = models.IntegerField(null=True)
+    uuid = models.CharField(max_length=255, null=True, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    time_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):
         return '%s' % self.user
     class Admin:
@@ -44,6 +46,7 @@ def add_user_to_graph(sender, **kwargs):
             obj = kwargs['instance']
             gc.add_node(gc.neo4jdb, None, obj, 'person')
             obj.name = obj.user.username
+            obj.uuid = uuid.uuid4().urn
             obj.save()
         else:
             return
