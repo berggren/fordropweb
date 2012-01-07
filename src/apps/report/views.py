@@ -47,9 +47,9 @@ def file(request, file_id=None):
                                                        datefolder=result['datefolder'])
 
             if created:
-                gc.add_node(gc.neo4jdb, request, file, "file")
-                for f in File.objects.filter(sha256=file.sha256):
-                    gc.add_relationship(gc.neo4jdb, request.user.profile.graph_id, f.graph_id, "reported")
+                #gc.add_node(gc.neo4jdb, request, file, "file")
+                #for f in File.objects.filter(sha256=file.sha256):
+                #    gc.add_relationship(gc.neo4jdb, request.user.profile.graph_id, f.graph_id, "reported")
                 try:
                     file.tags.add(request.POST['investigation'])
                 except MultiValueDictKeyError:

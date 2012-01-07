@@ -31,6 +31,9 @@
             $("#id_title").focus();
             return false;
         });
+        setInterval(function() {
+            $('#stream').load('/ #stream');
+        }, 5000);
 {% endblock %}
 
 {% block content %}

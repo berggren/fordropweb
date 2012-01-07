@@ -24,8 +24,16 @@ def add_node(db, request, obj, type):
         node = db.node[int(obj.graph_id)]
     return node
 
+def change_name_on_person_node(db, obj):
+    with db.transaction:
+        node = db.node[int(obj.graph_id)]
+        if obj.name:
+            node['name'] = obj.name
+    return True
+
 def add_relationship(db, node1, node2, type):
     with db.transaction:
+        print node1, " -> ", node2
         n1 = db.node[int(node1)]
         n2 = db.node[int(node2)]
         n1.relationships.create(type, n2)
@@ -48,10 +56,10 @@ def arbor(db, graph_id):
     d = {'nodes': nodes, 'edges': edges}
     return HttpResponse(json.dumps(d))
 
-
 def get_related(db, graph_id):
     ref_node = db.node[int(graph_id)]
     nodes = {}
+    d = {}
     traverse = db.traversal().relationships('created').relationships('reported').traverse(ref_node)
     for node in traverse.nodes:
         if node == ref_node:

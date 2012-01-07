@@ -1,10 +1,13 @@
+import uuid
 from django.contrib.contenttypes import generic
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 from taggit.managers import TaggableManager
 from apps.post.models import Post
 from apps.pages.models import Page
 from apps.boxes.models import Box
+import graphutils as gc
 
 class File(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
@@ -23,7 +26,7 @@ class File(models.Model):
     published = models.BooleanField()
     tags = TaggableManager(blank=True)
     posts = generic.GenericRelation(Post)
-    boxes = models.ManyToManyField(Box, blank=True, null=True)
+    boxes = models.ManyToManyField(Box, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
     @models.permalink
@@ -45,3 +48,17 @@ class File(models.Model):
 #        return '%s' % self.file
 #    class Admin:
 #        pass
+
+def add_file_to_graph(sender, **kwargs):
+    if 'created' in kwargs:
+        if kwargs['created']:
+            obj = kwargs['instance']
+            gc.add_node(gc.neo4jdb, None, obj, "file")
+            for f in File.objects.filter(sha256=obj.sha256):
+                gc.add_relationship(gc.neo4jdb, f.user.profile.graph_id, obj.graph_id, "reported")
+        else:
+            return
+    else:
+        return
+
+post_save.connect(add_file_to_graph, sender=File, dispatch_uid="file")

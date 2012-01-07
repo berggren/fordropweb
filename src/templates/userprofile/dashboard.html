@@ -85,6 +85,7 @@
 </div>
 
 <!-- Stream -->
+<div id="stream">
 {% for item in stream|dictsortreversed:"time"|slice:"10" %}
     <div class="post_container">
         {% ifequal item.type "comment" %}
@@ -200,6 +201,7 @@
     </div>
 {% endfor %}
 <!-- END stream -->
+</div>
 {% endblock %}
 
 {% block userprofile_rightside %}

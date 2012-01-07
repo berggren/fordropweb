@@ -42,14 +42,17 @@ class UserSettings(models.Model):
 
 def add_user_to_graph(sender, **kwargs):
     if 'created' in kwargs:
+        obj = kwargs['instance']
         if kwargs['created']:
-            obj = kwargs['instance']
             gc.add_node(gc.neo4jdb, None, obj, 'person')
-            obj.name = obj.user.username
-            obj.uuid = uuid.uuid4().urn
+            if not obj.name:
+                obj.name = obj.user.username
+            if not obj.uuid:
+                obj.uuid = uuid.uuid4().urn
             obj.save()
         else:
-            return
+            #return
+            gc.change_name_on_person_node(gc.neo4jdb, obj)
     else:
         return
 

@@ -38,6 +38,17 @@ class UserResource(ModelResource):
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
         excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
+        filtering = {
+            "username": ALL
+        }
+
+class BareUserResource(ModelResource):
+    class Meta:
+        queryset = User.objects.all()
+        resource_name = 'bare_user'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        excludes = ['email', 'password', 'is_staff', 'is_superuser']
 
 class PageResource(ModelResource):
     class Meta:
@@ -55,7 +66,7 @@ class BoxResource(ModelResource):
         authentication = HeaderApiKeyAuthentication()
 
 class FileResource(ModelResource):
-    user = fields.ForeignKey(UserResource, 'user', full=True)
+    user = fields.ForeignKey(BareUserResource, 'user', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
         queryset = File.objects.all()
@@ -64,5 +75,20 @@ class FileResource(ModelResource):
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
         filtering = {
-            "published": ALL
+            "published": ALL,
+            "uuid": ALL
+        }
+
+class FullFileResource(ModelResource):
+    user = fields.ForeignKey(UserResource, 'user', full=True)
+    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
+    class Meta:
+        queryset = File.objects.all()
+        resource_name = 'full_file'
+        allowed_methods = ['get', 'put', 'post']
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        filtering = {
+            "published": ALL,
+            "uuid": ALL
         }
