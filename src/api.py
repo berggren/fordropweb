@@ -23,8 +23,6 @@ class HeaderApiKeyAuthentication(ApiKeyAuthentication):
         request.user = user
         return self.get_key(user, api_key)
 
-
-
 class ProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
@@ -61,7 +59,7 @@ class BoxResource(ModelResource):
         authentication = HeaderApiKeyAuthentication()
 
 class PostResource(ModelResource):
-    author = fields.ForeignKey(BareUserResource, 'author', full=True)
+    user = fields.ForeignKey(BareUserResource, 'user', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
         queryset = NewPost.objects.all()
@@ -74,7 +72,7 @@ class PostResource(ModelResource):
         }
 
 class FullPostResource(ModelResource):
-    author = fields.ForeignKey(UserResource, 'author', full=True)
+    user = fields.ForeignKey(UserResource, 'user', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
         queryset = NewPost.objects.all()
