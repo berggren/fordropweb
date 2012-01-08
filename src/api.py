@@ -5,12 +5,10 @@ from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 from tastypie.constants import ALL
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from apps.report.models import File
 from apps.boxes.models import Box
 from apps.userprofile.models import UserProfile
-from apps.post.models import Post
-from src.apps.post.models import NewPost
+from apps.post.models import NewPost
 
 class HeaderApiKeyAuthentication(ApiKeyAuthentication):
     def is_authenticated(self, request, **kwargs):
