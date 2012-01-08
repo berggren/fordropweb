@@ -158,8 +158,8 @@
 
         {% ifequal item.type "post" %}
             <div class="avatar">
-                {% if item.object.author.profile.avatar %}
-                    {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
+                {% if item.object.user.profile.avatar %}
+                    {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
                         <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
@@ -170,9 +170,9 @@
             </div>
 
             <div class="post_box">
-                <a href="/user/{{ item.object.author.id }}"><strong>{{ item.object.author.profile.name }}</strong></a>
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.profile.name }}</strong></a>
                 <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
-                <div class="blokk">New post in <a href="{{ item.object.content_object.get_absolute_url }}">{{ item.object.content_object }}</a></div>
+                <div class="blokk">New post</div>
                 <br>
                 {{ item.object.post|linebreaksbr|escape }}
             </div>
