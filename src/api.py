@@ -6,9 +6,9 @@ from tastypie.utils import trailing_slash
 from tastypie.constants import ALL
 from django.contrib.auth.models import User
 from apps.report.models import File
-from apps.pages.models import Page
 from apps.boxes.models import Box
 from apps.userprofile.models import UserProfile
+from apps.post.models import Post
 
 class HeaderApiKeyAuthentication(ApiKeyAuthentication):
     def is_authenticated(self, request, **kwargs):
@@ -50,13 +50,6 @@ class BareUserResource(ModelResource):
         authentication = HeaderApiKeyAuthentication()
         excludes = ['email', 'password', 'is_staff', 'is_superuser']
 
-class PageResource(ModelResource):
-    class Meta:
-        queryset = Page.objects.all()
-        resource_name = 'page'
-        authorization = Authorization()
-        authentication = HeaderApiKeyAuthentication()
-
 class BoxResource(ModelResource):
     class Meta:
         queryset = Box.objects.all()
@@ -64,6 +57,32 @@ class BoxResource(ModelResource):
         allowed_methods = ['get', 'put', 'post']
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
+
+class PostResource(ModelResource):
+    author = fields.ForeignKey(BareUserResource, 'author', full=True)
+    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
+    class Meta:
+        queryset = Post.objects.all()
+        resource_name = 'post'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        filtering = {
+            "published": ALL,
+            "uuid": ALL
+        }
+
+class FullPostResource(ModelResource):
+    author = fields.ForeignKey(UserResource, 'author', full=True)
+    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
+    class Meta:
+        queryset = Post.objects.all()
+        resource_name = 'full_post'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        filtering = {
+            "published": ALL,
+            "uuid": ALL
+        }
 
 class FileResource(ModelResource):
     user = fields.ForeignKey(BareUserResource, 'user', full=True)

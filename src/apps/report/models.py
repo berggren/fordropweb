@@ -23,7 +23,7 @@ class File(models.Model):
     ctph = models.CharField(max_length=255, null=True, blank=True)
     graph_id = models.IntegerField(null=True, blank=True)
     uuid = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    published = models.BooleanField()
+    published = models.BooleanField(default=True)
     tags = TaggableManager(blank=True)
     posts = generic.GenericRelation(Post)
     boxes = models.ManyToManyField(Box, blank=True)

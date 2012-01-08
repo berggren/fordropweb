@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 
-from api import FileResource, UserResource, PageResource, BoxResource, ProfileResource, BareUserResource, FullFileResource
+from api import FileResource, UserResource, PostResource, BoxResource, ProfileResource, BareUserResource, FullFileResource, FullPostResource
 from tastypie.api import Api
 
 # Uncomment the next two lines to enable the admin:
@@ -15,7 +15,8 @@ v1_api.register(FullFileResource())
 v1_api.register(UserResource())
 v1_api.register(BareUserResource())
 v1_api.register(ProfileResource())
-v1_api.register(PageResource())
+v1_api.register(PostResource())
+v1_api.register(FullPostResource())
 v1_api.register(BoxResource())
 
 urlpatterns = patterns('',
@@ -79,5 +80,5 @@ urlpatterns = patterns('',
     (r'^accounts/change_password/done/$', 'django.contrib.auth.views.password_change_done'),
 
     # Media
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static', 'show_indexes': True}),
+    #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static', 'show_indexes': True}),
 )

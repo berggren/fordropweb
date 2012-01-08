@@ -54,9 +54,12 @@ def file(request, file_id=None):
                     file.tags.add(request.POST['investigation'])
                 except MultiValueDictKeyError:
                     pass
-                for box in boxes:
-                    b = Box.objects.get(node=box)
-                    file.boxes.add(b)
+                if boxes:
+                    for box in boxes:
+                        b = Box.objects.get(node=box)
+                        file.boxes.add(b)
+                        file.published = False
+                        file.save()
             return HttpResponseRedirect(file.get_absolute_url())
     else:
         file = File.objects.get(id=file_id)
