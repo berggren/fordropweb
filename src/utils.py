@@ -1,13 +1,13 @@
 from apps.report.models import File
 from django.contrib.comments.models import *
 from apps.investigation.models import Investigation
-from apps.post.models import Post
+from apps.post.models import Post, NewPost
 
 def activity_stream():
     stream = []
     comments = Comment.objects.all().order_by('-submit_date')[:10]
     files = File.objects.all().order_by('-time_created')[:10]
-    posts = Post.objects.all().order_by('-time_created')[:10]
+    posts = NewPost.objects.all().order_by('-time_created')[:10]
     investigations = Investigation.objects.all().order_by('-time_created')[:10]
     for comment in comments:
         stream.append({'type': 'comment', 'time': comment.submit_date, 'object': comment})

@@ -17,7 +17,7 @@
     {% endif %}
 
 <div class="well" id="share">
-<form method="post" action="/post">{% csrf_token %}
+<form method="post" action="/newpost">{% csrf_token %}
     <textarea rows=1 id="id_comment" name="post" placeholder="Share your thoughts .."></textarea>
     <br><br>
     <div id="button_block">
@@ -35,7 +35,6 @@
                                     </label>
                                 </li>
                             {% endfor %}
-
                         </ul>
                     </li>
                 </ul>

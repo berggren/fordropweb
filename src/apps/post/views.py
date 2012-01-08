@@ -1,15 +1,14 @@
 from uuid import uuid4
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from models import Post
 from apps.investigation.models import Investigation
 from apps.report.models import File
 from apps.boxes.models import Box
+from apps.post.models import Post, NewPost
 
 @login_required
 def post(request):
     if request.method == 'POST':
-        print request.POST
         type = request.POST['type']
         post = request.POST['post']
         boxes = request.POST.getlist('boxes')
@@ -29,4 +28,18 @@ def post(request):
                 p.published = False
                 p.save()
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    
+
+def new_post(request):
+    if request.method == 'POST':
+        post = request.POST['post']
+        boxes = request.POST.getlist('boxes')
+        if not post:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+        p = NewPost.objects.create(post=post, user=request.user, uuid=uuid4().urn)
+        if boxes:
+            for box in boxes:
+                b = Box.objects.get(node=box)
+                p.boxes.add(b)
+                p.published = False
+                p.save()
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])

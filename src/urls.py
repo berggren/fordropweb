@@ -53,6 +53,7 @@ urlpatterns = patterns('',
 
     # Postss
     (r'^post$',             'apps.post.views.post'),
+    (r'^newpost$',             'apps.post.views.new_post'),
 
     # User
     (r'^user/(\d+)$',               'apps.userprofile.views.profile'),

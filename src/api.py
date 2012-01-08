@@ -5,10 +5,12 @@ from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 from tastypie.constants import ALL
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from apps.report.models import File
 from apps.boxes.models import Box
 from apps.userprofile.models import UserProfile
 from apps.post.models import Post
+from src.apps.post.models import NewPost
 
 class HeaderApiKeyAuthentication(ApiKeyAuthentication):
     def is_authenticated(self, request, **kwargs):
@@ -22,6 +24,8 @@ class HeaderApiKeyAuthentication(ApiKeyAuthentication):
             return self._unauthorized()
         request.user = user
         return self.get_key(user, api_key)
+
+
 
 class ProfileResource(ModelResource):
     class Meta:
@@ -62,7 +66,7 @@ class PostResource(ModelResource):
     author = fields.ForeignKey(BareUserResource, 'author', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
-        queryset = Post.objects.all()
+        queryset = NewPost.objects.all()
         resource_name = 'post'
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
@@ -75,7 +79,7 @@ class FullPostResource(ModelResource):
     author = fields.ForeignKey(UserResource, 'author', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
     class Meta:
-        queryset = Post.objects.all()
+        queryset = NewPost.objects.all()
         resource_name = 'full_post'
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()

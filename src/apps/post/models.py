@@ -24,5 +24,16 @@ class Post(models.Model):
     class Admin:
         pass
 
-
-    
+class NewPost(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True)
+    post = models.TextField(null=True, blank=True)
+    uuid = models.CharField(max_length=255)
+    tags = TaggableManager(blank=True)
+    boxes = models.ManyToManyField(Box, blank=True)
+    published = models.BooleanField(default=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+    time_updated = models.DateTimeField(auto_now=True)
+    def __unicode__(self):
+        return '%s, %s' % self.author
+    class Admin:
+        pass
