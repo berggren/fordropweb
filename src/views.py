@@ -17,7 +17,7 @@ def timeline(request, investigation_id):
         l.append(d)
     for post in investigation.posts.all():
         description = post.post
-        title = "Comment by: %s" % post.author.profile.name
+        title = "Comment by: %s" % post.user.profile.name
         d = {'start': post.time_created.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'}
         l.append(d)
     j = {

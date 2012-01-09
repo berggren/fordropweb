@@ -10,6 +10,7 @@ import graphutils as gc
 from utils import investigation_activity_stream
 from uuid import uuid4
 from django.template.defaultfilters import slugify
+from apps.post.models import NewPost
 
 def get_people(investigation):
     """
@@ -68,6 +69,7 @@ def overview(request, id):
     stream = investigation_activity_stream(investigation.id)
     tag_list = [x.name for x in investigation.tags.all()]
     files = File.objects.filter(tags__name__in=tag_list).distinct()
+    posts = NewPost.objects.filter(investigation=investigation)
     return render_to_response('investigation/overview.html',
                                                                 {
                                                                     'investigation': investigation,
@@ -76,6 +78,7 @@ def overview(request, id):
                                                                     'people': people,
                                                                     'files': files,
                                                                     'tagform': TagForm(),
+                                                                    'posts': posts,
                                                                 }, RequestContext(request))
 
 

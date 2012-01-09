@@ -5,6 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from taggit.managers import TaggableManager
 from managers import PostManager
 from apps.boxes.models import Box
+from apps.investigation.models import Investigation
+from apps.report.models import File
 
 class Post(models.Model):
     author = models.ForeignKey(User, null=True, blank=True)
@@ -26,11 +28,14 @@ class Post(models.Model):
 
 class NewPost(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
-    post = models.TextField(null=True, blank=True)
+    content = models.TextField(null=True, blank=True)
     uuid = models.CharField(max_length=255)
     tags = TaggableManager(blank=True)
     boxes = models.ManyToManyField(Box, blank=True)
     published = models.BooleanField(default=True)
+    file = models.ForeignKey(File, blank=True, null=True)
+    investigation = models.ForeignKey(Investigation, blank=True, null=True)
+    post = models.ForeignKey('self', blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
     def __unicode__(self):

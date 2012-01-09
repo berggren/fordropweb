@@ -1,16 +1,13 @@
 from apps.report.models import File
 from django.contrib.comments.models import *
 from apps.investigation.models import Investigation
-from apps.post.models import Post, NewPost
+from apps.post.models import NewPost
 
 def activity_stream():
     stream = []
-    comments = Comment.objects.all().order_by('-submit_date')[:10]
     files = File.objects.all().order_by('-time_created')[:10]
     posts = NewPost.objects.all().order_by('-time_created')[:10]
     investigations = Investigation.objects.all().order_by('-time_created')[:10]
-    for comment in comments:
-        stream.append({'type': 'comment', 'time': comment.submit_date, 'object': comment})
     for file in files:
         stream.append({'type': 'file', 'time': file.time_created, 'object': file})
     for post in posts:
@@ -24,7 +21,7 @@ def investigation_activity_stream(id):
     stream = []
     tag_list = [x.name for x in investigation.tags.all()]
     files = File.objects.filter(tags__name__in=tag_list).distinct()[:10]
-    posts = investigation.posts.all().order_by('-time_created')[:10]
+    posts = NewPost.objects.filter(investigation=investigation).order_by('-time_created')[:10]
     for file in files:
         stream.append({'type': 'file', 'time': file.time_created, 'object': file})
     for post in posts:
@@ -34,11 +31,8 @@ def investigation_activity_stream(id):
 def user_activity_stream(id):
     stream = []
     user = User.objects.get(pk=id)
-    comments = Comment.objects.filter(user=user).order_by('-submit_date')[:10]
     files = File.objects.filter(user=user).order_by('-time_created')[:10]
-    posts = Post.objects.filter(author=user).order_by('-time_created')[:10]
-    for comment in comments:
-        stream.append({'type': 'comment', 'time': comment.submit_date, 'object': comment})
+    posts = NewPost.objects.filter(user=user).order_by('-time_created')[:10]
     for file in files:
         stream.append({'type': 'file', 'time': file.time_created, 'object': file})
     for post in posts:

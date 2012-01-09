@@ -56,13 +56,30 @@
             <br><br><br>
             {% ifequal user profile_user %}
                 <div class="well" id="share">
-                    <form method="post" action="/post">{% csrf_token %}
+                    <form method="post" action="/newpost">{% csrf_token %}
                         <textarea rows=1 id="id_comment" name="post" placeholder="Share your thoughts .."></textarea>
                         <br><br>
                         <div id="button_block">
+                            <div class="input-prepend left inline">
+                                <span class="add-on">Share</span>
+                                <ul class="checkbox-select nav input-small" data-dropdown="dropdown">
+                                    <li class="menu">
+                                        <a href="#" class="menu">Local</a>
+                                        <ul class="menu-dropdown inputs-list" data-checkbox-dropdown="checkbox-dropdown">
+                                            {% for box in boxes %}
+                                                <li>
+                                                    <label>
+                                                        <input type="checkbox" name="boxes" value="{{ box.node }}">
+                                                        <span>{{ box }}</span>
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
                             <input type="submit" class="btn success" id="button_submit" value="Post" />
                             <input type="submit" class="btn" id='button_cancel' value="Cancel" />
-                            <input type="hidden" name="type" value="user" />
                         </div>
                     </form>
                 </div>
@@ -142,8 +159,8 @@
 
         {% ifequal item.type "post" %}
             <div class="avatar">
-                {% if item.object.author.profile.avatar %}
-                    {% thumbnail item.object.author.profile.avatar "40x40" crop="center" as im %}
+                {% if item.object.user.profile.avatar %}
+                    {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
                         <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
@@ -154,9 +171,9 @@
             </div>
 
             <div class="post_box">
-                <a href="/user/{{ item.object.author.id }}"><strong>{{ item.object.author.profile.name }}</strong></a>
+                <a href="/user/{{ item.object.user.id }}"><strong>{{ item.object.user.profile.name }}</strong></a>
                 <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
-                <div class="blokk">New post <a href="/investigation/{{ item.object.content_object.id }}">{{ item.object.content_object.title}}</a></div>
+                <div class="blokk">New post</div>
                 <br>
                 {{ item.object.post|linebreaksbr }}
             </div>

@@ -1,10 +1,8 @@
 import uuid
-from django.contrib.contenttypes import generic
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from taggit.managers import TaggableManager
-from apps.post.models import Post
 from apps.pages.models import Page
 from apps.boxes.models import Box
 import graphutils as gc
@@ -25,7 +23,6 @@ class File(models.Model):
     uuid = models.CharField(max_length=255, unique=True, null=True, blank=True)
     published = models.BooleanField(default=True)
     tags = TaggableManager(blank=True)
-    posts = generic.GenericRelation(Post)
     boxes = models.ManyToManyField(Box, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)

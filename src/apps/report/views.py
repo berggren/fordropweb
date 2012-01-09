@@ -1,5 +1,6 @@
 import json
 from uuid import uuid4
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -9,6 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from apps.pages.forms import PageForm
 from apps.pages.models import Page
 from apps.boxes.models import Box
+from apps.post.models import NewPost
 from utils import *
 from forms import *
 from models import File
@@ -63,7 +65,7 @@ def file(request, file_id=None):
             return HttpResponseRedirect(file.get_absolute_url())
     else:
         file = File.objects.get(id=file_id)
-        posts = file.posts.all().order_by('-time_created')[:10]
+        posts = NewPost.objects.filter(file=file).order_by('-time_created')[:10]
         files = File.objects.filter(sha256=file.sha256)
         tag_list = [x.name for x in file.tags.all()]
         investigations = Investigation.objects.filter(tags__name__in=tag_list).distinct()
@@ -162,3 +164,4 @@ def get_malware_mhr(request, file_id):
         else:
             mhr = MalwareMhr.objects.create(file=file, percent=percent, timecreated_mhr=dt)
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
+

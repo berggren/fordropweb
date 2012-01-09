@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -41,7 +42,8 @@ def profile(request, user_id):
     profile_user = User.objects.get(pk=user_id)
     stream = user_activity_stream(profile_user.id)
     investigations = Investigation.objects.filter(creator=profile_user).order_by('-last_updated')
-    return render_to_response('userprofile/profile.html',{'profile_user': profile_user, 'form': UserProfileForm, 'stream': stream, 'investigations': investigations}, RequestContext(request))
+    boxes = Box.objects.all()
+    return render_to_response('userprofile/profile.html',{'profile_user': profile_user, 'boxes': boxes, 'form': UserProfileForm, 'stream': stream, 'investigations': investigations}, RequestContext(request))
 @login_required
 
 @login_required

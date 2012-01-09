@@ -31,15 +31,29 @@ def post(request):
 
 def new_post(request):
     if request.method == 'POST':
-        post = request.POST['post']
+        content = request.POST['post']
         boxes = request.POST.getlist('boxes')
-        if not post:
+        type = request.POST['type']
+        if not content:
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
-        p = NewPost.objects.create(post=post, user=request.user, uuid=uuid4().urn)
+        post = NewPost.objects.create(content=content, user=request.user, uuid=uuid4().urn)
+        if type == "file":
+            file = File.objects.get(pk=request.POST['id'])
+            post.file = file
+            post.save()
+            boxes = file.boxes.all()
+        if type == "investigation":
+            investigation = Investigation.objects.get(pk=request.POST['id'])
+            post.investigation = investigation
+            post.save()
+            boxes = investigation.boxes.all()
         if boxes:
             for box in boxes:
-                b = Box.objects.get(node=box)
-                p.boxes.add(b)
-                p.published = False
-                p.save()
+                try:
+                    b = Box.objects.get(node=box.node)
+                except AttributeError:
+                    b = Box.objects.get(node=box)
+                post.boxes.add(b)
+                post.published = False
+                post.save()
         return HttpResponseRedirect(request.META["HTTP_REFERER"])

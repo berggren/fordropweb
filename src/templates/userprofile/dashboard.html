@@ -136,6 +136,7 @@
         {% endifequal %}
 
         {% ifequal item.type "file" %}
+            {{ item.object.get_posts }}
             <div class="avatar">
                 {% if item.object.user.profile.avatar %}
                     {% thumbnail item.object.user.profile.avatar "40x40" crop="center" as im %}
@@ -174,7 +175,7 @@
                 <span class="quiet right">{{ item.object.time_created|timesince }} ago</span>
                 <div class="blokk">New post</div>
                 <br>
-                {{ item.object.post|linebreaksbr|escape }}
+                {{ item.object.content|linebreaksbr|escape }}
             </div>
         {% endifequal %}
 

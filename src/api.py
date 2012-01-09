@@ -9,6 +9,7 @@ from apps.report.models import File
 from apps.boxes.models import Box
 from apps.userprofile.models import UserProfile
 from apps.post.models import NewPost
+from apps.investigation.models import Investigation
 
 class HeaderApiKeyAuthentication(ApiKeyAuthentication):
     def is_authenticated(self, request, **kwargs):
@@ -27,6 +28,13 @@ class ProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
         resource_name = 'profile'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+
+class InvestigationResource(ModelResource):
+    class Meta:
+        queryset = Investigation.objects.all()
+        resource_name = 'investigation'
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
 
@@ -58,32 +66,6 @@ class BoxResource(ModelResource):
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
 
-class PostResource(ModelResource):
-    user = fields.ForeignKey(BareUserResource, 'user', full=True)
-    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
-    class Meta:
-        queryset = NewPost.objects.all()
-        resource_name = 'post'
-        authorization = Authorization()
-        authentication = HeaderApiKeyAuthentication()
-        filtering = {
-            "published": ALL,
-            "uuid": ALL
-        }
-
-class FullPostResource(ModelResource):
-    user = fields.ForeignKey(UserResource, 'user', full=True)
-    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
-    class Meta:
-        queryset = NewPost.objects.all()
-        resource_name = 'full_post'
-        authorization = Authorization()
-        authentication = HeaderApiKeyAuthentication()
-        filtering = {
-            "published": ALL,
-            "uuid": ALL
-        }
-
 class FileResource(ModelResource):
     user = fields.ForeignKey(BareUserResource, 'user', full=True)
     boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
@@ -105,6 +87,34 @@ class FullFileResource(ModelResource):
         queryset = File.objects.all()
         resource_name = 'full_file'
         allowed_methods = ['get', 'put', 'post']
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        filtering = {
+            "published": ALL,
+            "uuid": ALL
+        }
+
+class PostResource(ModelResource):
+    user = fields.ForeignKey(BareUserResource, 'user', full=True)
+    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
+    class Meta:
+        queryset = NewPost.objects.all()
+        resource_name = 'post'
+        authorization = Authorization()
+        authentication = HeaderApiKeyAuthentication()
+        filtering = {
+            "published": ALL,
+            "uuid": ALL
+        }
+
+class FullPostResource(ModelResource):
+    user = fields.ForeignKey(UserResource, 'user', full=True)
+    boxes = fields.ToManyField(BoxResource, 'boxes', full=True)
+    investigation = fields.ForeignKey(InvestigationResource, 'investigation', full=True, null=True, blank=True)
+    file = fields.ForeignKey(FileResource, 'file', full=True, null=True, blank=True)
+    class Meta:
+        queryset = NewPost.objects.all()
+        resource_name = 'full_post'
         authorization = Authorization()
         authentication = HeaderApiKeyAuthentication()
         filtering = {
