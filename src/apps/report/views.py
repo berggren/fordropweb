@@ -122,7 +122,7 @@ def graph(request, id):
 @login_required
 def related(request, id):
     file = File.objects.get(id=id)
-    posts = file.posts.all().order_by('-time_created')[:10]
+    posts = NewPost.objects.filter(file=file).order_by('-time_created')[:10]
     try:
         related = json.loads(gc.get_related(gc.neo4jdb, file.graph_id))['nodes']
     except KeyError:

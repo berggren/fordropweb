@@ -62,8 +62,8 @@
     {% if posts %}
         {% for post in posts %}
             <div class="avatar">
-                {% if post.author.profile.avatar %}
-                    {% thumbnail post.author.profile.avatar "40x40" crop="center" as im %}
+                {% if post.user.profile.avatar %}
+                    {% thumbnail post.user.profile.avatar "40x40" crop="center" as im %}
                         <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
@@ -73,10 +73,10 @@
                 {% endif %}
             </div>
             <div class="post_box">
-                <a href="/user/{{ post.author.id }}"><strong>{{ post.author.profile.name }}</strong></a>
+                <a href="/user/{{ post.user.id }}"><strong>{{ post.user.profile.name }}</strong></a>
                 <span class="quiet right">{{ post.time_created|timesince }} ago</span>
                 <br>
-                {{ post.post|linebreaksbr|escape }}
+                {{ post.content|linebreaksbr|escape }}
             </div>
         {% endfor %}
     {% else %}

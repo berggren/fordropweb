@@ -64,7 +64,11 @@ class BoxResource(ModelResource):
         resource_name = 'box'
         allowed_methods = ['get', 'put', 'post']
         authorization = Authorization()
-        authentication = HeaderApiKeyAuthentication()
+        authentication = Authentication()
+        filtering = {
+            "node": ALL
+        }
+
 
 class FileResource(ModelResource):
     user = fields.ForeignKey(BareUserResource, 'user', full=True)

@@ -20,7 +20,6 @@
 {% block extrabody %}onload="onLoad();" onresize="onResize();"{% endblock %}
 
 {% block investigation_leftside %}
-    {{ startdate }}
 <ul class="tabs">
     <li><a href="/investigation/{{ investigation.id }}">Activity</a></li>
     <li class="active"><a href="/investigation/{{ investigation.id }}/timeline">Timeline</a></li>
