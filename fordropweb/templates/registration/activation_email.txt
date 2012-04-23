@@ -3,7 +3,7 @@
 
 Hi!
 
-http://{{ site.domain }}{% url registration_activate activation_key %}
+https://{{ site.domain }}{% url registration_activate activation_key %}
 {% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
 
 Regards,
