@@ -9,7 +9,7 @@ from django.db.models.fields.files import ImageField
 from fordrop.client import FordropRestClient
 import uuid
 
-xmpp = FordropRestClient(url='https://fordrop.org', username='user', api_key='secret', verify=False)
+xmpp = FordropRestClient(url=settings.FORDROP_PUBSUB_URL, username=settings.FORDROP_PUBSUB_USER, api_key=settings.FORDROP_PUBSUB_KEY, verify=settings.FORDROP_VERIFY_SSL)
 
 class File(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
@@ -280,8 +280,6 @@ def handle_uploaded_file(f):
 
 def notify_by_mail(users=None, subject=None, body=None, obj=None):
     mails_to_send = []
-    if not isinstance(users, list):
-        return
     for user in users:
         if user == obj.user:
                 continue
