@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db.models.query_utils import Q
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotModified
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import uuid
@@ -14,7 +14,6 @@ from django_fordrop.forms import UserProfileForm
 from django_fordrop.models import UserProfile, UserSettings, PubSubNode
 from forms import UploadFileForm, FileCommentForm, CollectionCommentForm, CollectionForm, FileTagForm, UserProfileForm, UserSettingsForm, CollectionTagForm
 from models import handle_uploaded_file, File, Collection, xmpp, notify_by_mail
-from django.core.mail import send_mail, send_mass_mail
 
 @login_required
 def index(request):

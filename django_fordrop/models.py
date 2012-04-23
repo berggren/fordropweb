@@ -9,7 +9,7 @@ from django.db.models.fields.files import ImageField
 from fordrop.client import FordropRestClient
 import uuid
 
-xmpp = FordropRestClient(url='https://fordrop.org/api/jbn', username='jbn', api_key='c7617f34a1cf467ea17c5e701bf16684', verify=False)
+xmpp = FordropRestClient(url='https://fordrop.org', username='user', api_key='secret', verify=False)
 
 class File(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
