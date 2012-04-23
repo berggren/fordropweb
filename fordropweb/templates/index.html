@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block extrahead %}
+        <script>
+            $(document).ready(function(){
+                $('#share-link').click(function(){
+                    $("#share-form").toggle();
+                });
+                $('#new-collection').click(function(){
+                    $("#collection-form").toggle();
+                });
+            });
+        </script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+    <div class="span6">
+        <span class="btn btn-info" style="cursor:pointer;" id="share-link"><i class="icon-share-alt icon-white"></i> Share your stuff</span>
+        <br><br>
+            <div id="share-form" class="well share hide">
+                <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <strong>1. </strong>
+                    {{ uploadform.file }}
+                    <br>
+                    <strong>2.</strong> Description (optional)
+                    <br>
+                    {{ uploadform.description }}
+                    <br>
+                    <strong>3.</strong> <i class="icon-tag"></i> Add tags (optional) <br>{{ uploadform.tags }}
+                    <br>
+                    <strong>4.</strong> Share this to <br>
+                    <div class="alert alert-info">
+                    {% for node in nodes %}
+                    <label class="checkbox">
+                        <input type="checkbox" name="nodes" value="{{ node.node }}"> {{ node.name }}
+                    </label>
+                    {% endfor %}
+                    </div>
+                    <input type="submit" value="Upload" class="btn"/>
+                    <a href="" id="upload_cancel_button" class="btn error hidden">Cancel</a>
+                </form>
+            </div>
+
+    {% for file in files %}
+        <div class="well">
+            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
+            <span class="quiet">{{ file.time_updated|timesince }} ago by {{ file.user.profile.name }}</span>
+            <br><br>
+            {% if file.description %}
+            <blockquote>
+                <p>{{ file.description|linebreaksbr }}</p>
+                <small>{{ file.user.get_full_name }}</small>
+            </blockquote>
+            {% endif %}
+            {% if file.tags.all %}
+                <i style="margin-left:20px;" class="icon-tags"></i>
+                {% for tag in file.tags.all %}
+                    <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+                {% endfor %}
+            {% endif %}
+            {% if file.collections %}
+                <i style="margin-left:20px;" class="icon-book"></i>
+                {% for collection in file.collections %}
+                    <a href="/collection/{{ collection.id }}" class="label label-success">{{ collection.title }}</a>
+                {% endfor %}
+            {% endif %}
+
+            <div class="left" onclick="$(this).next('div.#comments').toggle('fast');$(this).nextAll('#last-comment:first').hide();">
+                <i class="icon-comment"></i> {{ file.comments|length }} comment
+            </div>
+            <div id="comments" class="hide">
+                <br>
+                {% if file.comments %}
+                <div class="well comment">
+                    {% for comment in file.comments %}
+                        <div class="left"></span>
+                            {% if comment.user.profile.avatar %}
+                            {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            {% endthumbnail %}
+                            {% else %}
+                            {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            {% endthumbnail %}
+                            {% endif %}
+                        </div>
+                        <div style="margin-left:40px;margin-top:-3px;">
+                            <a href="{{ comment.user.profile.get_absolute_url }}"<strong>{{ comment.user.profile.name }}</strong></a><br>
+                            <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
+                            <br>
+                            {{ comment.content|linebreaksbr }}
+                            <br><br>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% if file.comments %}
+            <br><br>
+            <div class="well comment" id="last-comment">
+                <div class="left"></span>
+                    {% if file.get_last_comment.user.profile.avatar %}
+                        {% thumbnail file.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        {% endthumbnail %}
+                    {% else %}
+                        {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        {% endthumbnail %}
+                    {% endif %}
+                </div>
+                <div style="margin-left:40px;margin-top:-3px;">
+                    <a href="{{ file.get_last_comment.user.profile.get_absolute_url }}"><strong>{{ file.get_last_comment.user.profile.name }}</strong></a><br>
+                    <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
+                    <br>
+                    {{ file.get_last_comment.content|linebreaksbr }}
+                </div>
+            </div>
+            {% endif %}
+            <br><br>
+            <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div id="submit-comment-button" class="hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+
+    <div class="span6">
+        <span class="btn" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
+        <br><br>
+        <div id="collection-form" class="well share hide">
+            <form action="/collection" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <strong>1.</strong> Title<br>
+                {{ collectionform.title }}
+                <br>
+                <strong>2.</strong> Description (optional)
+                <br>
+                {{ collectionform.description }}
+                <strong>3.</strong> <i class="icon-tag"></i> Add tags to track (optional) <br>{{ collectionform.tags }}
+                <br>
+                <strong>4.</strong> Share this to <br>
+                <div class="alert alert-info">
+                    {% for node in nodes %}
+                    <label class="checkbox">
+                        <input type="checkbox" name="nodes" value="{{ node.node }}"> {{ node.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <input type="submit" value="Save" class="btn"/>
+                <a href="" id="collection_cancel_button" class="btn error hidden">Cancel</a>
+            </form>
+        </div>
+        {% for collection in collections reversed %}
+            <div class="well">
+                <span class="left">
+                    <a href="/collection/{{ collection.id }}"><h3>{{ collection.title }}</h3></a>
+                    <span class="quiet">{{ collection.time_updated|timesince }} ago</span>
+                </span>
+
+                {% if user in collection.followers.all %}
+                <form method="post" action="/collection/{{ collection.id }}/unfollow">{% csrf_token %}
+                    <button class="right btn" type="submit">Unfollow</button>
+                </form>
+                {% else %}
+                <form method="post" action="/collection/{{ collection.id }}/follow">{% csrf_token %}
+                    <button class="right btn btn-success" type="submit"><i class="icon-plus icon-white"></i> Follow</button>
+                </form>
+                {% endif %}
+                {% if collection.description %}
+                    <br><br>
+                    {{ collection.description|truncatewords:"30" }}
+                {% endif %}
+                <br><br>
+                <i class="icon-user"></i> {{ collection.followers.all|length }} follower{{ collection.followers.all|pluralize }}
+                <span style="margin-left:10px;"><i class="icon-file"></i> Tracking {{ collection.files|length }} files</span>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+{% endblock %}

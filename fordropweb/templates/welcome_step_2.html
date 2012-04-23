@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="hero-unit">
+    <span style="font-size:45px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Do you like notifications?</span>
+    <br><br>
+    <p>Here you have the possibility to turn on email notification for different actions.</p>
+    <br>
+</div>
+            <form enctype="multipart/form-data" method="post" action="/profile/settings/edit/">{% csrf_token %}
+                <h5>Email me when:</h5>
+                <p class="quiet">Make sure you have entered you email address</p>
+                {{ settingsform.notify_comment_on_file }} Somebody comments on one of my files
+                <br>
+                {{ settingsform.notify_comment_on_collection }} Somebody comments in one of the collections I am following
+                <br>
+                {{ settingsform.notify_same_file }} Somebody reports the same file as me
+                <br><br>
+                <input type="hidden" name="welcome" value="welcome"/>
+                <button class="btn btn-info" type="submit">Save and continue <i class="icon-white icon-arrow-right"></i></button>
+            </form>
+</form>
+</div>
+</div>
+
+{% endblock %}

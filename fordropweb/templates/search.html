@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="span12">
+        {% if files %}
+        {% for file in files %}
+            <div class="well">
+            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
+            <span class="quiet">{{ file.time_updated|timesince }} ago by <a href="{{ file.user.profile.get_absolute_url }}">{{ file.user.profile.name }}</a></span>
+            <br>
+            {% if file.description %}
+                <p>{{ file.description|linebreaksbr|truncatewords:"15" }}</p>
+            {% endif %}
+            <br>
+            {% if file.tags.all %}
+                <i class="icon-tags"></i>
+                {% for tag in file.tags.all %}
+                    <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+                {% endfor %}
+            {% endif %}
+
+            {% if file.collections %}
+                <i style="margin-left:20px;" class="icon-book"></i>
+                {% for collection in file.collections %}
+                    <a href="/collection/{{ collection.id }}" class="label label-success">{{ collection.title }}</a>
+                {% endfor %}
+            {% endif %}
+            <i class="icon-comment"></i> {{ file.comments|length }} comment
+            </div>
+        {% endfor %}
+
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}

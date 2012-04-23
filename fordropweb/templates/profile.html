@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="row">
+    <div class="span12">
+        <div class="hero-unit">
+        <div class="left" style="margin-right:30px;">
+            {% if profile_user.profile.avatar %}
+            {% thumbnail profile_user.profile.avatar "100x100" crop="center" as im %}
+            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+            {% else %}
+            {% thumbnail "img/placeholder.png" "100x100" crop="center" as im %}
+            <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+            {% endif %}
+        </div>
+        <div float="left" style="margin-top:10px;">
+            <span style="font-size:45px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.profile.name }}</span>
+            {% ifequal profile_user user %}
+            <a href="/accounts/change_password/" style="margin-left:10px;" class="btn right"><i class="icon-lock"></i> Change password</a>
+            <a href="/profile/edit" class="btn right"><i class="icon-edit"></i> Edit profile</a>
+            {% endifequal %}
+
+            <br><br>
+            <strong>@{{ profile_user.username }}</strong>
+            <span class="quiet" style="margin-left:10px;">{{ profile_user.profile.location }}</span>
+            <a href="{{ profile_user.profile.web }}" target="new">{{ profile_user.profile.web }}</a>
+            <br>
+            {{ profile_user.profile.bio }}
+            <br>
+        </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="span6">
+        {% if not files %}
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">No files by {{ profile_user.username }}</span><br><br>
+        {% else %}
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Files by {{ profile_user.username }}</span><br><br>
+        {% endif %}
+        {% for file in files %}
+            <div class="well">
+                <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
+                <span class="quiet">{{ file.time_updated|timesince }} ago by {{ file.user.profile.name }}</span>
+                <br>
+                {% if file.description %}
+                <p>{{ file.description|linebreaksbr|truncatewords:"15" }}</p>
+                {% endif %}
+                <br>
+                {% if file.tags.all %}
+                <i class="icon-tags"></i>
+                {% for tag in file.tags.all %}
+                <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+                {% endfor %}
+                {% endif %}
+
+                {% if file.collections %}
+                <i style="margin-left:20px;" class="icon-book"></i>
+                {% for collection in file.collections %}
+                <a href="/collection/{{ collection.id }}" class="label label-success">{{ collection.title }}</a>
+                {% endfor %}
+                {% endif %}
+                <i class="icon-comment"></i> {{ file.comments|length }} comment
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="span6">
+        {% if not collections %}
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.username }} is not following anything</span><br><br>
+        {% else %}
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.username }} is following</span><br><br>
+        {% endif %}
+        {% for collection in collections reversed %}
+        <div class="well">
+                <span class="left">
+                    <a href="/collection/{{ collection.id }}"><h3>{{ collection.title }}</h3></a>
+                    <span class="quiet">{{ collection.time_updated|timesince }} ago</span>
+                </span>
+            <br>
+            {% if collection.description %}
+            <br><br>
+            {{ collection.description|truncatewords:"30" }}
+            {% endif %}
+            <br><br>
+            <i class="icon-user"></i> {{ collection.users.all|length }} follower{{ collection.users.all|pluralize }}
+            <span style="margin-left:10px;"><i class="icon-file"></i> Tracking {{ collection.files|length }} files</span>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="row">
+    <div class="span6">
+        <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Edit profile</span><br><br>
+        <div class="well">
+        <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+                <span class="left" style="margin-right:30px;">
+                {% if user.profile.avatar %}
+                    {% thumbnail user.profile.avatar "80x80" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/placeholder.png" "80x80" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+                </span>
+            <h5>Change avatar</h5>
+            <input type="file" name="avatar" id="id_avatar">
+            <br><br><br><br>
+            <h5>What do you want to be called?</h5>
+            {{ form.name }}
+            <h5>Email</h5>
+            {{ form.email.errors }}
+            {{ form.email }}
+            <h5>Where are you located?</h5>
+            {{ form.location }}
+            <h5>Where can we find you online?</h5>
+            {{ form.web }}
+            <h5>Tell us something about you</h5>
+            {{ form.bio }}
+            <br>
+            <input class="btn success" type="submit" value="Save">
+        </form>
+        </div>
+    </div>
+
+    <div class="span6">
+        <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Settings</span><br><br>
+        <div class="well">
+            <form enctype="multipart/form-data" method="post" action="/profile/settings/edit/">{% csrf_token %}
+                <h5>Email me when:</h5>
+                <p class="quiet">Make sure you have entered you email address</p>
+                {{ settingsform.notify_comment_on_file }} Somebody comments on one of my files
+                <br>
+                {{ settingsform.notify_comment_on_collection }} Somebody comments in one of the collections I am following
+                <br>
+                    {{ settingsform.notify_same_file }} Somebody reports the same file as me
+                <br><br>
+                <input class="btn success" type="submit" value="Save">
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

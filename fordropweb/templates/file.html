@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block extrahead %}
+<script>
+    $(document).ready(function(){
+        $('#edit-tags').click(function(){
+            $("#tagform").toggle();
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span12">
+        <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ file.sha1 }}</span><br><br>
+        {% if file.description %}
+            {{ file.description|linebreaksbr }}
+            <br><br>
+        {% endif %}
+        <table class="table table-striped table-bordered">
+            <tr><td><strong>Filename</strong></td><td>{{ file.filename }}</td></tr>
+            <tr><td><strong>md5</strong></td><td>{{ file.md5 }}</td></tr>
+            <tr><td><strong>sha1</strong></td><td>{{ file.sha1 }}</td></tr>
+            <tr><td><strong>sha256</strong></td><td>{{ file.sha256 }}</td></tr>
+            <tr><td><strong>Tags</strong></td><td>
+            {% for tag in file.tags.all %}
+                <a class="left" style="margin-right:5px;" href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+            {% endfor %}
+            <a style="cursor:pointer; margin-left:10px;" id="edit-tags">Edit tags</a>
+            <div id="tagform" class="hide">
+                <br><br>
+                <form method="post" action="/file/{{ file.id }}/tag">{% csrf_token %}
+                    {{ tagform.tags }}
+                </form>
+            </div>
+            </td></tr>
+            {% if file.collections %}
+            <tr><td><strong>Collections</strong></td><td>
+                {% if file.collections %}
+                    {% for collection in file.collections %}
+                        <a href="/collection/{{ collection.id }}"><span class="label label-success">{{ collection }}</span></a>
+                    {% endfor %}
+                {% endif %}
+            </td></tr>
+            {% endif %}
+            <tr><td><strong>Reporters</strong></td><td>
+            {% for f in file.get_reporters %}
+                {{ f.user.profile.name }}<br>
+            {% endfor %}
+            </td></tr>
+            <tr><td><strong>Shared with</strong></td><td>
+                {% for node in file.nodes.all %}
+                    {{ node.name }}<br>
+                {% endfor %}
+            </td></tr>
+
+        </table>
+    </div>
+</div>
+<div class="row">
+        {% if not file.comments %}
+        <div class="span6">
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
+            <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.submit-comment-button').show();" style="width:450px;" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div class="submit-comment-button hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+
+        </div>
+        {% else %}
+        <div class="span6">
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
+            <div class="well">
+                {% for comment in file.comments %}
+                    <div class="left"></span>
+                        {% if comment.user.profile.avatar %}
+                            {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
+                                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            {% endthumbnail %}
+                        {% else %}
+                            {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            {% endthumbnail %}
+                        {% endif %}
+                    </div>
+                    <div style="margin-left:40px;margin-top:-3px;">
+                        <strong>{{ comment.user.profile.name }}</strong><br>
+                        <span class="quiet small">{{ comment.time_created|timesince }} ago</span>
+                        <br>
+                        {{ comment.content|linebreaksbr }}
+                        <br><br>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.submit-comment-button').show();" style="width:450px;" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div class="submit-comment-button hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+    <div class="span6">
+        <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Related</span><br><br>
+        {% for obj in file.tags.similar_objects %}
+            {% if obj.filename %}
+                <div class="well">
+                    <a href="/file/{{ obj.id }}"><h4 class="left">{{ obj.filename }}</h4></a>
+                    <span class="right quiet">{{ obj.time_updated|timesince }} ago</span>
+                    <br><br>
+                    {% if obj.description %}
+                    <blockquote>
+                        <p>{{ obj.description|linebreaksbr|truncatewords:"15" }}</p>
+                        <small>{{ obj.user.profile.name }}</small>
+                    </blockquote>
+                    {% endif %}
+                    <i style="margin-left:20px;" class="icon-tags"></i>
+                    {% for tag in obj.tags.all %}
+                        <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+                    {% endfor %}
+
+                    {% if obj.collections %}
+                    <i style="margin-left:20px;" class="icon-book"></i>
+                    {% for collection in obj.collections %}
+                    <a href="/collection/{{ collection.id }}" class="label label-success">{{ collection.title }}</a>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            {% elif obj.title %}
+        <div class="well">
+                <span class="left">
+                    <a href="/collection/{{ obj.id }}"><h3>{{ obj.title }}</h3></a>
+                    <span class="quiet">{{ obj.time_updated|timesince }} ago</span>
+                </span>
+
+            {% if user in obj.followers.all %}
+            <form method="post" action="/collection/{{ obj.id }}/unfollow">{% csrf_token %}
+                <button class="right btn" type="submit">Unfollow</button>
+            </form>
+            {% else %}
+            <form method="post" action="/collection/{{ obj.id }}/follow">{% csrf_token %}
+                <button class="right btn btn-success" type="submit"><i class="icon-plus icon-white"></i> Follow</button>
+            </form>
+            {% endif %}
+            {% if obj.description %}
+            <br><br>
+            {{ obj.description|truncatewords:"15" }}
+            {% endif %}
+            <br><br>
+            <i class="icon-user"></i> {{ obj.followers.all|length }} follower{{ obj.followers.all|pluralize }}
+            <span style="margin-left:20px;"><i class="icon-tags"></i></span>
+            {% for tag in obj.tags.all %}
+            <span class="label label-info">{{ tag }}</span>
+            {% endfor %}
+
+        </div>
+        <br>
+            {% endif %}
+        {% endfor %}
+
+
+        <br><br>
+    </div>
+
+{% endblock %}

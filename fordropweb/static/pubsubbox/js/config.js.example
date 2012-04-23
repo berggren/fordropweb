@@ -1,0 +1,6 @@
+var XMPPConfig = {
+    jid: 'john@example.com',
+    password: 'secret',
+    pubsubservice: 'pubsub.example.com',
+    debug: false
+};

@@ -1,0 +1,54 @@
+body {
+    background: #EFEFEF;
+    color: #333;
+}
+
+#header {
+    background: #333;
+    height:45px;
+    padding-top:15px;
+}
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
+
+textarea {
+    width:410px;;
+}
+
+.quiet {
+    color:#999;
+}
+
+.shadow {
+    box-shadow: 1px 1px 3px #888;
+}
+
+.well.comment {
+    background:#fff;
+    left:auto;
+}
+
+.well.share {
+    background: #fff;
+    border:1px solid silver;
+    left:auto;
+}
+.small {
+    font-size:0.9em;
+}
+
+#timeline {
+    height: 250px;
+    border: 1px solid silver;
+    background: #fff;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+    background-color: #f5f5f5;
+}

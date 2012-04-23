@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block extrahead %}
+<script>
+    $(document).ready(function(){
+        $('#share-btn').click(function(){
+            $("#share-form").toggle();
+        });
+        $('#edit-tags').click(function(){
+            $("#tagform").toggle();
+        });
+    });
+</script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+    <div class="span12">
+    <span class="left" style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ collection.title }}</span>
+        {% if user in collection.followers.all %}
+        <form class="right" method="post" action="/collection/{{ collection.id }}/unfollow">{% csrf_token %}
+            <button class="right btn" type="submit" class="right btn">Unfollow</button>
+        </form>
+    {% else %}
+        <form class="right" method="post" action="/collection/{{ collection.id }}/follow">{% csrf_token %}
+            <button class="right btn btn-success" type="submit" class="right btn"><i class="icon-white icon-plus"></i> Follow</button>
+        </form>
+    {% endif %}
+    <br><br>
+    <span class="left"><i class="icon-user"></i> {{ collection.followers.all|length }} follower{{ collection.followers.all|pluralize }}</span>
+    <span style="margin-left:10px;">Tracking </span>
+    {% for tag in collection.tags.all %}
+        <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+    {% endfor %}
+        {% if user in collection.followers.all %}
+        <a style="cursor:pointer; margin-left:10px;" id="edit-tags">Edit tags</a>
+        <div id="tagform" class="hide">
+            <br><br>
+            <form method="post" action="/collection/{{ collection.id }}/tag">{% csrf_token %}
+                {{ tagform.tags }}
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+    <br>
+    {% block collection_content %}{% endblock %}
+{% endblock %}

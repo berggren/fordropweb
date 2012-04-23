@@ -1,9 +1,6 @@
-database.db
+*.db
 *.pyc
-src/TODO
-src/storage
-src/static/cache
-src/static/avatars
-src/settings.py
 .idea
-src/db/*
+fordropweb/static/cache
+fordropweb/static/avatars
+settings.py

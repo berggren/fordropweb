@@ -1,0 +1,186 @@
+{% extends 'collection_base.html' %}
+{% load thumbnail %}
+
+{% block extrahead %}
+        <script>
+            $(document).ready(function(){
+                $('#share-btn').click(function(){
+                    $("#share-form").toggle();
+                });
+                $('#edit-tags').click(function(){
+                    $("#tagform").toggle();
+                });
+            });
+        </script>
+        {% if collection %}
+            <script>
+                Timeline_ajax_url="/site_media/js/timeline_2.3.1/timeline_ajax/simile-ajax-api.js";
+                Timeline_urlPrefix="/site_media/js/timeline_2.3.1/timeline_js/";
+                Timeline_parameters='bundle=true';
+            </script>
+            <script src="/site_media/js/timeline_2.3.1/timeline_js/timeline-api.js" type="text/javascript"></script>
+            <script src="/site_media/js/timeline_2.3.1/timeline_js/timeline-api.js?bundle=true" type="text/javascript"></script>
+            <script src="/site_media/js/timeline_2.3.1/timeline_ajax/simile-ajax-api.js" type="text/javascript"></script>
+            <script>
+                SimileAjax.History.enabled = false;
+            </script>
+            <script>
+                var jsonurl = '/collection/{{ collection.id }}/timeline';
+                var date = '{{ startdate }}';
+            </script>
+            <script src="/site_media/js/fd_timeline.js" type="text/javascript"></script>
+            <link rel='stylesheet' href='/site_media/css/timeline.css' type='text/css'>
+        {% endif %}
+{% endblock %}
+
+{% block extrabody %}onload="onLoad();" onresize="onResize();"{% endblock %}
+
+{% block collection_content %}
+    <div class="row">
+    <div class="span12">
+        {% if collection.description %}
+            {{ collection.description|linebreaksbr }}
+            <br><br>
+        {% endif %}
+        <div id="timeline"></div>
+    </div>
+    </div>
+    <br>
+    <div class="row">
+
+        {% if not collection.comments %}
+        <div class="span6">
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
+            <form method="post" action="/collection/{{ collection.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.submit-comment-button').show();" style="width:450px;" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div class="submit-comment-button hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+
+        </div>
+        {% else %}
+        <div class="span6">
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
+            <div class="well">
+                {% for comment in collection.comments %}
+                    <div class="left"></span>
+                        {% if comment.user.profile.avatar %}
+                            {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
+                                <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                        {% else %}
+                            {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                                <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                        {% endif %}
+                    </div>
+                    <div style="margin-left:40px;margin-top:-3px;">
+                        <a href="{{ comment.user.profile.get_absolute_url }}"><strong>{{ comment.user.profile.name }}</strong></a><br>
+                        <span class="quiet small">{{ comment.time_created|timesince }} ago</span>
+                        <br>
+                        {{ comment.content|linebreaksbr }}
+                        <br><br>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <form method="post" action="/collection/{{ collection.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.submit-comment-button').show();" style="width:450px;" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div class="submit-comment-button hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+    {% if not collection.files %}
+        <div class="span6">
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">No files tracked yet</span><br><br>
+        </div>
+    {% else %}
+    <div class="span6">
+    <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ collection.files|length }} tracked files</span><br><br>
+    {% for file in collection.files reversed %}
+        <div class="well">
+            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.filename }}</h4></a>
+            <span class="right quiet">{{ file.time_updated|timesince }} ago</span>
+            <br><br>
+            {% if file.description %}
+            <blockquote>
+                <p>{{ file.description|truncatewords:"30" }}</p>
+                <a href="{{ file.user.profile.get_absolute_url }}"><small>{{ file.user.profile.name }}</small></a>
+            </blockquote>
+            {% endif %}
+            <i style="margin-left:20px;" class="icon-tags"></i>
+            {% for tag in file.tags.all %}
+                <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
+            {% endfor %}
+            <div class="left" onclick="$(this).next('div.#comments').toggle('fast');$(this).nextAll('#last-comment:first').hide();">
+                <i class="icon-comment"></i> {{ file.comments|length }} comment
+            </div>
+            <div id="comments" class="hide">
+                <br>
+                {% if file.comments %}
+                <div class="well comment">
+                    {% for comment in file.comments %}
+                        <div class="left"></span>
+                            {% if comment.user.profile.avatar %}
+                            {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
+                            <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                            {% else %}
+                            {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                            <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                            {% endif %}
+                        </div>
+                        <div style="margin-left:40px;margin-top:-3px;">
+                            <a href="{{ comment.user.profile.get_absolute_url }}"><strong>{{ comment.user.profile.name }}</strong></a><br>
+                            <span class="quiet small">{{ comment.time_created|timesince }} ago</span>
+                            <br>
+                            {{ comment.content|linebreaksbr }}
+                            <br><br>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <br><br>
+            {% if file.comments %}
+            <div class="well comment" id="last-comment">
+                <div class="left"></span>
+                    {% if file.get_last_comment.user.profile.avatar %}
+                    {% thumbnail file.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
+                    <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                    {% else %}
+                    {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                    <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                    {% endif %}
+                </div>
+                <div style="margin-left:40px;margin-top:-3px;">
+                    <a href="{{ file.get_last_comment.user.profile.get_absolute_url }}"><strong>{{ file.get_last_comment.user.profile.name }}</strong></a>
+                    <span style="margin-left:5px;" class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
+                    <br>
+                    {{ file.get_last_comment.content }}
+                </div>
+            </div>
+            {% endif %}
+            <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
+                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <div id="submit-comment-button" class="hide">
+                    <input type="submit" value="Comment" class="btn"/>
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+    </div>
+
+{% endblock %}

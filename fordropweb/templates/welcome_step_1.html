@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="hero-unit">
+    <span style="font-size:45px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Give your profile some love</span>
+    <br><br>
+    <p>Fill this out if you want a fancy profile page</p>
+</div>
+            <form class="form-stacked" enctype="multipart/form-data" method="post" action="/profile/edit/">{% csrf_token %}
+                <div class="row">
+                <div class="span6">
+                <fieldset>
+                <span class="left" style="margin-right:30px;">
+                {% if user.profile.avatar %}
+                    {% thumbnail user.profile.avatar "80x80" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    {% thumbnail "img/placeholder.png" "80x80" crop="center" as im %}
+                        <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endif %}
+                </span>
+                <strong>Picture</strong><br>
+                <input type="file" name="avatar" id="id_avatar">
+                <br><br><br><br>
+                <h5>What do you want to be called?</h5>
+                {{ form.name }}
+                <h5>Email</h5>
+                {{ form.email.errors }}
+                {{ form.email }}
+                <h5>Where are you located?</h5>
+                {{ form.location }}
+                <h5>Where can we find you online?</h5>
+                {{ form.web }}
+                </fieldset>
+                </div>
+                <div class="span6">
+                <fieldset>
+                <h5>Tell us something about you</h5>
+                {{ form.bio }}
+                <br><br>
+                <input type="hidden" name="welcome" value="welcome"/>
+                <button class="btn btn-info" type="submit">Save and continue <i class="icon-white icon-arrow-right"></i></button>
+                </fieldset>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% endblock %}

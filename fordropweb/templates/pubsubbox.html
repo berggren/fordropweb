@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+    <script src='/site_media/pubsubbox/js/jquery-ui-1.8.16.min.js'></script>
+    <script src='/site_media/pubsubbox/js/jquery.ui.touch-punch.min.js'></script>
+    <script src='/site_media/pubsubbox/js/strophe-1.0.2.min.js'></script>
+    <script src='/site_media/pubsubbox/js/bootstrap-transition-2.0.2.js'></script>
+    <script src='/site_media/pubsubbox/js/bootstrap-modal-2.0.2.js'></script>
+    <script src='/site_media/pubsubbox/js/pubsubbox.js'></script>
+    <link rel='stylesheet' href='/site_media/pubsubbox/css/pubsubbox.css'>
+{% endblock %}
+
+{% block content %}
+<div id="login-screen">
+    <div id="login-form">
+        <h1 style="margin-left:70px;">pubsubbox</h1>
+        <br><br>
+        <form class="form-inline">
+            <label class="control-label">Username</label>
+            <input id="jid" size="30" type="text" />
+            <br><br>
+            <label id="password-label">Password</label>
+            <input id="password" size="30" type="password" />
+            <br><br>
+            <input type="button" value="Login" id="login-button" style="margin-right:-230px;" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+
+<div id="login-spinner" class="hide center vcenter">
+    &nbsp;&nbsp;&nbsp;&nbsp;<img src="/site_media/pubsubbox/img/spinner.gif" />&nbsp;&nbsp;Connecting..
+</div>
+
+<div id="main-screen" class="hide">
+    <div id="menu">
+        <strong style="margin-right:30px;">pubsubbox</strong>
+        <a href="#" class="menu" id="manage_link" style="margin-right:15px;">Boxes</a>
+        <a href="#" class="menu" id="discovery_link" style="margin-right:15px;">Discovery</a>
+        <a href="#" class="menu" id="activities_link" style="margin-right:15px;">Stream</a>
+        <a href="#" class="menu hide" id="notification_link"><span id="notification_count" class="label label-important right" style="margin-left:10px;margin-right:7px;">0</span></a>
+        <a href="#" id="add-node"><span class="right" style="margin-right:9px;"><i class="icon-plus-sign"></i> Add box</span></a>
+        <a href="#" id="add-contact"><span class="right" style="margin-right:9px;"><i class="icon-user"></i> Add person</span></a>
+    </div>
+
+    <div id="roster"></div>
+    <div id="roster2" class="hide"></div>
+    <div id="foo"><i class="icon-arrow-down"></i> Drag people to boxes</div>
+
+    <div id="nodes"></div>
+
+
+<div id="discovery" class="hide">
+    <br>
+    <br>
+    <div class="alert alert-info">
+        <p>
+            Discover all the boxes you are authorized to subscribe to. This works by sending out a discovery query to all the different domains in your contactlist, and the result is presented here.
+
+        </p>
+    </div>
+</div>
+
+<div id="activities" class="hide">
+    <br>
+    <br>
+</div>
+
+<div id="notification" class="hide">
+    <br>
+    <br>
+</div>
+
+<div id="add-node-modal" class="modal fade hide">
+    <div class="modal-header">
+        <h3>Create a new box</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            Create a new box! Drag&drop contacts into the box to start sharing.
+        </p>
+        <form class="form">
+            <label><b>Name your new box</b></label>
+            <input id="node" size="30" type="text" />
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="create-node-button">Create</button>
+    </div>
+</div>
+
+<div id="add-contact-modal" class="modal fade hide">
+    <div class="modal-header">
+        <h3><i class="icon-user" style="margin-top:3px;"></i> Add contact</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            Enter a username in the form of <i>user@domain</i>. An invitation will be sent to the user and when/if this invitation is accepted, the user will be added to your contactlist.
+        </p>
+        <form class="form">
+            <label><b>User to add (<i>ex. john@example.com</i>)</b></label>
+            <input id="contact" size="30" type="text" />
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="create-contact-button">Add contact</button>
+    </div>
+</div>
+
+
+</div>
+
+{% endblock %}

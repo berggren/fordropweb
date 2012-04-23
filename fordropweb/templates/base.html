@@ -1,0 +1,71 @@
+{% load thumbnail %}
+<!doctype html>
+<html>
+<head>
+    <title>fordrop</title>
+    <link rel='stylesheet' href='/site_media/bootstrap/css/bootstrap.min.css' type='text/css'>
+    <link rel='stylesheet' href='/site_media/css/style.css' type='text/css'>
+    <script type="text/javascript" language="javascript" src="/site_media/js/jquery-1.7.2.min.js"></script>
+    {% block extrahead %}{% endblock %}
+</head>
+<body {% block extrabody %}{% endblock %}>
+<div id="header">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <a href="/"><span class="left" style="font-size:20px; color:#fff; margin-right:20px; margin-top:3px;font-weight:300; "Helvetica Neue",Helvetica,Arial,sans-serif">fordrop</span></a>
+                <form method="post" action="/search/" class="form-search left">{% csrf_token %}
+                    <input type="text" class="input-medium span4" name="search" placeholder="Search">
+                    <button type="submit" class="btn"><i class="icon-search"></i></button>
+                </form>
+                <a href="/accounts/logout" class="right" style="margin-left:10px; color:#999;">Logout</a>
+                {% if user.is_superuser %}
+                <a class="right" style="margin-left:10px; color:#fff;" href="/admin">Admin</a>
+                <a href="/federation" class="right btn btn-info" style="margin-left:30px;margin-top:-5px;">Federation</a>
+                {% endif %}
+                <a class="right" style="margin-left:10px; color:#fff;" href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a>
+                <div class="right" style="margin-top:-3px;">
+                    {% if user.profile.avatar %}
+                        {% thumbnail user.profile.avatar "25x25" crop="center" as im %}
+                            <img src="{{ im.url }}">
+                        {% endthumbnail %}
+                    {% else %}
+                        {% thumbnail "img/placeholder.png" "25x25" crop="center" as im %}
+                            <img src="{{ im.url }}">
+                        {% endthumbnail %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <br>
+    {% if messages %}
+        <div class="row">
+            <div class="span12">
+                {% for message in messages %}
+                    {% ifequal message.tags "info" %}
+                        <div class="alert alert-info">
+                    {% endifequal %}
+                    {% ifequal message.tags "success" %}
+                        <div class="alert alert-success">
+                    {% endifequal %}
+                    {% ifequal message.tags "warning" %}
+                        <div class="alert">
+                    {% endifequal %}
+                    {% ifequal message.tags "error" %}
+                        <div class="alert alert-error">
+                    {% endifequal %}
+                    {{ message|safe }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
