@@ -61,7 +61,7 @@
             </td></tr>
             <tr><td><strong>Shared with</strong></td><td>
                 {% for node in file.nodes.all %}
-                    {{ node.name }}<br>
+                    <span class="label label-warning">{{ node.name }}</span>
                 {% endfor %}
             </td></tr>
 

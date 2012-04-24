@@ -63,7 +63,7 @@
             {% if file.description %}
             <blockquote>
                 <p>{{ file.description|linebreaksbr }}</p>
-                <small>{{ file.user.get_full_name }}</small>
+                <small>{{ file.user.profile.name }}</small>
             </blockquote>
             {% endif %}
             {% if file.tags.all %}
@@ -180,7 +180,7 @@
     </div>
 
         <div class="span5">
-        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Join the investigations</span>
+        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Collaborate</span>
         <span class="btn right" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
         <br><br><br>
         <div id="collection-form" class="well share hide">

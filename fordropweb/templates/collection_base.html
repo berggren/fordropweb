@@ -26,12 +26,16 @@
     {% endif %}
     <br><br>
     <span class="left"><i class="icon-user"></i> {{ collection.followers.all|length }} follower{{ collection.followers.all|pluralize }}</span>
-    <span style="margin-left:10px;">Tracking </span>
-    {% for tag in collection.tags.all %}
+    {% if collection.tags.all %}
+        <span style="margin-left:10px;">Tracking </span>
+    {% else %}
+        <span style="margin-left:10px;">Tracking nothing</span>
+    {% endif %}
+        {% for tag in collection.tags.all %}
         <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
     {% endfor %}
         {% if user in collection.followers.all %}
-        <a style="cursor:pointer; margin-left:10px;" id="edit-tags">Edit tags</a>
+        <a style="cursor:pointer; margin-left:10px;" id="edit-tags">Edit</a>
         <div id="tagform" class="hide">
             <br><br>
             <form method="post" action="/collection/{{ collection.id }}/tag">{% csrf_token %}
@@ -39,6 +43,10 @@
             </form>
         </div>
         {% endif %}
+        <span style="margin-left:10px;">Shared with </span>
+        {% for node in collection.nodes.all %}
+            <span class="label label-warning">{{ node.name }}</span>
+        {% endfor %}
     </div>
     </div>
     <br>

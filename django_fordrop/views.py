@@ -65,13 +65,13 @@ def collection(request):
             collection.save()
             collection.followers.add(request.user)
             collection.save()
+            form.save_m2m()
             for n in request.POST.getlist('nodes'):
                 node = PubSubNode.objects.get(node=int(n))
                 collection.nodes.add(node)
                 xmpp.publish(node=node.node, payload=collection.activity_fordrop_collection())
                 if collection.tags.all():
                     xmpp.publish(node=node.node, payload=collection.activity_tags())
-            form.save_m2m()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
@@ -185,13 +185,13 @@ def share_file(request):
                     file.sha256 = result['sha256']
                     file.sha512 = result['sha512']
                     file.save()
+                    form.save_m2m()
                     for n in request.POST.getlist('nodes'):
                         node = PubSubNode.objects.get(node=int(n))
                         file.nodes.add(node)
                         xmpp.publish(node=node.node, payload=file.activity_fordrop_file())
                         if file.tags.all():
                             xmpp.publish(node.node, payload=file.activity_tags())
-                    form.save_m2m()
                     messages.success(request, "Sharing is caring, file successfully recieved!")
                     notify_by_mail(users=[file.user for file in file.get_reporters()], subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
     return HttpResponseRedirect('/file/%s' % file.id)
