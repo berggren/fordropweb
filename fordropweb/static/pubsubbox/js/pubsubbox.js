@@ -622,17 +622,15 @@ $(document).ready(function() {
         $(document).trigger('notification_tab');
     });
 
-    //$('#login-button').click(function() {
+    $('#login-button').click(function() {
         $('#login-screen').hide();
         $('#login-spinner').fadeIn();
         $.getScript(XMPP.CONFIG_FILE, function(){
             $(document).trigger('connect', {
-                //jid: $('#jid').val() + '@fordrop.org',
-                //password: $('#password').val(),
-                jid: XMPPConfig.jid,
-                password: XMPPConfig.password,
+                jid: $('#jid').val(),
+                password: $('#password').val(),
                 pubsubservice: XMPPConfig.pubsubservice
             });
         })
-    //})
+    })
 });

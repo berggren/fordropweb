@@ -47,6 +47,15 @@
             {% endif %}
             <tr><td><strong>Reporters</strong></td><td>
             {% for f in file.get_reporters %}
+                {% if f.user.profile.avatar %}
+                {% thumbnail f.user.profile.avatar "30x30" crop="center" as im %}
+                    <a href="/profile/{{ f.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                {% endthumbnail %}
+                {% else %}
+                {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                    <a href="/profile/{{ f.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                {% endthumbnail %}
+                {% endif %}
                 {{ f.user.profile.name }}<br>
             {% endfor %}
             </td></tr>
