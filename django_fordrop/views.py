@@ -27,7 +27,7 @@ def index(request):
     tracked_files = File.objects.filter(tags__in=tags_set)
     my_files = File.objects.filter(user=request.user)
     f = tracked_files | my_files
-    files = f.order_by('-time_created')[:10]
+    files = f.order_by('-time_updated')[:10]
     return render_to_response("index.html", {'uploadform': UploadFileForm,
                                                  'commentform': FileCommentForm,
                                                  'collectionform': CollectionForm,
@@ -73,6 +73,10 @@ def collection(request):
                     xmpp.publish(node=node.node, payload=collection.activity_tags())
             form.save_m2m()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+@login_required
+def explore(request):
+    return render_to_response("explore.html", {'collections': Collection.objects.all().order_by('-time_updated'), 'users': User.objects.all(), 'files': File.objects.all()}, RequestContext(request))
 
 @login_required
 def collection_tag(request, id):

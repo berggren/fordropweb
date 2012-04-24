@@ -1,0 +1,6 @@
+description "fordrop Web"
+start on runlevel [2345]
+stop on runlevel [06]
+respawn
+respawn limit 10 5
+exec /opt/start_fordropweb.sh

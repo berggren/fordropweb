@@ -1,0 +1,9 @@
+Django==1.4
+PIL==1.1.7
+django-registration==0.8
+django-taggit==0.9.3
+fordrop==0.1.1
+gunicorn==0.14.2
+requests==0.11.2
+sleekxmpp==1.0
+sorl-thumbnail==11.12

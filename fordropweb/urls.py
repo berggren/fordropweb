@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'django_fordrop.views.index', name='index'),
+    url(r'^explore/$', 'django_fordrop.views.explore', name='explore'),
     url(r'^welcome/$', 'django_fordrop.views.welcome', name='welcome'),
     url(r'^welcome/(?P<id>[0-9]+)$', 'django_fordrop.views.welcome'),
     url(r'^share/file$', 'django_fordrop.views.share_file', name='share_file'),

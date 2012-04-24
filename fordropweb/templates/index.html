@@ -14,12 +14,14 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-    <div class="span6">
-        <span class="btn btn-info" style="cursor:pointer;" id="share-link"><i class="icon-share-alt icon-white"></i> Share your stuff</span>
+    <div class="span7">
+        {% if files %}
+        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">The things you care about</span>
+        <span class="btn btn-info right" style="cursor:pointer;" id="share-link"><i class="icon-share-alt icon-white"></i> Share your stuff</span>
         <br><br>
             <div id="share-form" class="well share hide">
                 <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <strong>1. </strong>
+                    <strong>Upload file</strong>
                     {{ uploadform.file }}
                     <br>
                     <strong>2.</strong> Description (optional)
@@ -43,9 +45,21 @@
 
     {% for file in files %}
         <div class="well">
+            <span class="left" style="margin-right:10px;">
+            {% if file.user.profile.avatar %}
+                {% thumbnail file.user.profile.avatar "60x60" crop="center" as im %}
+                    <a href="/profile/{{ file.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                {% endthumbnail %}
+            {% else %}
+                {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                    <a href="/profile/{{ file.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                {% endthumbnail %}
+            {% endif %}
+            </span>
+
             <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
-            <span class="quiet">{{ file.time_updated|timesince }} ago by {{ file.user.profile.name }}</span>
-            <br><br>
+            <span class="quiet">Reported {{ file.time_created|timesince }} ago by <a href="/profile/{{ file.user.id }}">{{ file.user.profile.name }}</a></span>
+            <br><br><br>
             {% if file.description %}
             <blockquote>
                 <p>{{ file.description|linebreaksbr }}</p>
@@ -85,7 +99,7 @@
                             {% endif %}
                         </div>
                         <div style="margin-left:40px;margin-top:-3px;">
-                            <a href="{{ comment.user.profile.get_absolute_url }}"<strong>{{ comment.user.profile.name }}</strong></a><br>
+                            <a href="{{ comment.user.profile.get_absolute_url }}">{{ comment.user.profile.name }}</a><br>
                             <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
                             <br>
                             {{ comment.content|linebreaksbr }}
@@ -110,14 +124,15 @@
                     {% endif %}
                 </div>
                 <div style="margin-left:40px;margin-top:-3px;">
-                    <a href="{{ file.get_last_comment.user.profile.get_absolute_url }}"><strong>{{ file.get_last_comment.user.profile.name }}</strong></a><br>
+                    <a href="{{ file.get_last_comment.user.profile.get_absolute_url }}">{{ file.get_last_comment.user.profile.name }}</a><br>
                     <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
                     <br>
                     {{ file.get_last_comment.content|linebreaksbr }}
                 </div>
             </div>
+            {% else %}
+                <br><br>
             {% endif %}
-            <br><br>
             <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
                 <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
                 <div id="submit-comment-button" class="hide">
@@ -126,10 +141,47 @@
             </form>
         </div>
     {% endfor %}
+
+    {% else %}
+        <br><br>
+        <div class="hero-unit">
+            <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Get started</span>
+            <br><br>
+            <p>In order to get started you can upload info about files you have, or start following other people or collections</p>
+            <a style="cursor:pointer;" id="share-link"><i class="icon-share-alt"></i> Share your stuff</a>
+            <br>
+            <a href="/explore" style="cursor:pointer;"><i class="icon-eye-open"></i> Explore what others are doing</a>
+        </div>
+            <div id="share-form" class="well share hide">
+                <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <strong>Upload file</strong>
+                    {{ uploadform.file }}
+                    <br>
+                    <strong>2.</strong> Description (optional)
+                    <br>
+                    {{ uploadform.description }}
+                    <br>
+                    <strong>3.</strong> <i class="icon-tag"></i> Add tags (optional) <br>{{ uploadform.tags }}
+                    <br>
+                    <strong>4.</strong> Share this to <br>
+                    <div class="alert alert-info">
+                        {% for node in nodes %}
+                        <label class="checkbox">
+                            <input type="checkbox" name="nodes" value="{{ node.node }}"> {{ node.name }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <input type="submit" value="Upload" class="btn"/>
+                    <a href="" id="upload_cancel_button" class="btn error hidden">Cancel</a>
+                </form>
+            </div>
+
+    {% endif %}
     </div>
 
-    <div class="span6">
-        <span class="btn" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
+        <div class="span5">
+        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Join the investigations</span>
+        <span class="btn right" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
         <br><br>
         <div id="collection-form" class="well share hide">
             <form action="/collection" method="post" enctype="multipart/form-data">{% csrf_token %}
@@ -154,7 +206,7 @@
             </form>
         </div>
         {% for collection in collections reversed %}
-            <div class="well">
+            <div class="well collection">
                 <span class="left">
                     <a href="/collection/{{ collection.id }}"><h3>{{ collection.title }}</h3></a>
                     <span class="quiet">{{ collection.time_updated|timesince }} ago</span>

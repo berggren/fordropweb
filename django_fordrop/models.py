@@ -106,8 +106,12 @@ class Collection(models.Model):
             l.append({'start': file.time_created.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'link': link, 'description': description, 'color': 'orange'})
             for comment in file.comments():
                 description = comment.content
-                title = "Comment by: %s" % comment.user.get_full_name()
+                title = "Comment by: %s" % comment.user.profile.name
                 l.append({'start': comment.time_created.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'})
+        for comment in self.comments():
+            description = comment.content
+            title = "Comment by: %s" % comment.user.profile.name
+            l.append({'start': comment.time_created.strftime('%Y-%m-%d %H:%M:%S'), 'title': title, 'description': description, 'color': 'green'})
         j = {
             'dateTimeFormat': 'iso8601',
             'events' : l

@@ -18,7 +18,8 @@ body {
 }
 
 textarea {
-    width:410px;;
+    width:330px;
+
 }
 
 .quiet {
@@ -39,6 +40,12 @@ textarea {
     border:1px solid silver;
     left:auto;
 }
+
+.well.collection {
+    background: #fff;
+    border:1px solid silver;
+}
+
 .small {
     font-size:0.9em;
 }

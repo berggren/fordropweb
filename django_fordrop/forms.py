@@ -29,6 +29,8 @@ class CollectionForm(forms.ModelForm):
 
 class UploadFileForm(forms.ModelForm):
     file = forms.FileField(required=True)
+    #url = forms.CharField(required=False)
+    #hash = forms.CharField(required=False)
     class Meta:
         model = File
         fields = ('description', 'tags')

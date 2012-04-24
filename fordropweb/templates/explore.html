@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block content %}
+<div class="row">
+    <div class="span8">
+
+        <div class="hero-unit">
+            <span style="font-size:45px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Explore</span>
+            <p>There are {{ files|length }} files reported and {{ collections|length }} collections bringing {{ users|length }} people closer together</p>
+        </div>
+        {% if collections %}
+        {% for collection in collections reversed %}
+        <div class="well">
+                <span class="left">
+                    <a href="/collection/{{ collection.id }}"><h3>{{ collection.title }}</h3></a>
+                    <span class="quiet">{{ collection.time_updated|timesince }} ago</span>
+                </span>
+            {% if user in collection.followers.all %}
+            <form method="post" action="/collection/{{ collection.id }}/unfollow">{% csrf_token %}
+                <button class="right btn" type="submit">Unfollow</button>
+            </form>
+            {% else %}
+            <form method="post" action="/collection/{{ collection.id }}/follow">{% csrf_token %}
+                <button class="right btn btn-success" type="submit"><i class="icon-plus icon-white"></i> Follow</button>
+            </form>
+            {% endif %}
+            {% if collection.description %}
+            <br><br>
+            {{ collection.description|truncatewords:"30" }}
+            {% endif %}
+            <br><br>
+            <i class="icon-user"></i> {{ collection.followers.all|length }} follower{{ collection.followers.all|pluralize }}
+            <span style="margin-left:10px;"><i class="icon-file"></i> Tracking {{ collection.files|length }} files</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+        </div>
+
+    <div class="span4">
+        {% for user in users %}
+        <div class="well">
+            <div class="left" style="margin-right:10px;">
+                {% if user.profile.avatar %}
+                {% thumbnail user.profile.avatar "60x60" crop="center" as im %}
+                <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                    {% endthumbnail %}
+                {% else %}
+                {% thumbnail "img/placeholder.png" "60x60" crop="center" as im %}
+                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+                {% endif %}
+            </div>
+            <div float="left">
+                <span style="font-size:20px;margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ user.profile.name }}</span>
+                <br>
+                <strong>@{{ user.username }}</strong>
+                <span class="quiet" style="margin-left:10px;">{{ user.profile.location }}</span>
+                <a href="{{ profile_user.profile.web }}" target="new">{{ user.profile.web }}</a>
+                <br>
+                {{ profile_user.profile.bio }}
+                <br>
+            </div>
+        </div>
+        {% endfor %}
+
+
+    </div>
+{% endblock %}

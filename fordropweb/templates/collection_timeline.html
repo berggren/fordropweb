@@ -103,9 +103,20 @@
     <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ collection.files|length }} tracked files</span><br><br>
     {% for file in collection.files reversed %}
         <div class="well">
-            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.filename }}</h4></a>
-            <span class="right quiet">{{ file.time_updated|timesince }} ago</span>
-            <br><br>
+            <span class="left" style="margin-right:10px;">
+            {% if file.user.profile.avatar %}
+                {% thumbnail file.user.profile.avatar "60x60" crop="center" as im %}
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% else %}
+                {% thumbnail "img/placeholder.png" "60x60" crop="center" as im %}
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% endif %}
+            </span>
+            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.filename }}</h4></a><br>
+            <span class="quiet">{{ file.time_updated|timesince }} ago by {{ file.user.profile.name }}</span>
+            <br><br><br><br>
             {% if file.description %}
             <blockquote>
                 <p>{{ file.description|truncatewords:"30" }}</p>
