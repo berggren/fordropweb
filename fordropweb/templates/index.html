@@ -21,7 +21,6 @@
         <br><br>
             <div id="share-form" class="well share hide">
                 <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <strong>1.</strong> File<br>
                     {{ uploadform.file }}
                     <br>
                     <strong>2.</strong> Description (optional)
@@ -156,7 +155,7 @@
         </div>
             <div id="share-form" class="well share hide">
                 <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <strong>Upload file</strong>
+                    <strong>1.</strong> File<br>
                     {{ uploadform.file }}
                     <br>
                     <strong>2.</strong> Description (optional)
@@ -165,6 +164,7 @@
                     <br>
                     <strong>3.</strong> <i class="icon-tag"></i> Add tags (optional) <br>{{ uploadform.tags }}
                     <br>
+                    {% if nodes %}
                     <strong>4.</strong> Share this to <br>
                     <div class="alert alert-info">
                         {% for node in nodes %}
@@ -173,6 +173,7 @@
                         </label>
                         {% endfor %}
                     </div>
+                    {% endif %}
                     <input type="submit" value="Upload" class="btn"/>
                     <a href="" id="upload_cancel_button" class="btn error hidden">Cancel</a>
                 </form>
