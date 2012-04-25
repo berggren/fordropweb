@@ -16,12 +16,12 @@
     <div class="row">
     <div class="span7">
         {% if files %}
-        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">The things you care about</span>
+        <span class="left" style="font-size:18px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">The things you care about</span>
         <span class="btn btn-info right" style="cursor:pointer;" id="share-link"><i class="icon-share-alt icon-white"></i> Share your stuff</span>
-        <br><br><br>
+        <br><br>
             <div id="share-form" class="well share hide">
                 <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <strong>Upload file</strong>
+                    <strong>1.</strong> File<br>
                     {{ uploadform.file }}
                     <br>
                     <strong>2.</strong> Description (optional)
@@ -30,6 +30,7 @@
                     <br>
                     <strong>3.</strong> <i class="icon-tag"></i> Add tags (optional) <br>{{ uploadform.tags }}
                     <br>
+                    {% if nodes %}
                     <strong>4.</strong> Share this to <br>
                     <div class="alert alert-info">
                     {% for node in nodes %}
@@ -38,6 +39,7 @@
                     </label>
                     {% endfor %}
                     </div>
+                    {% endif %}
                     <input type="submit" value="Upload" class="btn"/>
                     <a href="" id="upload_cancel_button" class="btn error hidden">Cancel</a>
                 </form>
@@ -180,9 +182,9 @@
     </div>
 
         <div class="span5">
-        <span class="left" style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Collaborate</span>
+        <span class="left" style="font-size:18px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Collaborate</span>
         <span class="btn right" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
-        <br><br><br>
+        <br><br>
         <div id="collection-form" class="well share hide">
             <form action="/collection" method="post" enctype="multipart/form-data">{% csrf_token %}
                 <strong>1.</strong> Title<br>
@@ -193,6 +195,7 @@
                 {{ collectionform.description }}
                 <strong>3.</strong> <i class="icon-tag"></i> Add tags to track (optional) <br>{{ collectionform.tags }}
                 <br>
+                {% if nodes %}
                 <strong>4.</strong> Share this to <br>
                 <div class="alert alert-info">
                     {% for node in nodes %}
@@ -201,6 +204,7 @@
                     </label>
                     {% endfor %}
                 </div>
+                {% endif %}
                 <input type="submit" value="Save" class="btn"/>
                 <a href="" id="collection_cancel_button" class="btn error hidden">Cancel</a>
             </form>

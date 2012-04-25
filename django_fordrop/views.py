@@ -27,7 +27,7 @@ def index(request):
     tracked_files = File.objects.filter(tags__in=tags_set)
     my_files = File.objects.filter(user=request.user)
     f = tracked_files | my_files
-    files = f.order_by('-time_updated')[:10]
+    files = f.order_by('-time_updated').distinct()[:10]
     return render_to_response("index.html", {'uploadform': UploadFileForm,
                                                  'commentform': FileCommentForm,
                                                  'collectionform': CollectionForm,
