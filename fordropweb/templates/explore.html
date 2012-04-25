@@ -53,8 +53,7 @@
             <div float="left">
                 <span style="font-size:20px;margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ user.profile.name }}</span>
                 <br>
-                <strong>@{{ user.username }}</strong>
-                <span class="quiet" style="margin-left:10px;">{{ user.profile.location }}</span>
+                <span class="quiet">{{ user.profile.location }}</span>
                 <a href="{{ profile_user.profile.web }}" target="new">{{ user.profile.web }}</a>
                 <br>
                 {{ profile_user.profile.bio }}

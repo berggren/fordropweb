@@ -24,8 +24,7 @@
             {% endifequal %}
 
             <br><br>
-            <strong>@{{ profile_user.username }}</strong>
-            <span class="quiet" style="margin-left:10px;">{{ profile_user.profile.location }}</span>
+            <span class="quiet">{{ profile_user.profile.location }}</span>
             <a href="{{ profile_user.profile.web }}" target="new">{{ profile_user.profile.web }}</a>
             <br>
             {{ profile_user.profile.bio }}

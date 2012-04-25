@@ -135,7 +135,7 @@
                 <br><br>
             {% endif %}
             <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
-                <textarea onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
+                <textarea style="width:490px;" onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
                 <div id="submit-comment-button" class="hide">
                     <input type="submit" value="Comment" class="btn"/>
                 </div>

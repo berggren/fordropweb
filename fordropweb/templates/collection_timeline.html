@@ -106,11 +106,11 @@
             <span class="left" style="margin-right:10px;">
             {% if file.user.profile.avatar %}
                 {% thumbnail file.user.profile.avatar "60x60" crop="center" as im %}
-                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    <a href="/profile/{{ file.user.id }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
             {% else %}
                 {% thumbnail "img/placeholder.png" "60x60" crop="center" as im %}
-                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    <a href="/profile/{{ file.user.id }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
             {% endif %}
             </span>
@@ -138,11 +138,11 @@
                         <div class="left"></span>
                             {% if comment.user.profile.avatar %}
                             {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
-                            <img src="{{ im.url }}">
+                            <a href="/profile/{{ comment.user.id }}"><img src="{{ im.url }}"></a>
                             {% endthumbnail %}
                             {% else %}
                             {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
-                            <img src="{{ im.url }}">
+                            <a href="/profile/{{ comment.user.id }}"><img src="{{ im.url }}"></a>
                             {% endthumbnail %}
                             {% endif %}
                         </div>
@@ -163,11 +163,11 @@
                 <div class="left"></span>
                     {% if file.get_last_comment.user.profile.avatar %}
                     {% thumbnail file.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
-                    <img src="{{ im.url }}">
+                    <a href="/profile/{{ file.get_last_comment.user.id }}"><img src="{{ im.url }}"></a>
                     {% endthumbnail %}
                     {% else %}
                     {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
-                    <img src="{{ im.url }}">
+                    <a href="/profile/{{ file.get_last_comment.user.id }}"><img src="{{ im.url }}"></a>
                     {% endthumbnail %}
                     {% endif %}
                 </div>
