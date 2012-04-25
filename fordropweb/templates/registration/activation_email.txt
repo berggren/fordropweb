@@ -1,10 +1,11 @@
-{% load i18n %}
-{% trans "Activate account at" %} {{ site.name }}:
+Hi,
 
-Hi!
-
+To complete the sign-up process, please follow this link:
 https://{{ site.domain }}{% url registration_activate activation_key %}
-{% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
 
-Regards,
-fordrop.org
+The link will be valid for {{ expiration_days }} days.
+If you have not sign up for an account on fordrop.org please disregard this email.
+
+Welcome to fordrop!
+
+The fordrop.org team
