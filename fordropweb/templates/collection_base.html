@@ -43,7 +43,11 @@
             </form>
         </div>
         {% endif %}
-        <span style="margin-left:10px;">Shared with </span>
+        {% if collection.nodes.all %}
+            <span style="margin-left:10px;">Shared with </span>
+        {% else %}
+            <span style="margin-left:10px;">Shared with none</span>
+        {% endif %}
         {% for node in collection.nodes.all %}
             <span class="label label-warning">{{ node.name }}</span>
         {% endfor %}

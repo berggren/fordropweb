@@ -38,7 +38,9 @@ def index(request):
 @login_required
 def file(request, id):
     file = File.objects.get(pk=id)
+    is_reporter = file.is_reporter(request.user)
     return render_to_response("file.html", {'file': file,
+                                            'is_reporter': is_reporter,
                                             'tagform': FileTagForm(instance=file),
                                             'commentform': FileCommentForm}, RequestContext(request))
 
@@ -72,7 +74,7 @@ def collection(request):
                 xmpp.publish(node=node.node, payload=collection.activity_fordrop_collection())
                 if collection.tags.all():
                     xmpp.publish(node=node.node, payload=collection.activity_tags())
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    return HttpResponseRedirect('/collection/%s' % collection.id)
 
 @login_required
 def explore(request):
@@ -164,7 +166,7 @@ def collection_unfollow(request, id):
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
-def share_file(request):
+def file_share(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -192,9 +194,38 @@ def share_file(request):
                         xmpp.publish(node=node.node, payload=file.activity_fordrop_file())
                         if file.tags.all():
                             xmpp.publish(node.node, payload=file.activity_tags())
+
+                    print json.dumps(file.activity_fordrop_file(), indent=4)
                     messages.success(request, "Sharing is caring, file successfully recieved!")
                     notify_by_mail(users=[file.user for file in file.get_reporters()], subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
     return HttpResponseRedirect('/file/%s' % file.id)
+
+@login_required
+def file_clone(request, id):
+    ref_file = File.objects.get(pk=id)
+    if request.user in [file.user for file in ref_file.get_reporters()]:
+        messages.error(request, 'You have already reported this file')
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    file = File.objects.create(
+        uuid = uuid.uuid4().urn,
+        user = request.user,
+        filename = ref_file.filename,
+        filesize = ref_file.filesize,
+        md5 = ref_file.md5,
+        sha1 = ref_file.sha1,
+        sha256 = ref_file.sha256,
+        sha512 = ref_file.sha512
+    )
+    for tag in ref_file.tags.all():
+        file.tags.add(tag)
+    for node in ref_file.nodes.all():
+        file.nodes.add(node)
+        xmpp.publish(node=node.node, payload=file.activity_tags())
+        if file.tags.all():
+            xmpp.publish(node.node, payload=file.activity_tags())
+    file.save()
+    notify_by_mail(users=[file.user for file in file.get_reporters()], subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
 def search(request):

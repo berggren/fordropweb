@@ -14,7 +14,9 @@
 {% block content %}
 <div class="row">
     <div class="span12">
-        <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ file.sha1 }}</span><br><br>
+        <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ file.sha1 }}</span>
+        {% if not is_reporter %}<div class="right"><a href="/file/{{ file.id }}/clone"><img width="14" height="14" src="{{ MEDIA_URL }}img/thumbs_up.png"> I have also seen this</a></div>{% endif %}
+        <br><br>
         {% if file.description %}
             {{ file.description|linebreaksbr }}
             <br><br>
@@ -64,7 +66,6 @@
                     <span class="label label-warning">{{ node.name }}</span>
                 {% endfor %}
             </td></tr>
-
         </table>
     </div>
 </div>
@@ -85,7 +86,7 @@
             <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
             <div class="well">
                 {% for comment in file.comments %}
-                    <div class="left"></span>
+                    <div class="left">
                         {% if comment.user.profile.avatar %}
                             {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
                                 <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
@@ -120,7 +121,7 @@
         {% for obj in file.tags.similar_objects %}
             {% if obj.filename %}
                 <div class="well">
-                    <a href="/file/{{ obj.id }}"><h4 class="left">{{ obj.filename }}</h4></a>
+                    <a href="/file/{{ obj.id }}"><h4 class="left">{{ obj.sha1 }}</h4></a>
                     <span class="right quiet">{{ obj.time_updated|timesince }} ago</span>
                     <br><br>
                     {% if obj.description %}

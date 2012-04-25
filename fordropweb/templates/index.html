@@ -80,7 +80,7 @@
             {% endif %}
 
             <div class="left" onclick="$(this).next('div.#comments').toggle('fast');$(this).nextAll('#last-comment:first').hide();">
-                <i class="icon-comment"></i> {{ file.comments|length }} comment
+                <i class="icon-comment"></i> {{ file.comments|length }} <span style="cursor:pointer;">comment{{ file.comments|pluralize }}</span> {% if file.comments %}<i class="icon-chevron-down"></i>{% endif %}
             </div>
             <div id="comments" class="hide">
                 <br>

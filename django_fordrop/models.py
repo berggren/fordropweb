@@ -70,6 +70,10 @@ class File(models.Model):
         return Collection.objects.filter(tags__in=self.tags.all).distinct()
     def get_reporters(self):
         return File.objects.filter(sha1=self.sha1).distinct()
+    def is_reporter(self, user):
+        if user in [file.user for file in self.get_reporters()]:
+            return True
+        return False
     def __unicode__(self):
         return '%s' % self.sha1
     class Admin:
@@ -228,7 +232,10 @@ class UserProfile(models.Model):
         return {
             "objectType" : "person",
             "id": self.uuid,
-            "displayName": self.name
+            "displayName": self.name,
+            "location": self.location,
+            'web': self.web,
+            "bio": self.bio,
         }
     def __unicode__(self):
         return '%s' % self.user

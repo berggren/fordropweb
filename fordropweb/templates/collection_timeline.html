@@ -114,7 +114,7 @@
                 {% endthumbnail %}
             {% endif %}
             </span>
-            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.filename }}</h4></a><br>
+            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
             <span class="quiet">{{ file.time_updated|timesince }} ago by {{ file.user.profile.name }}</span>
             <br><br><br><br>
             {% if file.description %}
