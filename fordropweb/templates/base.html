@@ -29,7 +29,7 @@
                     <a class="right" style="margin-left:10px; color:#fff;" href="/admin">Admin</a>
                     <a href="/federation" class="right btn btn-info" style="margin-left:30px;margin-top:-5px;">Federation</a>
                 {% endif %}
-                <a class="right" style="margin-left:10px; color:#fff;" href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a>
+                <a class="right" style="margin-left:10px; color:#fff;" href="/profile/{{ user.id }}">{{ user.username }}</a>
                 <div class="right" style="margin-top:-5px;">
                     {% if user.profile.avatar %}
                         {% thumbnail user.profile.avatar "30x30" crop="center" as im %}

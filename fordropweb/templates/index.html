@@ -100,7 +100,7 @@
                             {% endif %}
                         </div>
                         <div style="margin-left:40px;margin-top:-3px;">
-                            <a href="{{ comment.user.profile.get_absolute_url }}">{{ comment.user.profile.name }}</a><br>
+                            <a href="/profile/{{ comment.user.id }}">{{ comment.user.profile.name }}</a><br>
                             <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
                             <br>
                             {{ comment.content|linebreaksbr }}
@@ -125,7 +125,7 @@
                     {% endif %}
                 </div>
                 <div style="margin-left:40px;margin-top:-3px;">
-                    <a href="{{ file.get_last_comment.user.profile.get_absolute_url }}">{{ file.get_last_comment.user.profile.name }}</a><br>
+                    <a href="/profile/{{ file.get_last_comment.user.id }}">{{ file.get_last_comment.user.profile.name }}</a><br>
                     <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
                     <br>
                     {{ file.get_last_comment.content|linebreaksbr }}
