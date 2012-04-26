@@ -78,7 +78,7 @@ def collection(request):
 
 @login_required
 def explore(request):
-    return render_to_response("explore.html", {'collections': Collection.objects.all().order_by('-time_updated'), 'users': User.objects.filter(is_active=True), 'files': File.objects.all()}, RequestContext(request))
+    return render_to_response("explore.html", {'collections': Collection.objects.all().order_by('-time_updated'), 'users': User.objects.all(), 'files': File.objects.all()}, RequestContext(request))
 
 @login_required
 def collection_tag(request, id):

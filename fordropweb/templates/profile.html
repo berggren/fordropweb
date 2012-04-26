@@ -40,9 +40,9 @@
 <div class="row">
     <div class="span6">
         {% if not files %}
-            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">No files by {{ profile_user.username }}</span><br><br>
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">No files by {{ profile_user.profile.name }}</span><br><br>
         {% else %}
-            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Files by {{ profile_user.username }}</span><br><br>
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Files by {{ profile_user.profile.name }}</span><br><br>
         {% endif %}
         {% for file in files %}
             <div class="well">
@@ -73,9 +73,9 @@
 
     <div class="span6">
         {% if not collections %}
-            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.username }} is not following anything</span><br><br>
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.profile.name }} is not following anything</span><br><br>
         {% else %}
-            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.username }} is following</span><br><br>
+            <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">{{ profile_user.profile.name }} is following</span><br><br>
         {% endif %}
         {% for collection in collections reversed %}
         <div class="well">
