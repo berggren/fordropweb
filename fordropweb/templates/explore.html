@@ -46,7 +46,7 @@
                     {% endthumbnail %}
                 {% else %}
                 {% thumbnail "img/placeholder.png" "60x60" crop="center" as im %}
-                <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
                 {% endif %}
             </div>
