@@ -269,9 +269,9 @@ var XMPP = {
         var type = vCard.find('TYPE').text();
         var img_src = 'data:'+type+';base64,'+img;
         if (! img) {
-            var elem = $('<span class="left"><img width="30" height="30" src="/site_media/img/placeholder.png"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
+            var elem = $('<span class="left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
         } else {
-            var elem = $('<span class="left"><img width="30" height="30" src="' + img_src + '"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
+            var elem = $('<span class="left"><img width="40" height="40" src="' + img_src + '"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
             sessionStorage.setItem(id, img_src);
         }
         $('#' + id).prepend(elem);
@@ -313,7 +313,8 @@ var XMPP = {
                     $(document).trigger('node_subscriber_count', {id: $(elem).attr('id')});
                     $('#nodes').append(elem);
                     $(elem).click(function() {
-                        $('.node').css({opacity:0.3});
+                        $('.node').css({opacity:0.2});
+                        $('.add-node').css({opacity:0.2});
                         $(elem).css({opacity:1.0});
                         $(document).trigger('node_info', {id: $(elem).attr('id')});
                     });
@@ -345,11 +346,10 @@ var XMPP = {
                 var id = XMPP.jid_to_id(jid);
                 var name = XMPP.roster[jid];
                 var avatar = sessionStorage.getItem(id);
-                console.log(typeof avatar);
-                if ( avatar.search('image') == -1) {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="30" height="30" src="/site_media/img/placeholder.png"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
-                } else {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="30" height="30" src="' + avatar + '"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
+                if ( ! avatar ) {
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
+                } else {4
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
                 }
                 $('#roster2').append(elem);
                 $(elem).mouseenter(function() {
@@ -497,18 +497,21 @@ $(document).bind('node_update_subscriber_count', function(event, data) {
 $(document).bind('node_info', function(event, data) {
     $('#roster').hide();
     $('#roster2').empty().show();
-    //$('#roster2').append('<div><b style="color:#fff">' + XMPP.nodes[data.id] + '</b><span style="float:right;"><a href="#" id="delete_node"><i class="icon-trash icon-white"></i></a>&nbsp;<a href="#" id="close_node"><i class="icon-remove-circle icon-white"></i></a></span><br><span class="quiet">Members</span></div>');
+    $('#manage_link').show();
+    //$('#roster2').append('<span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; "Helvetica Neue,Helvetica,Arial,sans-serif">' + XMPP.nodes[data.id] + '</span><a href="#" id="delete_node"><i class="icon-trash"></i></a>&nbsp;<a href="#" id="close_node"><i class="icon-remove-circle"></i></a><br><br>');
     var nodeAffiliationIQ = $iq({to: XMPP.pubsubservice, type: 'get'})
         .c('pubsub', {xmlns: 'http://jabber.org/protocol/pubsub#owner'})
         .c('affiliations', {node: data.id});
     $("#delete_node").click(function() {
         $('.node').css({opacity:1.0});
+        $('.add-node').css({opacity:1.0});
         $("#roster2").hide();
         $("#roster").fadeIn('fast');
         XMPP.delete_node(data.id);
     });
     $('#close_node').click(function() {
         $('.node').css({opacity:1.0});
+        $('.add-node').css({opacity:1.0});
         $('#roster2').fadeOut('fast');
         $("#roster").fadeIn('fast');
     });
@@ -524,6 +527,8 @@ $(document).bind('change_tab', function(event, data) {
 
 $(document).bind('manage_tab', function(event) {
     $('.node').css({opacity:1.0});
+    $('.add-node').css({opacity:1.0});
+    $('#manage_link').hide();
     $('#roster2').fadeOut('fast');
     $("#roster").fadeIn('fast');
     $("#nodes").show();

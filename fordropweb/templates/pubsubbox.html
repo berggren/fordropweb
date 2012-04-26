@@ -51,16 +51,23 @@
         <a href="#" class="menu" id="discovery_link" style="margin-right:15px;">Discovery</a>
         <a href="#" class="menu" id="activities_link" style="margin-right:15px;">Stream</a>
         <a href="#" class="menu hide" id="notification_link"><span id="notification_count" class="label label-important right" style="margin-left:10px;margin-right:7px;">0</span></a>
+        <a href="#" id="add-node"><span class="btn"><i class="icon-plus-sign"></i> New group</span></a>
+        <a href="#" id="add-contact"><span class="btn" style="margin-right:9px;"><i class="icon-user"></i> Connect</span></a>
         -->
-        <a href="#" id="add-node"><span class="right btn" style="margin-right:9px;"><i class="icon-plus-sign"></i> Add box</span></a>
-        <a href="#" id="add-contact"><span class="right btn" style="margin-right:9px;"><i class="icon-user"></i> Add person</span></a>
     </div>
 
-    <div id="roster"></div>
+    <div id="roster">
+        <div id="add-contact" class="add-contact left">
+            <div style="margin-top:10px;"><i class="icon-plus"></i> <b>Add contact</b></div>
+        </div>
+    </div>
     <div id="roster2" class="hide"></div>
-    <div id="foo"><i class="icon-arrow-down"></i> Drag people to boxes</div>
-
-    <div id="nodes"></div>
+    <div id="foo"><a style="cursor: pointer" class="left hide" id="manage_link"><i class="icon-arrow-left"></i> Back</a><i class="icon-arrow-down"></i> Drag people to groups</div>
+    <div id="nodes">
+        <div id="add-node" class="add-node left">
+            <div style="margin-top:40px;"><i class="icon-plus"></i> <b>Add group</b></div>
+        </div>
+    </div>
 
 
 <div id="discovery" class="hide">
