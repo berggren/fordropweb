@@ -5,7 +5,6 @@
     <div class="span8">
 
         <div class="hero-unit">
-            <span style="font-size:45px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Explore</span>
             <p>There are {{ files|length }} files reported and {{ collections|length }} collections bringing {{ users|length }} people closer together</p>
         </div>
         {% if collections %}
@@ -42,11 +41,11 @@
             <div class="left" style="margin-right:10px;">
                 {% if user.profile.avatar %}
                 {% thumbnail user.profile.avatar "60x60" crop="center" as im %}
-                <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
-                    {% endthumbnail %}
+                    <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                {% endthumbnail %}
                 {% else %}
                 {% thumbnail "img/placeholder.png" "60x60" crop="center" as im %}
-                <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                    <a href="/profile/{{ user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
                 {% endif %}
             </div>

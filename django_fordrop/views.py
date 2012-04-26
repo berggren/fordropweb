@@ -14,6 +14,7 @@ from django_fordrop.forms import UserProfileForm
 from django_fordrop.models import UserProfile, UserSettings, PubSubNode
 from forms import UploadFileForm, FileCommentForm, CollectionCommentForm, CollectionForm, FileTagForm, UserProfileForm, UserSettingsForm, CollectionTagForm
 from models import handle_uploaded_file, File, Collection, xmpp, notify_by_mail
+from django.conf import settings
 
 @login_required
 def index(request):
@@ -312,7 +313,7 @@ def edit_settings(request):
 def federation(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-    return render_to_response('pubsubbox.html',{}, RequestContext(request))
+    return render_to_response('pubsubbox.html',{'pubsub_service': settings.FORDROP_PUBSUB_SERVICE, 'jid': settings.FORDROP_PUBSUB_JID}, RequestContext(request))
 
 @login_required
 def welcome(request, id=None):

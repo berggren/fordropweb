@@ -30,7 +30,7 @@ var XMPP = {
     /*
         Init
      */
-    CONFIG_FILE: '/site_media/pubsubbox/js/config.js',
+    //CONFIG_FILE: '/site_media/pubsubbox/js/config.js',
     connection: null,
     my_jid: null,
     nodes: {},
@@ -625,12 +625,10 @@ $(document).ready(function() {
     $('#login-button').click(function() {
         $('#login-screen').hide();
         $('#login-spinner').fadeIn();
-        $.getScript(XMPP.CONFIG_FILE, function(){
             $(document).trigger('connect', {
-                jid: $('#jid').val(),
+                jid: XMPPConfig.jid,
                 password: $('#password').val(),
                 pubsubservice: XMPPConfig.pubsubservice
             });
-        })
     })
 });

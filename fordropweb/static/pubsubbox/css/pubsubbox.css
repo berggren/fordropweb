@@ -52,7 +52,7 @@
     border-bottom: 1px dashed silver;
 }
 
-#login-spinner, #login-screen {
+#login-spinner {
     margin-top:200px;
     text-align: center;
 }
