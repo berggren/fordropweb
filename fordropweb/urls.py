@@ -43,5 +43,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    (r'^site_media/(?P<path>.*)$',          'django.views.static.serve', {'document_root': 'fordropweb/fordropweb/static', 'show_indexes': True}),
+    (r'^site_media/(?P<path>.*)$',          'django.views.static.serve', {'document_root': '/Users/jbn/s/code/fordropweb/fordropweb/static', 'show_indexes': True}),
 )

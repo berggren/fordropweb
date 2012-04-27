@@ -26,7 +26,6 @@
                     <a href="/accounts/logout" class="right" style="margin-left:10px; color:#999;">Logout</a>
                 {% endif %}
                 {% if user.is_superuser %}
-                    <a class="right" style="margin-left:10px; color:#fff;" href="/admin">Admin</a>
                     <a href="/federation" class="right btn btn-info" style="margin-left:30px;margin-top:-5px;">Federation</a>
                 {% endif %}
                 <a class="right" style="margin-left:10px; color:#fff;" href="/profile/{{ user.id }}">{{ user.username }}</a>
