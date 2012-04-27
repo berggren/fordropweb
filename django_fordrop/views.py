@@ -126,7 +126,8 @@ def file_comment(request, id):
             file.save()
             for node in file.nodes.all():
                 xmpp.publish(node=node.node, payload=comment.activity())
-            notify_by_mail(users=[f.user for f in file.get_reporters()], subject='New comment on one of your files - ' + file.sha1, body=comment.content, obj=comment)
+            mail_body = '\n%s\n\n%s\n\n' % (comment.user.profile.name, comment.content)
+            notify_by_mail(users=[f.user for f in file.get_reporters()], subject='%s commented on one of your files' % comment.user.profile.name, body=mail_body, obj=comment)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required

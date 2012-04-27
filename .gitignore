@@ -4,4 +4,5 @@
 fordropweb/static/cache
 fordropweb/static/avatars
 settings.py
+fordrop_settings.py
 config.js

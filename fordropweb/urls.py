@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^api/',      include(v1_api.urls)),
     url(r'^accounts/change_password/$',    'django.contrib.auth.views.password_change', {'post_change_redirect' : '/accounts/change_password/done/'}),
     url(r'^accounts/change_password/done/$', 'django.contrib.auth.views.password_change_done'),
+    (r'^accounts/', include('invitation.urls')),
     (r'^accounts/', include('registration.backends.default.urls')),
 
     # Uncomment the next line to enable the admin:

@@ -1,0 +1,6 @@
+Hi,
+
+You have been invited to fordrop. The following link will take you to the registration form.
+https://{{ site.domain }}/accounts/register/?invitation_key={{ invitation_key.key }}
+
+Welcome to fordrop!

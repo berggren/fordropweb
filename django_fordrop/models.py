@@ -1,9 +1,10 @@
 import json
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.mail import send_mass_mail
+from django.core.mail import send_mass_mail, mail_admins
 from django.db import models
 import hashlib
+from django.db.models.signals import post_save
 from taggit.managers import TaggableManager
 from django.db.models.fields.files import ImageField
 from fordrop.client import FordropRestClient
@@ -245,7 +246,9 @@ class UserProfile(models.Model):
         super(UserProfile, self).save()
         if not self.uuid:
             self.uuid = uuid.uuid4().urn
-            super(UserProfile, self).save()
+        if not self.email:
+            self.email = self.user.email
+        super(UserProfile, self).save()
     class Admin:
         pass
 
@@ -310,3 +313,15 @@ def notify_by_mail(users=None, subject=None, body=None, obj=None):
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 User.settings = property(lambda u: UserSettings.objects.get_or_create(user=u)[0])
+
+def mail_on_new_user(sender, **kwargs):
+    if 'created' and 'instance' in kwargs:
+        user = kwargs['instance']
+        if kwargs['created']:
+            subject = '%s registered for fordrop' % user.username
+            message = 'New user: %s\nEmail: %s' % (user.username, user.email)
+            mail_admins(subject, message, fail_silently=True)
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+User.settings = property(lambda u: UserSettings.objects.get_or_create(user=u)[0])
+post_save.connect(mail_on_new_user, sender=User, dispatch_uid="user")
