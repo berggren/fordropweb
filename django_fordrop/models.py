@@ -64,15 +64,17 @@ class File(models.Model):
                     "published": self.time_created.isoformat()
                 }
     def comments(self):
-        return FileComment.objects.filter(file=self)
+        return FileComment.objects.filter(file__in=File.objects.filter(sha1=self.sha1)).order_by('time_created')
     def get_last_comment(self):
-        return FileComment.objects.filter(file=self).order_by('-time_created')[0]
+        return FileComment.objects.filter(file__in=File.objects.filter(sha1=self.sha1)).order_by('-time_created')[0]
     def collections(self):
         return Collection.objects.filter(tags__in=self.tags.all).distinct()
     def get_reporters(self):
-        return File.objects.filter(sha1=self.sha1).distinct()
+        return [u.user for u in File.objects.filter(sha1=self.sha1).distinct()]
+    def get_commenters(self):
+        return list(set([c.user for c in self.comments()]))
     def is_reporter(self, user):
-        if user in [file.user for file in self.get_reporters()]:
+        if user in self.get_reporters():
             return True
         return False
     def __unicode__(self):
@@ -296,7 +298,9 @@ def notify_by_mail(users=None, subject=None, body=None, obj=None):
     mails_to_send = []
     for user in users:
         if user == obj.user:
-                continue
+            continue
+        if not user.profile.email:
+            continue
         if isinstance(obj, CollectionComment):
             if not user.settings.notify_comment_on_collection:
                 continue
@@ -322,6 +326,24 @@ def mail_on_new_user(sender, **kwargs):
             message = 'New user: %s\nEmail: %s' % (user.username, user.email)
             mail_admins(subject, message, fail_silently=True)
 
+def mail_on_file_comment(sender, **kwargs):
+    comment = kwargs['instance']
+    file = comment.file
+    reporters = file.get_reporters()
+    commenters = [u for u in file.get_commenters() if u not in reporters]
+    mail_body = '\n%s\n\n/%s' % (comment.content, comment.user.profile.name)
+    notify_by_mail(users=reporters, subject='%s commented on file %s' % (comment.user.profile.name, file.sha1), body=mail_body, obj=comment)
+    notify_by_mail(users=commenters, subject='%s commented on file %s' % (comment.user.profile.name, file.sha1), body=mail_body, obj=comment)
+
+def mail_on_collection_comment(sender, **kwargs):
+    comment = kwargs['instance']
+    collection = comment.collection
+    mail_body = '\n%s\n\n/%s' % (comment.content, comment.user.profile.name)
+    notify_by_mail(users=collection.followers.all(), subject='%s commented in %s' % (comment.user.profile.name, collection.title), body=mail_body, obj=comment)
+
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 User.settings = property(lambda u: UserSettings.objects.get_or_create(user=u)[0])
+
 post_save.connect(mail_on_new_user, sender=User, dispatch_uid="user")
+post_save.connect(mail_on_file_comment, sender=FileComment, dispatch_uid="filecomment")
+post_save.connect(mail_on_collection_comment, sender=CollectionComment, dispatch_uid="collectioncomment")

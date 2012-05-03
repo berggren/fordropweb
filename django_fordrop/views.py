@@ -126,8 +126,6 @@ def file_comment(request, id):
             file.save()
             for node in file.nodes.all():
                 xmpp.publish(node=node.node, payload=comment.activity())
-            mail_body = '\n%s\n\n%s\n\n' % (comment.user.profile.name, comment.content)
-            notify_by_mail(users=[f.user for f in file.get_reporters()], subject='%s commented on one of your files' % comment.user.profile.name, body=mail_body, obj=comment)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
@@ -144,7 +142,6 @@ def collection_comment(request, id):
             collection.save()
             for node in collection.nodes.all():
                 xmpp.publish(node=node.node, payload=comment.activity())
-            notify_by_mail(users=collection.followers.all(), subject='New comment in - ' + collection.title, body=comment.content, obj=comment)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
@@ -199,13 +196,13 @@ def file_share(request):
 
                     print json.dumps(file.activity_fordrop_file(), indent=4)
                     messages.success(request, "Sharing is caring, file successfully recieved!")
-                    notify_by_mail(users=[file.user for file in file.get_reporters()], subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
+                    notify_by_mail(users=file.get_reporters(), subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
     return HttpResponseRedirect('/file/%s' % file.id)
 
 @login_required
 def file_clone(request, id):
     ref_file = File.objects.get(pk=id)
-    if request.user in [file.user for file in ref_file.get_reporters()]:
+    if request.user in ref_file.get_reporters():
         messages.error(request, 'You have already reported this file')
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
     file = File.objects.create(
@@ -226,7 +223,7 @@ def file_clone(request, id):
         if file.tags.all():
             xmpp.publish(node.node, payload=file.activity_tags())
     file.save()
-    notify_by_mail(users=[file.user for file in file.get_reporters()], subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
+    notify_by_mail(users=file.get_reporters(), subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required

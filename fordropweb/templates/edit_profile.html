@@ -44,7 +44,7 @@
             <form enctype="multipart/form-data" method="post" action="/profile/settings/edit/">{% csrf_token %}
                 <h5>Email me when:</h5>
                 <p class="quiet">Make sure you have entered you email address</p>
-                {{ settingsform.notify_comment_on_file }} Somebody comments on one of my files
+                {{ settingsform.notify_comment_on_file }} Somebody comments on one of my files or in a file I commented in
                 <br>
                 {{ settingsform.notify_comment_on_collection }} Somebody comments in one of the collections I am following
                 <br>
