@@ -73,6 +73,10 @@ class File(models.Model):
         return [u.user for u in File.objects.filter(sha1=self.sha1).distinct()]
     def get_commenters(self):
         return list(set([c.user for c in self.comments()]))
+    def get_absolute_url(self):
+        return "/file/%s" % self.id
+    def get_full_uri(self):
+        return settings.SITE_URI + self.get_absolute_url()
     def is_reporter(self, user):
         if user in self.get_reporters():
             return True
@@ -331,7 +335,7 @@ def mail_on_file_comment(sender, **kwargs):
     file = comment.file
     reporters = file.get_reporters()
     commenters = [u for u in file.get_commenters() if u not in reporters]
-    mail_body = '\n%s\n\n/%s' % (comment.content, comment.user.profile.name)
+    mail_body = '%s\n\n/%s\n%s' % (comment.content, comment.user.profile.name, comment.file.get_full_uri())
     notify_by_mail(users=reporters, subject='%s commented on file %s' % (comment.user.profile.name, file.sha1), body=mail_body, obj=comment)
     notify_by_mail(users=commenters, subject='%s commented on file %s' % (comment.user.profile.name, file.sha1), body=mail_body, obj=comment)
 

@@ -196,7 +196,8 @@ def file_share(request):
 
                     print json.dumps(file.activity_fordrop_file(), indent=4)
                     messages.success(request, "Sharing is caring, file successfully recieved!")
-                    notify_by_mail(users=file.get_reporters(), subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
+                    mail_body = '%s reported the same file as you, %s\n%s' % (file.user.profile.name, file.sha1, file.get_full_uri())
+                    notify_by_mail(users=file.get_reporters(), subject='%s reported the same file as you' % file.user.profile.name, body=mail_body, obj=file)
     return HttpResponseRedirect('/file/%s' % file.id)
 
 @login_required
@@ -223,7 +224,8 @@ def file_clone(request, id):
         if file.tags.all():
             xmpp.publish(node.node, payload=file.activity_tags())
     file.save()
-    notify_by_mail(users=file.get_reporters(), subject='Hey, someone reported the same file as you', body=file.sha1, obj=file)
+    mail_body = '%s reported the same file as you, %s\n%s' % (file.user.profile.name, file.sha1, file.get_full_uri())
+    notify_by_mail(users=file.get_reporters(), subject='%s reported the same file as you' % file.user.profile.name, body=mail_body, obj=file)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required
@@ -257,7 +259,7 @@ def profile(request, id=None):
         tmpl = 'profile.html'
     else:
         tmpl = 'profile.html'
-    files = File.objects.filter(user=profile_user)
+    files = File.objects.filter(user=profile_user).order_by('-time_updated')
     collections = Collection.objects.filter(followers__username=profile_user.username)
     return render_to_response(tmpl, {'profile_user': profile_user,
                                      'files': files,
