@@ -18,7 +18,7 @@
         {% if files %}
         <span class="left" style="font-size:18px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">The things you care about</span>
         <span class="btn btn-info right" style="cursor:pointer;" id="share-link"><i class="icon-share-alt icon-white"></i> Share your stuff</span>
-        <br><br>
+        <br><br><br>
             <div id="share-form" class="well share hide">
                 <form action="/share/file" method="post" enctype="multipart/form-data">{% csrf_token %}
                     {{ uploadform.file }}
@@ -185,7 +185,7 @@
         <div class="span5">
         <span class="left" style="font-size:18px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Collaborate</span>
         <span class="btn right" style="cursor:pointer;" id="new-collection"><i class="icon-plus"></i> New collection</span>
-        <br><br>
+        <br><br><br>
         <div id="collection-form" class="well share hide">
             <form action="/collection" method="post" enctype="multipart/form-data">{% csrf_token %}
                 <strong>1.</strong> Title<br>
