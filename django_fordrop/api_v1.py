@@ -12,7 +12,7 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         fields = ['username', 'is_active']
         authorization = Authorization()
-        authentication = Authentication()
+        authentication = ApiKeyAuthentication()
 
 class FileResource(ModelResource):
     resource_name = 'file'
@@ -23,7 +23,7 @@ class FileResource(ModelResource):
             "uuid": ALL
         }
         authorization = Authorization()
-        authentication = Authentication()
+        authentication = ApiKeyAuthentication()
 
 class FileCommentResource(ModelResource):
     resource_name = 'filecomment'
@@ -31,7 +31,7 @@ class FileCommentResource(ModelResource):
     class Meta:
         queryset = FileComment.objects.all()
         authorization = Authorization()
-        authentication = Authentication()
+        authentication = ApiKeyAuthentication()
 
 class UserProfileResource(ModelResource):
     user = fields.ForeignKey(UserResource, 'user', full=True)
@@ -42,4 +42,4 @@ class UserProfileResource(ModelResource):
             "uuid": ALL
         }
         authorization = Authorization()
-        authentication = Authentication()
+        authentication = ApiKeyAuthentication()
