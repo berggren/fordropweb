@@ -44,50 +44,51 @@
                 </form>
             </div>
 
-    {% for file in files %}
+    {% for activity in activities %}
+        {% ifequal activity.object.get_type 'file' %}
         <div class="well">
             <span class="left" style="margin-right:10px;">
-            {% if file.user.profile.avatar %}
-                {% thumbnail file.user.profile.avatar "60x60" crop="center" as im %}
-                    <a href="/profile/{{ file.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+            {% if activity.object.user.profile.avatar %}
+                {% thumbnail activity.object.user.profile.avatar "60x60" crop="center" as im %}
+                    <a href="/profile/{{ activity.object.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
             {% else %}
                 {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
-                    <a href="/profile/{{ file.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                    <a href="/profile/{{ activity.object.user.id }}"><img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                 {% endthumbnail %}
             {% endif %}
             </span>
 
-            <a href="/file/{{ file.id }}"><h4 class="left">{{ file.sha1 }}</h4></a><br>
-            <span class="quiet">Reported {{ file.time_created|timesince }} ago by <a href="/profile/{{ file.user.id }}">{{ file.user.profile.name }}</a></span>
+            <a href="/file/{{ activity.object.id }}"><h4 class="left">{{ activity.object.sha1 }}</h4></a><br>
+            <span class="quiet">Reported {{ activity.object.time_created|timesince }} ago by <a href="/profile/{{ activity.object.user.id }}">{{ activity.object.user.profile.name }}</a></span>
             <br><br><br>
-            {% if file.description %}
+            {% if activity.object.description %}
             <blockquote>
-                <p>{{ file.description|linebreaksbr }}</p>
-                <small>{{ file.user.profile.name }}</small>
+                <p>{{ activity.object.description|linebreaksbr }}</p>
+                <small>{{ activity.object.user.profile.name }}</small>
             </blockquote>
             {% endif %}
-            {% if file.tags.all %}
+            {% if activity.object.tags.all %}
                 <i style="margin-left:20px;" class="icon-tags"></i>
-                {% for tag in file.tags.all %}
+                {% for tag in activity.object.tags.all %}
                     <a href="/search/?q=tag:{{ tag|urlencode }}"><span class="label label-info">{{ tag }}</span></a>
                 {% endfor %}
             {% endif %}
-            {% if file.collections %}
+            {% if activity.object.collections %}
                 <i style="margin-left:20px;" class="icon-book"></i>
-                {% for collection in file.collections %}
+                {% for collection in activity.object.collections %}
                     <a href="/collection/{{ collection.id }}" class="label label-success">{{ collection.title }}</a>
                 {% endfor %}
             {% endif %}
 
             <div class="left" onclick="$(this).next('div.#comments').toggle('fast');$(this).nextAll('#last-comment:first').hide();">
-                <i class="icon-comment"></i> {{ file.comments|length }} <span style="cursor:pointer;">comment{{ file.comments|pluralize }}</span> {% if file.comments %}<i class="icon-chevron-down"></i>{% endif %}
+                <i class="icon-comment"></i> {{ activity.object.comments|length }} <span style="cursor:pointer;">comment{{ activity.object.comments|pluralize }}</span> {% if activity.object.comments %}<i class="icon-chevron-down"></i>{% endif %}
             </div>
             <div id="comments" class="hide">
                 <br>
-                {% if file.comments %}
+                {% if activity.object.comments %}
                 <div class="well comment">
-                    {% for comment in file.comments %}
+                    {% for comment in activity.object.comments %}
                         <div class="left"></span>
                             {% if comment.user.profile.avatar %}
                             {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
@@ -101,7 +102,7 @@
                         </div>
                         <div style="margin-left:40px;margin-top:-3px;">
                             <a href="/profile/{{ comment.user.id }}">{{ comment.user.profile.name }}</a><br>
-                            <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
+                            <span class="quiet small">{{ activity.object.get_last_comment.time_created|timesince }} ago</span>
                             <br>
                             {{ comment.content|linebreaksbr }}
                             <br><br>
@@ -110,12 +111,12 @@
                 </div>
                 {% endif %}
             </div>
-            {% if file.comments %}
+            {% if activity.object.comments %}
             <br><br>
             <div class="well comment" id="last-comment">
                 <div class="left"></span>
-                    {% if file.get_last_comment.user.profile.avatar %}
-                        {% thumbnail file.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
+                    {% if activity.object.get_last_comment.user.profile.avatar %}
+                        {% thumbnail activity.object.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
                             <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                         {% endthumbnail %}
                     {% else %}
@@ -125,25 +126,56 @@
                     {% endif %}
                 </div>
                 <div style="margin-left:40px;margin-top:-3px;">
-                    <a href="/profile/{{ file.get_last_comment.user.id }}">{{ file.get_last_comment.user.profile.name }}</a><br>
-                    <span class="quiet small">{{ file.get_last_comment.time_created|timesince }} ago</span>
+                    <a href="/profile/{{ activity.object.get_last_comment.user.id }}">{{ activity.object.get_last_comment.user.profile.name }}</a><br>
+                    <span class="quiet small">{{ activity.object.get_last_comment.time_created|timesince }} ago</span>
                     <br>
-                    {{ file.get_last_comment.content|linebreaksbr }}
+                    {{ activity.object.get_last_comment.content|linebreaksbr }}
                 </div>
             </div>
             {% else %}
                 <br><br>
             {% endif %}
-            <form method="post" action="/file/{{ file.id }}/comment">{% csrf_token %}
+            <form method="post" action="/file/{{ activity.object.id }}/comment">{% csrf_token %}
                 <textarea style="width:490px;" onfocus="$(this).animate({'height': '85px'}, 'fast' );$(this).next('div.#submit-comment-button').show();" rows=1 id="id_content" name="content" placeholder="Share your thoughts .."></textarea>
                 <div id="submit-comment-button" class="hide">
                     <input type="submit" value="Comment" class="btn"/>
                 </div>
             </form>
         </div>
-    {% endfor %}
+        {% endifequal %}
 
-    {% else %}
+        {% ifequal activity.object.get_type 'collection' %}
+        <div class="well">
+            <a href="/file/{{ activity.object.id }}"><h4 class="left">{{ activity.object.title }}</h4></a><br>
+            <span class="quiet">Last activity {{ activity.object.time_updated|timesince }} ago</span>
+            {% if activity.object.comments %}
+            <br><br>
+            <div class="well comment" id="last-comment">
+                <div class="left"></span>
+                    {% if activity.object.get_last_comment.user.profile.avatar %}
+                    {% thumbnail activity.object.get_last_comment.user.profile.avatar "30x30" crop="center" as im %}
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                    {% else %}
+                    {% thumbnail "img/placeholder.png" "30x30" crop="center" as im %}
+                    <img class="avatar_thumb" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                    {% endif %}
+                </div>
+                <div style="margin-left:40px;margin-top:-3px;">
+                    <a href="/profile/{{ activity.object.get_last_comment.user.id }}">{{ activity.object.get_last_comment.user.profile.name }}</a><br>
+                    <span class="quiet small">{{ activity.object.get_last_comment.time_created|timesince }} ago</span>
+                    <br>
+                    {{ activity.object.get_last_comment.content|linebreaksbr }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endifequal %}
+
+        {% endfor %}
+
+        {% else %}
         <br><br>
         <div class="hero-unit">
             <span style="font-size:25px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Get started</span>

@@ -15,6 +15,7 @@ from django_fordrop.models import UserProfile, UserSettings, PubSubNode
 from forms import UploadFileForm, FileCommentForm, CollectionCommentForm, CollectionForm, FileTagForm, UserProfileForm, UserSettingsForm, CollectionTagForm
 from models import handle_uploaded_file, File, Collection, xmpp, notify_by_mail
 from django.conf import settings
+import operator
 
 @login_required
 def index(request):
@@ -29,11 +30,18 @@ def index(request):
     my_files = File.objects.filter(user=request.user)
     f = tracked_files | my_files
     files = f.order_by('-time_updated').distinct()[:10]
+    l = list()
+    for file in files:
+        l.append({'object': file, 'date': file.time_updated})
+    for collection in my_collections:
+        l.append({'object': collection, 'date': collection.time_updated})
+    activities = sorted(l, key=operator.itemgetter('date'), reverse=True)
     return render_to_response("index.html", {'uploadform': UploadFileForm,
                                                  'commentform': FileCommentForm,
                                                  'collectionform': CollectionForm,
                                                  'collections': collections,
                                                  'nodes': PubSubNode.objects.all(),
+                                                 'activities': activities,
                                                  'files': files}, RequestContext(request))
 
 @login_required

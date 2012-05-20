@@ -81,6 +81,8 @@ class File(models.Model):
         if user in self.get_reporters():
             return True
         return False
+    def get_type(self):
+        return 'file'
     def __unicode__(self):
         return '%s' % self.sha1
     class Admin:
@@ -173,6 +175,12 @@ class Collection(models.Model):
             "object": self.activity_object(),
             "published": self.time_created.isoformat()
         }
+
+    def get_type(self):
+        return 'collection'
+
+    def get_last_comment(self):
+        return CollectionComment.objects.filter(collection__in=Collection.objects.filter(uuid=self.uuid)).order_by('-time_created')[0]
 
     def __unicode__(self):
         return '%s' % self.title
