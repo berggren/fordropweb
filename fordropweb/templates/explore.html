@@ -1,13 +1,24 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% block content %}
+<script>
+    $(function () {
+        $('tab a:last').tab('show');
+    })
+</script>
 <div class="row">
     <div class="span8">
-
-        <div class="hero-unit">
+        <div class="hero-unit hero-white">
             <p>There are {{ files|length }} files reported and {{ collections|length }} collections bringing {{ users|length }} people closer together</p>
         </div>
-        {% if collections %}
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#collections" data-toggle="tab">Collections</a></li>
+            <li><a href="#users" data-toggle="tab">Users</a></li>
+        </ul>
+
+        <div class="tab-content">
+        <div class="tab-pane active" id="collections">
         {% for collection in collections reversed %}
         <div class="well">
                 <span class="left">
@@ -32,10 +43,9 @@
             <span style="margin-left:10px;"><i class="icon-file"></i> Tracking {{ collection.files|length }} files</span>
         </div>
         {% endfor %}
-        {% endif %}
         </div>
 
-    <div class="span4">
+        <div class="tab-pane" id="users">
         {% for user in users %}
         <div class="well">
             <div class="left" style="margin-right:10px;">
@@ -60,7 +70,10 @@
             </div>
         </div>
         {% endfor %}
-
-
+        </div>
     </div>
+        </div>
+
+
+</div>
 {% endblock %}
