@@ -30,7 +30,6 @@ var XMPP = {
     /*
         Init
      */
-    //CONFIG_FILE: '/site_media/pubsubbox/js/config.js',
     connection: null,
     my_jid: null,
     nodes: {},
@@ -95,7 +94,6 @@ var XMPP = {
     },
 
     update_notification_count: function(plus_or_minus) {
-        console.log("update notification");
         if (plus_or_minus === 'plus') {
             XMPP.notifications = XMPP.notifications + 1;
         } else {
@@ -140,7 +138,8 @@ var XMPP = {
                 var splitName = name.split(" ");
                 var name1 = splitName[0] || '';
                 var name2 = splitName[1] || '';
-                var elem = $('<div class="drag contact left" jid="' + jid + '" id="' + id + '">' + '<span style="margin-left:10px;padding-top:5px;"">' + name + '</span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
+                //var elem = $('<div class="drag contact left" jid="' + jid + '" id="' + id + '">' + '<span style="margin-left:10px;padding-top:5px;"">' + name + '</span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
+                var elem = $('<div class="drag contact left" jid="' + jid + '" id="' + id + '"><div style="margin-left:10px;">' + name + '</div></div>');
                 $('#roster').append(elem);
                 var vCardIQ = $iq({to: jid, type: 'get'})
                     .c('vCard', {xmlns: 'vcard-temp'});
@@ -159,19 +158,16 @@ var XMPP = {
     },
 
     on_roster_changed: function(iq) {
-        console.log("roster changed");
         var rosterIQ = $iq({type: 'get'})
             .c('query', {xmlns: 'jabber:iq:roster'});
         XMPP.connection.sendIQ(rosterIQ, XMPP.on_roster);
     },
 
     on_presence: function(presence) {
-        //console.log($(presence).attr('from'));
         var type = $(presence).attr('type');
         var from = $(presence).attr('from');
         var from_bare = Strophe.getBareJidFromJid(from);
         if (type === 'subscribe') {
-            console.log("yeah");
             var id_subscription = XMPP.jid_to_id(from_bare) + '-subscription_request';
             var id_allow = XMPP.jid_to_id(from_bare) + '-subscription_allow';
             var id_deny = XMPP.jid_to_id(from_bare) + '-subscription_deny';
@@ -253,7 +249,6 @@ var XMPP = {
             $('#activities').prepend('<div class="well"><span class="right"><h6>' + service + '</h6></span><span class="left"><b>' + payload.actor + '</b> shared</span><br><br>' + payload.object.hash.sha1 + '</div>');
         });
         var c = $("#activities").children().length;
-        console.log(c);
         if (c > 8) {
             $('#activities div:last').remove().fadeOut();
         }
@@ -348,7 +343,7 @@ var XMPP = {
                 var avatar = sessionStorage.getItem(id);
                 if ( ! avatar ) {
                     var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
-                } else {4
+                } else {
                     var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '"></span><span style="margin-left:10px;padding-top:5px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span><br><span class="quiet" style="margin-left:10px;">' + jid + '</span></div>');
                 }
                 $('#roster2').append(elem);
@@ -397,7 +392,7 @@ var XMPP = {
 
     on_error: function(iq) {
         if (XMPPConfig.debug) {
-            console.log('ERROR, take a look at the followiung error-stanza:');
+            console.log('ERROR, take a look at the following error-stanza:');
             console.log(iq);
         }
     }

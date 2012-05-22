@@ -4,14 +4,16 @@
     <script src='/site_media/pubsubbox/js/jquery-ui-1.8.16.min.js'></script>
     <script src='/site_media/pubsubbox/js/jquery.ui.touch-punch.min.js'></script>
     <script src='/site_media/pubsubbox/js/strophe-1.0.2.min.js'></script>
+    <!--
     <script src='/site_media/pubsubbox/js/bootstrap-transition-2.0.2.js'></script>
     <script src='/site_media/pubsubbox/js/bootstrap-modal-2.0.2.js'></script>
+    -->
     <link rel='stylesheet' href='/site_media/pubsubbox/css/pubsubbox.css'>
     <script>
         var XMPPConfig = {
             pubsubservice: '{{ pubsub_service }}',
             jid: '{{ jid }}',
-            debug: false
+            debug: true
         };
     </script>
     <script src='/site_media/pubsubbox/js/pubsubbox.js'></script>
@@ -22,7 +24,7 @@
 <div class="row">
     <div class="span12">
 
-<div id="login-screen">
+    <div id="login-screen">
     <div id="login-form">
 
         <div class="hero-unit">
