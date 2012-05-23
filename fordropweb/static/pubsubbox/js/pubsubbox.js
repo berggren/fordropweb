@@ -342,9 +342,9 @@ var XMPP = {
                 var name = XMPP.roster[jid];
                 var avatar = sessionStorage.getItem(id);
                 if ( ! avatar ) {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span style="margin-left:10px">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span style="margin-left:15px;color:#333;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
                 } else {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '"></span><span style="margin-left:10px">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '"></span><span style="margin-left:15px; color:#333;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
                 }
                 $('#roster2').append(elem);
                 $(elem).mouseenter(function() {
