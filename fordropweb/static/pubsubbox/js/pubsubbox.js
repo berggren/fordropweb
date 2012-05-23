@@ -129,7 +129,7 @@ var XMPP = {
         $('.contact').remove();
         $(iq).find('item').each(function() {
             var subscription = $(this).attr('subscription');
-            if (subscription === 'both' || subscription === 'from') {
+            if (subscription === 'both') {
                 var jid = $(this).attr('jid');
                 var domain = jid.split('@')[1];
                 var id = XMPP.jid_to_id(jid);
@@ -173,7 +173,7 @@ var XMPP = {
             var id_deny = XMPP.jid_to_id(from_bare) + '-subscription_deny';
             var elem = '<span id="' + id_subscription + '">' + from_bare + '<span class="right"><a href="#" id="' + id_allow + '"><i class="icon-ok-sign"></i> Approve</a> | <a href="#" id="' + id_deny + '"><i class="icon-remove-sign"></i> Reject</a></span></span>';
             $('#notification_link').show();
-            $('#notification').append(elem);
+            $('#notification').append(elem).show();
 
             XMPP.update_notification_count('plus');
 
