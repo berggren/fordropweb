@@ -16,7 +16,7 @@
     height: 40px;
     width:140px;
     display: block;
-    color: #CCC;
+    color: #333;
     text-decoration: none;
     padding: 10px 10px;
     box-shadow: 1px 1px 3px #888;
@@ -48,7 +48,7 @@
 .roster-menu-item {
     height: 10px;
     display: block;
-    color: #CCC;
+    color: #333;
     text-decoration: none;
     padding: 10px 10px;
     border-bottom: groove 2px #555;
