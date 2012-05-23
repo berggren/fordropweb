@@ -172,7 +172,7 @@ var XMPP = {
             var id_allow = XMPP.jid_to_id(from_bare) + '-subscription_allow';
             var id_deny = XMPP.jid_to_id(from_bare) + '-subscription_deny';
             var elem = '<span id="' + id_subscription + '">' + from_bare + '<span class="right"><a href="#" id="' + id_allow + '"><i class="icon-ok-sign"></i> Approve</a> | <a href="#" id="' + id_deny + '"><i class="icon-remove-sign"></i> Reject</a></span></span>';
-            $('#notification_link').show();
+            //$('#notification_link').show();
             $('#notification').append(elem).show();
 
             XMPP.update_notification_count('plus');
@@ -264,9 +264,9 @@ var XMPP = {
         var type = vCard.find('TYPE').text();
         var img_src = 'data:'+type+';base64,'+img;
         if (! img) {
-            var elem = $('<span class="left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
+            var elem = $('<span class="left"><img width="40" height="40" src="/site_media/img/placeholder.png" style="margin-right:10px;"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
         } else {
-            var elem = $('<span class="left"><img width="40" height="40" src="' + img_src + '"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
+            var elem = $('<span class="left"><img width="40" height="40" src="' + img_src + '" style="margin-right:10px;"></span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash icon-white"></i></span>');
             sessionStorage.setItem(id, img_src);
         }
         $('#' + id).prepend(elem);
@@ -342,9 +342,9 @@ var XMPP = {
                 var name = XMPP.roster[jid];
                 var avatar = sessionStorage.getItem(id);
                 if ( ! avatar ) {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png"></span><span style="margin-left:10px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="/site_media/img/placeholder.png" style="margin-right:10px;"></span><span style="margin-left:10px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
                 } else {
-                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '"></span><span style="margin-left:10px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
+                    var elem = $('<div jid="' + jid + '" id="' + id + '" class="contact left"><span class="avatar left"><img width="40" height="40" src="' + avatar + '" style="margin-right:10px;"></span><span style="margin-left:10px;">' + name + '</span><span class="right hide" id="remove_from_whitelist"><i class="icon-trash"></i></span></div>');
                 }
                 $('#roster2').append(elem);
                 $(elem).mouseenter(function() {
