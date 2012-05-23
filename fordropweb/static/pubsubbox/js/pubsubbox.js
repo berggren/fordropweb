@@ -154,7 +154,7 @@ var XMPP = {
                 }
             }
         });
-        XMPP.connection.send($pres());
+        XMPP.connection.send($pres().c("priority").t("127"));
     },
 
     on_roster_changed: function(iq) {
