@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.mail import mail_admins
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
@@ -10,7 +11,7 @@ import uuid
 import urllib2
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django_fordrop.forms import UserProfileForm
+from django_fordrop.forms import UserProfileForm, RequestInviteForm
 from django_fordrop.models import UserProfile, UserSettings, PubSubNode
 from forms import UploadFileForm, FileCommentForm, CollectionCommentForm, CollectionForm, FileTagForm, UserProfileForm, UserSettingsForm, CollectionTagForm
 from models import handle_uploaded_file, File, Collection, xmpp, notify_by_mail
@@ -337,3 +338,14 @@ def welcome(request, id=None):
     form = UserProfileForm(instance=profile)
     settingsform = UserSettingsForm(instance=user_settings)
     return render_to_response(tmpl,{'form': form, 'settingsform': settingsform}, RequestContext(request))
+
+def request_invite(request):
+    if request.method == 'POST':
+        form = RequestInviteForm(request.POST)
+        if form.is_valid():
+            subject = '[fordrop] %s requests an invite' % form.cleaned_data['email']
+            mail_admins(subject, subject, fail_silently=True)
+            return HttpResponseRedirect("/accounts/thanks")
+    else:
+        form = RequestInviteForm()
+    return render_to_response('request_invite.html',{'form': form}, RequestContext(request))

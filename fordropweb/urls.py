@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from tastypie.api import Api
 from django_fordrop.api_v1 import FileResource, FileCommentResource, UserResource, UserProfileResource
+from django.views.generic.simple import direct_to_template
 
 admin.autodiscover()
 
@@ -38,8 +39,10 @@ urlpatterns = patterns('',
     url(r'^api/',      include(v1_api.urls)),
     url(r'^accounts/change_password/$',    'django.contrib.auth.views.password_change', {'post_change_redirect' : '/accounts/change_password/done/'}),
     url(r'^accounts/change_password/done/$', 'django.contrib.auth.views.password_change_done'),
-    (r'^accounts/', include('invitation.urls')),
-    (r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('invitation.urls')),
+    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/request-invite/$', 'django_fordrop.views.request_invite', name='request_invite'),
+    url(r'^accounts/thanks/$',  direct_to_template, {'template': 'thanks.html'}),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

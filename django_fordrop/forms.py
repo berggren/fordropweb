@@ -44,3 +44,6 @@ class UserSettingsForm(forms.ModelForm):
     class Meta:
         model = UserSettings
         exclude = ('user')
+
+class RequestInviteForm(forms.Form):
+    email = forms.fields.EmailField(label="")
