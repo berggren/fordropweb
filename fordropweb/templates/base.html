@@ -21,6 +21,8 @@
                 </form>
                 <div class="left" style="margin-top:5px;padding-left:10px;">
                     <a style="color:#fff;" href="/explore">Explore</a>
+                    <a class="label" style="color:#fff;margin-left:20px;" href="/accounts/invite">Invite a friend!</a>
+
                 </div>
                 <div class="right" style="margin-top:5px;">
                 {% if user.is_authenticated %}
@@ -29,7 +31,7 @@
                 {% if user.is_superuser %}
                     <a href="/federation" class="right btn btn-info" style="margin-left:30px;margin-top:-5px;">Federation</a>
                 {% endif %}
-                <a class="right" style="margin-left:10px; color:#fff;" href="/profile/{{ user.id }}">{{ user.username }}</a>
+                <a class="right" style="margin-left:10px; color:#fff;"   href="/profile/{{ user.id }}">{{ user.username }}</a>
                 <div class="right" style="margin-top:-5px;">
                     {% if user.profile.avatar %}
                         {% thumbnail user.profile.avatar "30x30" crop="center" as im %}

@@ -4,9 +4,25 @@ body {
 }
 
 #header {
+    /*
     background: #333;
     height:45px;
     padding-top:15px;
+    */
+    width:100%;
+    height: 80px;
+    background-image: -moz-linear-gradient(top, #333333 0%, #111111 100%);
+    background-image: -o-linear-gradient(top, #333333 0%, #111111 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #333333), color-stop(1, #111111));
+    background-image: -webkit-linear-gradient(top, #333333 0%, #111111 100%);
+    background-image: linear-gradient(to bottom, #333333 0%, #111111 100%);
+    padding-top:20px;
+}
+
+.shadow2 {
+    -moz-box-shadow: 10px 10px 50px #333;
+    -webkit-box-shadow: 10px 10px 50px #333;
+    box-shadow: 1px 1px 20px #333;
 }
 
 .left {
@@ -18,7 +34,7 @@ body {
 }
 
 textarea {
-    width:330px;
+    width:260px;
 }
 
 .quiet {
