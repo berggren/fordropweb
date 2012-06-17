@@ -343,7 +343,7 @@ def request_invite(request):
     if request.method == 'POST':
         form = RequestInviteForm(request.POST)
         if form.is_valid():
-            subject = '[fordrop] %s requests an invite' % form.cleaned_data['email']
+            subject = '%s requests an invite' % form.cleaned_data['email']
             mail_admins(subject, subject, fail_silently=True)
             return HttpResponseRedirect("/accounts/thanks")
     else:
