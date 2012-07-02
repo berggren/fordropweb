@@ -245,18 +245,26 @@ def search(request):
         data = urllib2.unquote(request.GET.get('q', ''))
     else:
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
     if data.startswith('tag:'):
         data = data.replace('tag:', '').lstrip()
-        files = File.objects.filter(tags__name=data)
+        result = []
+        for collection in Collection.objects.filter(tags__name=data):
+            result.append(collection)
+        for file in File.objects.filter(tags__name=data):
+            result.append(file)
     else:
-        files = File.objects.filter(
+        result = []
+        for collection in Collection.objects.filter(Q(title__icontains=data)|Q(description__icontains=data)):
+            result.append(collection)
+        for file in File.objects.filter(
             Q(filename__icontains=data)|
+            Q(description__icontains=data)|
             Q(md5__icontains=data)|
             Q(sha1__icontains=data)|
             Q(sha256__icontains=data)|
-            Q(sha512__icontains=data))
-    return render_to_response("search.html", {'files': files}, RequestContext(request))
+            Q(sha512__icontains=data)):
+            result.append(file)
+    return render_to_response("search.html", {'result': result}, RequestContext(request))
 
 @login_required
 def profile(request, id=None):

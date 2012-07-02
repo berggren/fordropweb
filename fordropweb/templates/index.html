@@ -146,7 +146,7 @@
 
         {% ifequal activity.object.get_type 'collection' %}
         <div class="well">
-            <a href="/file/{{ activity.object.id }}"><h4 class="left">{{ activity.object.title }}</h4></a><br>
+            <a href="/collection/{{ activity.object.id }}"><h4 class="left">{{ activity.object.title }}</h4></a><br>
             <span class="quiet">Last activity {{ activity.object.time_updated|timesince }} ago</span>
             {% if activity.object.comments %}
             <br><br>

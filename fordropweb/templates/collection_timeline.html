@@ -63,7 +63,7 @@
         <div class="span6">
             <span style="font-size:16px; margin-right:20px; margin-top:3px;font-weight:300; 'Helvetica Neue',Helvetica,Arial,sans-serif">Comments</span><br><br>
             <div class="well">
-                {% for comment in collection.comments %}
+                {% for comment in collection.comments reversed %}
                     <div class="left"></span>
                         {% if comment.user.profile.avatar %}
                             {% thumbnail comment.user.profile.avatar "30x30" crop="center" as im %}
